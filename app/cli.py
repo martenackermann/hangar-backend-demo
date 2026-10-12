@@ -105,7 +105,8 @@ def openapi(output: Path | None) -> None:
 
     target = output or REPO_ROOT / "openapi.json"
     schema = create_app().openapi()
-    target.write_text(json.dumps(schema, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    text = json.dumps(schema, indent=2, ensure_ascii=False) + "\n"
+    target.write_text(text, encoding="utf-8", newline="\n")  # LF on every OS
     click.echo(f"Wrote {target} ({len(schema.get('paths', {}))} paths).")
 
 
