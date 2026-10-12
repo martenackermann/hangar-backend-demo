@@ -1,0 +1,79 @@
+# Self-contained demo stack: API + worker + PostgreSQL 17 + Mailpit.
+#   docker compose up --build
+#   API      http://localhost:8100/api/v1/docs
+#   Mailpit  http://localhost:8025
+# Demo credentials/secrets below are placeholders for local use only.
+
+name: hangar
+
+x-app-env: &app-env
+  DATABASE_URL: postgresql+psycopg://hangar:hangar@postgres:5432/hangar
+  SMTP_HOST: mailpit
+  SMTP_PORT: "1025"
+  MAIL_FROM: Hangar <hangar@example.com>
+  JWT_SECRET: ${JWT_SECRET:-demo-only-jwt-secret-change-me-0123456789}
+  APP_URL: ${APP_URL:-http://localhost:8100}
+  FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+  DEMO_MODE: ${DEMO_MODE:-true}
+  ENVIRONMENT: production
+  LOG_LEVEL: INFO
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: hangar
+      POSTGRES_PASSWORD: hangar
+      POSTGRES_DB: hangar
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hangar -d hangar"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+
+  api:
+    build: .
+    image: hangar-backend-demo:local
+    environment:
+      <<: *app-env
+      SEED_ON_START: ${SEED_ON_START:-true}
+    # Migrations (+ idempotent demo seed) run before the server starts.
+    command:
+      - sh
+      - -c
+      - hangar migrate && if [ "$$SEED_ON_START" = "true" ]; then hangar seed; fi && exec hangar serve
+    ports:
+      - "${API_PORT:-8100}:8100"
+    volumes:
+      - storage:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+
+  worker:
+    image: hangar-backend-demo:local
+    pull_policy: never
+    environment:
+      <<: *app-env
+    command: ["hangar", "worker"]
+    volumes:
+      - storage:/app/storage
+    healthcheck:
+      disable: true
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  storage:

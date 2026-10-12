@@ -1,0 +1,66 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: dev
+          POSTGRES_PASSWORD: dev
+          POSTGRES_DB: hangar_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dev -d hangar_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://dev:dev@localhost:5432/hangar_test
+      DATABASE_URL: postgresql+psycopg://dev:dev@localhost:5432/hangar_test
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --locked
+
+      - name: Lint
+        run: uv run ruff check
+
+      - name: Format
+        run: uv run ruff format --check
+
+      - name: Type check
+        run: uv run pyright
+
+      - name: Tests
+        run: |
+          uv run coverage run -m pytest
+          uv run coverage report
+
+      - name: OpenAPI export (must match the committed openapi.json)
+        run: |
+          uv run hangar openapi
+          git diff --exit-code openapi.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openapi
+          path: openapi.json
