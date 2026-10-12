@@ -1,0 +1,116 @@
+[project]
+name = "hangar-backend-demo"
+version = "0.1.0"
+description = "Hangar API: IT-hardware rollout & logistics console (portfolio demo)"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Marten Ackermann" }]
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "aiosmtplib>=5.1.3",
+    "alembic>=1.20.0",
+    "charset-normalizer>=3.5.2",
+    "click>=8.5.0",
+    "email-validator>=2.3.0",
+    "faker>=40.43.0",
+    "fastapi>=0.143.0",
+    "fastexcel>=0.21.0",
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "orjson>=3.13.0",
+    "polars>=2.0.0",
+    "procrastinate>=3.10.0",
+    "psycopg[binary,pool]>=3.3.6",
+    "pwdlib[argon2]>=0.3.1",
+    "pydantic>=2.14.1",
+    "pydantic-settings>=2.15.0",
+    "pyjwt>=2.15.1",
+    "python-multipart>=0.0.32",
+    "reportlab>=5.0.1",
+    "sqlalchemy[asyncio]>=2.1.4",
+    "structlog>=26.1.0",
+    "tenacity>=9.2.1",
+    "tzdata>=2026.5",
+    "uvicorn[standard]>=0.54.0",
+    "xlsxwriter>=3.2.9",
+]
+
+[project.scripts]
+hangar = "app.cli:main"
+hangar-worker = "app.jobs.worker:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.16.2",
+    "pypdf>=6.20.1",
+    "pyright>=1.1.414",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "respx>=0.23.1",
+    "ruff>=0.17.0",
+    "time-machine>=3.5.1",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+# --- ruff ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+extend-exclude = ["storage"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "UP", "B", "C4", "SIM", "RUF", "ASYNC", "PT", "DTZ", "BLE", "S", "N",
+]
+ignore = [
+    "S101",   # assert is fine (type narrowing, tests)
+    "E501",   # line length is handled by the formatter
+    "RUF001", "RUF002", "RUF003", # ambiguous unicode in strings/comments (en dash etc.)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S105", "S106", "S108"]
+"tests/**" = ["S105", "S106", "S108"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+known-third-party = ["alembic"]
+
+# --- pyright -------------------------------------------------------------------------
+[tool.pyright]
+pythonVersion = "3.13"
+venvPath = "."
+venv = ".venv"
+include = ["app", "tests", "alembic", "conftest.py"]
+exclude = ["**/__pycache__", "storage"]
+typeCheckingMode = "standard"
+reportUnnecessaryTypeIgnoreComment = "warning"
+
+# --- pytest --------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests", "app"]
+python_files = ["test_*.py"]
+addopts = ["--import-mode=importlib", "-ra", "--strict-markers"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+
+# --- coverage ------------------------------------------------------------------------
+[tool.coverage.run]
+source = ["app"]
+branch = true
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError", "if __name__ == .__main__.:"]
