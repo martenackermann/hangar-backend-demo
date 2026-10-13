@@ -1,9 +1,9 @@
 """Shared pytest fixtures for ``tests/`` and ``app/modules/*/tests/``.
 
-- DB: ``TEST_DATABASE_URL`` (default ``hangar_test``). Once per session the schema is rebuilt
-  (``create_all`` + ``pg_trgm`` + procrastinate schema), all slices are loaded and the
-  **seed story is committed** — tests run on top of it inside a transaction that is rolled
-  back (``db_session``), so ``commit()`` in code under test is safe.
+- DB: ``TEST_DATABASE_URL`` (shell, else ``.env``; default ``hangar_test``). Once per session
+  the schema is rebuilt (``create_all`` + ``pg_trgm`` + procrastinate schema), all slices are
+  loaded and the **seed story is committed** — tests run on top of it inside a transaction
+  that is rolled back (``db_session``), so ``commit()`` in code under test is safe.
 - Jobs defer into an in-memory procrastinate connector (``jobs``), mail goes to a
   ``MemoryMailer`` (``mailer``), files to a temp directory.
 """
@@ -19,8 +19,24 @@ import tempfile
 from collections.abc import AsyncIterator, Awaitable, Callable, Iterator, Mapping
 from pathlib import Path
 
-os.environ["DATABASE_URL"] = os.environ.get(
-    "TEST_DATABASE_URL", "postgresql+psycopg://dev:dev@localhost:5432/hangar_test"
+
+def _dotenv_value(name: str) -> str | None:
+    """``name`` from the repo's ``.env`` (the shell wins), so a worktree's own test DB is used
+    even when the variable is only set there."""
+    env_file = Path(__file__).with_name(".env")
+    if not env_file.is_file():
+        return None
+    for line in env_file.read_text(encoding="utf-8").splitlines():
+        key, sep, value = line.strip().partition("=")
+        if sep and key.strip() == name and not line.lstrip().startswith("#"):
+            return value.strip().strip("'\"") or None
+    return None
+
+
+os.environ["DATABASE_URL"] = (
+    os.environ.get("TEST_DATABASE_URL")
+    or _dotenv_value("TEST_DATABASE_URL")
+    or "postgresql+psycopg://dev:dev@localhost:5432/hangar_test"
 )
 os.environ["ENVIRONMENT"] = "test"
 os.environ.setdefault("LOG_LEVEL", "WARNING")
