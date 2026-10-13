@@ -172,8 +172,8 @@ class ServiceRequestsApplier:
                 "No region rule matched the delivery address; the request stays unresolved.",
                 "delivery_address",
             )
+        actor = await ctx.actor()  # before add(): a lookup query would autoflush the new row
         session.add(sr)
-        actor = await ctx.actor()
         await transition_service.apply(
             session, sr, "import_create", actor=actor, trigger=Trigger.IMPORT
         )

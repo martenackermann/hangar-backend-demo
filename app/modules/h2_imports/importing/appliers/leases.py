@@ -77,9 +77,10 @@ class LeaseReturnsApplier:
             )
             lease.is_vip = await is_vip_user(session, user_id)
             await apply_lease_campus(session, lease)
+            actor = await ctx.actor()  # before add(): a lookup query would autoflush the new row
             session.add(lease)
             await transition_service.apply(
-                session, lease, "import_create", actor=await ctx.actor(), trigger=Trigger.IMPORT
+                session, lease, "import_create", actor=actor, trigger=Trigger.IMPORT
             )
             effects.lease_ids.add(lease.id)
             return "created"

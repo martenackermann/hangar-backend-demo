@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Any
 from sqlalchemy import (
     BigInteger,
     Boolean,
+    CheckConstraint,
     ForeignKey,
     Identity,
     Index,
@@ -101,6 +102,9 @@ class ImportJobError(TimestampMixin, Base):
     __tablename__ = "import_job_errors"
     __table_args__ = (
         Index("ix_import_job_errors_import_job_id_row", "import_job_id", "row_number"),
+        CheckConstraint(
+            "severity IN ('error', 'warning')", name="ck_import_job_errors_severity_values"
+        ),
     )
 
     id: Mapped[int] = mapped_column(

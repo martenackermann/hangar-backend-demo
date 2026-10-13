@@ -20,9 +20,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import gateways
 from app.core.config import get_settings
-from app.core.enums import AssetStatus, ImportType, LeaseReturnStatus, ServiceRequestStatus
-from app.core.models import Asset, Contact, LeaseReturn, VipEntry
+from app.core.enums import (
+    OLD_SLOTS,
+    AssetStatus,
+    ImportType,
+    LeaseReturnStatus,
+    ServiceRequestStatus,
+)
+from app.core.models import (
+    Asset,
+    Contact,
+    LeaseReturn,
+    ServiceRequest,
+    ServiceRequestItem,
+    VipEntry,
+)
 
+from .importing.formats import OLD_DEVICE_STOCKROOM
 from .importing.packed import build_packed
 
 SEED = 7
@@ -46,6 +60,11 @@ DEFAULT_SAMPLE: dict[ImportType, str] = {
     ImportType.ASSETS_NEW: "assets_new",
     ImportType.ASSET_STATUS_SYNC: "asset_status_sync",
 }
+_EARLY_SR = (
+    ServiceRequestStatus.INVITED,
+    ServiceRequestStatus.REMINDER_1_SENT,
+    ServiceRequestStatus.REMINDER_2_SENT,
+)
 _OPEN_LEASE = (
     LeaseReturnStatus.IMPORTED,
     LeaseReturnStatus.INFO_SENT,
@@ -92,6 +111,38 @@ def _person(row: dict[str, str], contact: Contact | None, user_id: str) -> None:
         row["last_name"] = contact.last_name
         row["email"] = contact.email or ""
         row["gender"] = str(contact.gender)
+        if row.get("short_description"):
+            kind = row["short_description"].split(" for ", 1)[0]
+            row["short_description"] = f"{kind} for {contact.display_name}"
+
+
+async def _consistent_people(session: AsyncSession, rows: list[dict[str, str]]) -> None:
+    """One person per user id: known contacts keep their master data, repeated new ids reuse
+    the first row's person (the fake export draws names independently per row)."""
+    ids = {row["user_id"] for row in rows if row.get("user_id")}
+    known = {
+        c.user_id: c
+        for c in (await session.scalars(select(Contact).where(Contact.user_id.in_(ids)))).all()
+    }
+    first: dict[str, dict[str, str]] = {}
+    for n, row in enumerate(rows):
+        user_id = row.get("user_id")
+        if not user_id:
+            continue
+        if user_id in known and known[user_id].email is None:
+            # known contact without email: give the row its own (new) requester instead
+            user_id = row["user_id"] = f"E{109100 + n:06d}"
+        if user_id in known:
+            _person(row, known[user_id], user_id)
+        elif user_id in first:
+            for key in ("gender", "first_name", "last_name", "email"):
+                row[key] = first[user_id].get(key, "")
+            if row.get("short_description"):
+                kind = row["short_description"].split(" for ", 1)[0]
+                name = f"{row.get('first_name', '')} {row.get('last_name', '')}".strip()
+                row["short_description"] = f"{kind} for {name}"
+        else:
+            first[user_id] = row
 
 
 async def _contact(session: AsyncSession, user_id: str) -> Contact | None:
@@ -106,6 +157,7 @@ async def _lease_returns(session: AsyncSession) -> bytes:
         ImportType.LEASE_RETURNS, rows=35, seed=SEED, start_number=150001
     )
     columns, rows = _read(data)
+    await _consistent_people(session, rows)
     existing = (
         await session.scalars(
             select(LeaseReturn)
@@ -157,6 +209,7 @@ async def _service_requests(session: AsyncSession) -> bytes:
         ImportType.SERVICE_REQUESTS, rows=30, seed=SEED, start_number=12301
     )
     columns, rows = _read(data)
+    await _consistent_people(session, rows)
     # 3 rows name seeded lease returns as old devices → linked on import (SPEC §6.4)
     for row, lease in zip(rows[0:3], await _linkable_leases(session, 3), strict=False):
         pairs = _pairs(row["order_details"])
@@ -197,6 +250,7 @@ async def _service_requests_with_errors(session: AsyncSession) -> bytes:
     # the email_missing warning needs a requester that is not a known contact yet
     rows[0]["user_id"] = "E109001"
     rows[0]["email"] = ""
+    await _consistent_people(session, rows)
     return _write(columns, rows)
 
 
@@ -221,38 +275,33 @@ async def _asset_status_sync(session: AsyncSession) -> bytes:
         ImportType.ASSET_STATUS_SYNC, rows=20, seed=SEED, start_number=170001
     )
     columns, rows = _read(data)
-    # old devices still at their users: 4 confirmations + 2 returned to the hub
-    in_use = (
-        await session.scalars(
-            select(Asset)
+    # old devices of open requests: 4 confirmed at their users, 2 returned to the hub
+    olds = (
+        await session.execute(
+            select(Asset, ServiceRequest)
+            .join(ServiceRequestItem, ServiceRequestItem.asset_id == Asset.id)
+            .join(ServiceRequest, ServiceRequest.id == ServiceRequestItem.service_request_id)
             .where(
                 Asset.status == AssetStatus.IN_USE,
-                Asset.asset_tag.like("GX1%"),
-                Asset.service_request_id.is_not(None),
+                ServiceRequestItem.slot.in_(OLD_SLOTS),
+                ServiceRequest.status.in_(_EARLY_SR),
             )
             .order_by(Asset.id)
             .limit(6)
         )
     ).all()
-    for n, (row, asset) in enumerate(zip(rows[0:6], in_use, strict=False)):
+    for n, (row, (asset, sr)) in enumerate(zip(rows[0:6], olds, strict=False)):
         row["serial_number"] = asset.serial_number
         row["asset_tag"] = asset.asset_tag or ""
         row["model"] = asset.model or row["model"]
         if n < 4:
             row["install_state"], row["stockroom"] = "In use", ""
-            row["assigned_user_id"] = (
-                asset.assigned_contact.user_id if asset.assigned_contact else ""
-            )
+            row["assigned_user_id"] = sr.contact.user_id
             row["sr_number"] = ""
         else:
-            sr = asset.service_request
-            row["install_state"], row["stockroom"] = "In stock", "Old device stockroom"
+            row["install_state"], row["stockroom"] = "In stock", OLD_DEVICE_STOCKROOM
             row["assigned_user_id"] = ""
-            row["sr_number"] = (
-                sr.number
-                if sr is not None and sr.status not in (ServiceRequestStatus.CANCELLED,)
-                else ""
-            )
+            row["sr_number"] = sr.number
     return _write(columns, rows)
 
 
