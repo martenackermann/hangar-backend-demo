@@ -1,0 +1,31 @@
+<p>Dear Initech Logistics team,</p>
+<p>please deliver the following hardware for {{ client_name }} to <strong>{{ site_name }}</strong>
+({{ site_address }}) on <strong>{{ delivery_date | date }}</strong>.</p>
+<table role="presentation" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%;font-size:13px;">
+  <thead>
+    <tr style="background:#e9ecef;text-align:left;">
+      <th style="border-bottom:1px solid #adb5bd;">Article no.</th>
+      <th style="border-bottom:1px solid #adb5bd;">Name</th>
+      <th style="border-bottom:1px solid #adb5bd;">Model</th>
+      <th style="border-bottom:1px solid #adb5bd;text-align:right;">Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for line in lines %}
+    <tr>
+      <td style="border-bottom:1px solid #e4e7eb;font-family:monospace;">{{ line.article_number }}</td>
+      <td style="border-bottom:1px solid #e4e7eb;">{{ line.name }}</td>
+      <td style="border-bottom:1px solid #e4e7eb;font-family:monospace;">{{ line.model_number }}</td>
+      <td style="border-bottom:1px solid #e4e7eb;text-align:right;">{{ line.quantity }}</td>
+    </tr>
+  {% endfor %}
+    <tr>
+      <td colspan="3" style="text-align:right;font-weight:bold;">Total</td>
+      <td style="text-align:right;font-weight:bold;">{{ total_quantity }}</td>
+    </tr>
+  </tbody>
+</table>
+{% if note %}<p><strong>Note:</strong> {{ note }}</p>{% endif %}
+<p>The order is attached as spreadsheet and PDF (order number <strong>{{ order_number }}</strong>).
+Please confirm the delivery date by replying to this mail.</p>
+<p>Kind regards,<br>{{ sender_name }}<br>{{ operator_name }}</p>

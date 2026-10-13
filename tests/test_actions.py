@@ -69,6 +69,9 @@ async def _correct(session: AsyncSession, asset: Any, actor: User, payload: Acti
 
 @pytest.fixture(autouse=True)
 def registered() -> Iterator[None]:
+    # Slices registered some of these names already (H3: claim, mark_provided, ship); put
+    # their definitions back afterwards instead of dropping them for later tests.
+    saved = actions.snapshot()
     for name in ("send_invitation", "send_next_mail", "cancel", "claim", "mark_provided", "ship"):
         actions.register(resource="service_requests", name=name, owner=OWNER)
     actions.register(
@@ -88,7 +91,7 @@ def registered() -> Iterator[None]:
         owner=OWNER,
     )
     yield
-    actions.unregister_owner(OWNER)
+    actions.restore(saved)
     guards.remove_owner(OWNER)
     authorizers.remove_owner(OWNER)
 

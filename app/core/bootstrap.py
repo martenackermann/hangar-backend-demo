@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 from datetime import timedelta
+from typing import Any
 
 import structlog
-from sqlalchemy import select
+from sqlalchemy import Column, exists, select
 
 from app.core.config import get_settings
-from app.core.db import open_session
+from app.core.db import Base, open_session
 from app.core.models import CORE_TABLES, StoredFile
 from app.core.timeutil import now_utc
 
@@ -20,24 +21,41 @@ _done = False
 KEEP_ON_RESET = {"deviation_codes"}
 
 
+def file_reference_columns() -> list[Column[Any]]:
+    """Every column, in core or slice tables, with a foreign key to ``stored_files.id``.
+
+    Read from the shared metadata so core never names a slice table.
+    """
+    return [
+        fk.parent
+        for table in Base.metadata.tables.values()
+        for fk in table.foreign_keys
+        if fk.column.table.name == StoredFile.__tablename__
+    ]
+
+
 async def files_cleanup(timestamp: int | None = None) -> int:
-    """``files.cleanup`` (daily 03:10 UTC): delete expired ``stored_files`` + their bytes."""
+    """``files.cleanup`` (daily 03:10 UTC): delete expired ``stored_files`` + their bytes.
+
+    Files that a row still references (import originals and error reports, labels,
+    protocols, ...) are kept even when they carry an expiry.
+    """
     from app.core.files import file_store
 
-    removed = 0
+    query = select(StoredFile).where(StoredFile.expires_at < now_utc() - timedelta(minutes=1))
+    for column in file_reference_columns():
+        query = query.where(~exists().where(column == StoredFile.id))
     async with open_session() as session:
-        expired = (
-            await session.scalars(
-                select(StoredFile).where(StoredFile.expires_at < now_utc() - timedelta(minutes=1))
-            )
-        ).all()
+        expired = (await session.scalars(query)).all()
+        keys = [row.storage_key for row in expired]
         for row in expired:
-            file_store().delete(row.storage_key)
             await session.delete(row)
-            removed += 1
         await session.commit()
-    log.info("files_cleanup", removed=removed)
-    return removed
+    # bytes go only after the rows are gone, so a failed commit never orphans a row
+    for key in keys:
+        file_store().delete(key)
+    log.info("files_cleanup", removed=len(keys))
+    return len(keys)
 
 
 def register_core() -> None:

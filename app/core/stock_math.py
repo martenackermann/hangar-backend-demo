@@ -82,6 +82,23 @@ WHERE ass.id = base.id
 """
 
 
+ENSURE_SITE_SETTINGS_SQL = """
+INSERT INTO article_site_settings (article_id, site_id)
+SELECT :article_id, s.id FROM sites s WHERE s.kind = 'hub'
+ON CONFLICT (article_id, site_id) DO NOTHING
+"""
+
+
+async def ensure_article_site_settings(session: AsyncSession, article_id: int) -> int:
+    """SPEC §5.1 (articles): give a new article one ``article_site_settings`` row per hub.
+
+    Call it right after creating an article (admin form, import). Idempotent: existing rows
+    are left untouched. Returns the number of rows inserted. No commit.
+    """
+    result = await session.execute(text(ENSURE_SITE_SETTINGS_SQL), {"article_id": article_id})
+    return result.rowcount or 0  # pyright: ignore[reportAttributeAccessIssue]
+
+
 async def recalculate(session: AsyncSession, now: datetime) -> RecalculationResult:
     """Full set-based recompute into ``article_site_settings`` (no commit)."""
     result = await session.execute(text(RECALC_SQL), {"now": now})

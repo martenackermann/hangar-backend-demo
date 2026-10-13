@@ -369,6 +369,24 @@ async def test_system_close_uses_reason(db_session: AsyncSession) -> None:
     assert lease.closed_at is not None
 
 
+async def test_close_keeps_reason_set_by_caller(db_session: AsyncSession) -> None:
+    """H4 collection sets `close_reason` itself and closes with a human-readable comment."""
+    lease = await make_lease(
+        db_session, status=LR.REPLACEMENT_ORDERED, sr=await f.make_sr(db_session)
+    )
+    lease.close_reason = "device_collected"
+    await transition_service.apply(
+        db_session,
+        lease,
+        "close",
+        actor=None,
+        trigger=Trigger.SYSTEM,
+        comment="Device collected on site (SR0012345).",
+    )
+    assert lease.close_reason == "device_collected"
+    assert lease.closed_at is not None
+
+
 async def test_system_close_reason_from_payload(db_session: AsyncSession) -> None:
     """H5 deactivation: SYSTEM close with `closeReason` in the payload (no comment)."""
     lease = await make_lease(db_session, status=LR.INFO_SENT)

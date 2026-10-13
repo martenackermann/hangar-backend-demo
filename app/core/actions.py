@@ -161,6 +161,14 @@ class ActionRegistry:
             if definition.owner == owner:
                 del self._actions[key]
 
+    def snapshot(self) -> dict[tuple[str, str], ActionDef]:
+        """Copy of the current registrations (tests put it back with :meth:`restore`)."""
+        return dict(self._actions)
+
+    def restore(self, snapshot: dict[tuple[str, str], ActionDef]) -> None:
+        """Reinstate registrations taken with :meth:`snapshot`, dropping anything added since."""
+        self._actions = dict(snapshot)
+
     # --- availability -------------------------------------------------------------------------
 
     async def available(

@@ -1,0 +1,34 @@
+<p>{{ salutation(gender, first_name, last_name) }},</p>
+<p>Your new hardware for order <strong>{{ sr_number }}</strong> has left our hub and is on its way with the parcel carrier.</p>
+{% if items %}
+<p style="margin-bottom:4px;"><strong>In the parcel</strong></p>
+<ul style="margin-top:0;">
+{% for item in items %}
+  <li>{{ item.name }}{% if item.tag %} ({{ item.tag }}){% endif %}</li>
+{% endfor %}
+</ul>
+{% endif %}
+<p style="margin-bottom:4px;"><strong>Track your {{ "parcels" if tracking_urls | length > 1 else "parcel" }}</strong></p>
+<ul style="margin-top:0;">
+{% for url in tracking_urls %}
+  <li><a href="{{ url }}" style="color:#1f3a5f;">{{ url }}</a></li>
+{% endfor %}
+</ul>
+<p style="margin-bottom:4px;"><strong>{{ "Pickup point" if pickup_point else "Delivery address" }}</strong></p>
+<p style="margin-top:0;">
+  {{ recipient_name }}<br>
+  {% if name2 %}{{ name2 }}<br>{% endif %}
+  {{ street }}<br>
+  {{ zip }} {{ city }}{% if country %}<br>{{ country }}{% endif %}
+</p>
+{% if pickup_point %}
+<p>Please collect the parcel at the pickup point and bring your ID.</p>
+{% endif %}
+{% if return_tracking_urls %}
+<p><strong>Returning your old device</strong><br>
+A return label for your old {{ "devices" if return_tracking_urls | length > 1 else "device" }} is in the parcel. Please use the box of the new hardware, attach the return label and hand it to the technician at your appointment.</p>
+{% endif %}
+{% if appointment_start_at %}
+<p>Your appointment with our technician is on <strong>{{ appointment_start_at | datetime }}</strong>. The technician will set up the new device and take care of the handover.</p>
+{% endif %}
+<p>Shipment reference: {{ carrier_shipment_id }}</p>

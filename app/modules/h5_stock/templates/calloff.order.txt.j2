@@ -1,0 +1,19 @@
+Dear Initech Logistics team,
+
+please deliver the following hardware for {{ client_name }} to {{ site_name }} ({{ site_address }}) on {{ delivery_date | date }}.
+
+{% for line in lines %}
+- {{ line.article_number }}  {{ line.name }} ({{ line.model_number }}): {{ line.quantity }}
+{% endfor %}
+Total: {{ total_quantity }}
+{% if note %}
+
+Note: {{ note }}
+{% endif %}
+
+The order is attached as spreadsheet and PDF (order number {{ order_number }}).
+Please confirm the delivery date by replying to this mail.
+
+Kind regards,
+{{ sender_name }}
+{{ operator_name }}

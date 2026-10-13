@@ -1,0 +1,17 @@
+<p>Hello team,</p>
+<p>the inventory of <strong>{{ site_name }}</strong> (#{{ inventory_id }}) was closed by {{ closed_by }}
+with count date <strong>{{ count_date | date }}</strong>.</p>
+<table role="presentation" cellpadding="4" cellspacing="0" style="border-collapse:collapse;font-size:14px;">
+  <tr><td>Expected</td><td style="text-align:right;"><strong>{{ expected }}</strong></td></tr>
+  <tr><td>Matched</td><td style="text-align:right;">{{ matched }}</td></tr>
+  <tr><td>Missing</td><td style="text-align:right;"><strong>{{ missing }}</strong></td></tr>
+  <tr><td>Wrong location</td><td style="text-align:right;">{{ wrong_location }}</td></tr>
+  <tr><td>Unknown serials</td><td style="text-align:right;">{{ unknown }}</td></tr>
+</table>
+{% if apply_corrections %}
+<p>Corrections were applied: {{ corrected }} asset records updated (missing devices marked missing, misplaced devices moved to where they were scanned).</p>
+{% else %}
+<p>Corrections were <strong>not</strong> applied; the asset records are unchanged.</p>
+{% endif %}
+<p>The missing, wrong-location and unknown lists are attached as CSV files.
+Details: <a href="{{ frontend_url }}/stock/inventory/{{ inventory_id }}">{{ frontend_url }}/stock/inventory/{{ inventory_id }}</a></p>

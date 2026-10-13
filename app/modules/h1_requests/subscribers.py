@@ -212,14 +212,18 @@ async def _lease_effects(session: AsyncSession, lease: LeaseReturn, event: Trans
             )
     elif action == "close":
         payload = event.payload or {}
-        # H5 deactivation closes as SYSTEM with `closeReason: device_deactivated`.
+        # Reason precedence: payload `closeReason` (H5 deactivation: `device_deactivated`) →
+        # a reason the caller already set in this transaction (H4 collection:
+        # `device_collected`, with a human comment) → the comment → "Closed manually".
+        # `reopen` clears both fields, so a value set here always comes from the caller.
         reason = (
             payload.get("closeReason")
             or payload.get("close_reason")
+            or lease.close_reason
             or event.comment
             or "Closed manually"
         )
-        lease.closed_at = now_utc()
+        lease.closed_at = lease.closed_at or now_utc()
         lease.close_reason = str(reason)[:200]
     elif action == "reopen":
         lease.closed_at = None
