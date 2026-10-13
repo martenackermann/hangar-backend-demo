@@ -29,7 +29,7 @@ from app.core.enums import (
     Trigger,
 )
 from app.core.gateways.protocols import BookingProvider, BookingProviderError, ProviderAppointment
-from app.core.models import BackgroundJob, Region, ServiceRequest, StatusTransition, User
+from app.core.models import BackgroundJob, Region, ServiceRequest, User
 from app.core.services import set_appointment
 from app.core.timeutil import business_today, now_utc
 from app.core.transitions import transition_service
@@ -67,7 +67,7 @@ async def upcoming_counts(session: AsyncSession) -> dict[int, int]:
         )
         .group_by(Appointment.calendar_id)
     )
-    return dict(rows.tuples().all())
+    return dict(rows.all())
 
 
 def build_calendar(calendar: BookingCalendar, upcoming: int) -> BookingCalendarOut:
@@ -97,7 +97,7 @@ async def build_appointments(
                 ServiceRequest.id.in_(sr_ids)
             )
         )
-        srs = {sr_id: (number, status) for sr_id, number, status in result.tuples()}
+        srs = {sr_id: (number, status) for sr_id, number, status in result.all()}
     out: list[AppointmentOut] = []
     for row in rows:
         sr = srs.get(row.service_request_id) if row.service_request_id is not None else None
@@ -163,16 +163,6 @@ async def sr_by_number(session: AsyncSession, number: str) -> ServiceRequest | N
     ).first()
 
 
-async def last_reschedule_at(session: AsyncSession, sr_id: int) -> datetime | None:
-    return await session.scalar(
-        select(func.max(StatusTransition.occurred_at)).where(
-            StatusTransition.entity_type == "service_request",
-            StatusTransition.entity_id == sr_id,
-            StatusTransition.to_status == SR.RESCHEDULE_NEEDED,
-        )
-    )
-
-
 def _ranking(row: Appointment) -> tuple[datetime, datetime]:
     return (row.booked_at or row.created_at or row.start_at, row.start_at)
 
@@ -199,17 +189,15 @@ async def reconcile_sr(
         ).all()
     )
     current = next((r for r in rows if r.is_current), None)
-    rescheduled_at = await last_reschedule_at(session, sr.id)
 
     def usable(row: Appointment) -> bool:
         if row.status != APPT.BOOKED or row.superseded_at is not None:
             return False
         if row is current and sr.status in WITH_APPT:
             return True
-        if row.start_at <= now:
-            return False  # SPEC_RESOLUTIONS #7: ignore past appointments
-        booked = row.booked_at or row.created_at
-        return rescheduled_at is None or booked is None or booked > rescheduled_at
+        # SPEC_RESOLUTIONS #7: ignore past appointments; bookings that existed at the last
+        # reschedule are superseded by ``reschedule_effects``
+        return row.start_at > now
 
     candidates = [r for r in rows if usable(r)]
     best = max(candidates, key=_ranking) if candidates else None

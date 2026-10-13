@@ -220,7 +220,7 @@ async def build_tour_detail(
         notes=tour.notes,
         started_at=tour.started_at,
         finished_at=tour.finished_at,
-        stops=[build_stop(s) for s in tour.stops],
+        stops=[build_stop(s) for s in sorted(tour.stops, key=lambda s: s.position)],
         warnings=warnings if warnings is not None else await tour_warnings(session, tour),
         version=tour.version,
     )
@@ -292,9 +292,7 @@ async def candidate_srs(
                     TourStop.outcome == OUT.PENDING
                 )
             )
-        )
-        .tuples()
-        .all()
+        ).all()
     )
     tour_id = tour.id if tour is not None else None
     result: list[tuple[ServiceRequest, int | None]] = []
@@ -436,7 +434,14 @@ async def create_tour(
     session.add(tour)
     srs = await _resolve_stop_srs(session, tour, calendar.id, tour_date, service_request_ids)
     for position, sr in enumerate(srs, start=1):
-        tour.stops.append(TourStop(service_request=sr, service_request_id=sr.id, position=position))
+        tour.stops.append(
+            TourStop(
+                service_request=sr,
+                service_request_id=sr.id,
+                position=position,
+                outcome=OUT.PENDING,
+            )
+        )
     await session.flush()
     if technician is not None:
         await notify_assigned(session, tour, actor)
@@ -502,7 +507,9 @@ async def set_stops(
     for sr in srs:
         stop = current.pop(sr.id, None)
         if stop is None:
-            stop = TourStop(service_request=sr, service_request_id=sr.id, position=0)
+            stop = TourStop(
+                service_request=sr, service_request_id=sr.id, position=0, outcome=OUT.PENDING
+            )
             tour.stops.append(stop)
         order.append(stop)
     for stop in current.values():

@@ -106,7 +106,9 @@ class BookingSyncState(TimestampMixin, Base):
     __tablename__ = "booking_sync_state"
     __table_args__ = (CheckConstraint("id = 1", name="ck_booking_sync_state_singleton"),)
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, default=1, sort_order=-100)
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=False, default=1, sort_order=-100
+    )
     sync_token: Mapped[str | None] = mapped_column(String(200))
     last_full_sync_at: Mapped[datetime | None]
     last_incremental_sync_at: Mapped[datetime | None]

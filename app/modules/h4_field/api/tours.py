@@ -273,7 +273,7 @@ async def overview(
             Appointment.start_at < business_datetime(end + timedelta(days=1)),
         )
     )
-    for calendar_id, start_at in rows.tuples():
+    for calendar_id, start_at in rows.all():
         counts[(calendar_id, to_business_date(start_at))] += 1
 
     tours = (

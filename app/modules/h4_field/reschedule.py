@@ -3,16 +3,25 @@
 
 from __future__ import annotations
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.assets import asset_service
-from app.core.enums import AssetAction, AssetStatus, ServiceRequestStatus, TourStopOutcome, Trigger
+from app.core.enums import (
+    AppointmentStatus,
+    AssetAction,
+    AssetStatus,
+    ServiceRequestStatus,
+    TourStopOutcome,
+    Trigger,
+)
 from app.core.loading import ensure_loaded
 from app.core.models import ServiceRequest, User
 from app.core.services import clear_appointment
 from app.core.timeutil import now_utc
 
 from .common import current_appointment
+from .models import Appointment
 from .tours import release_pending_stop
 
 SR = ServiceRequestStatus
@@ -45,7 +54,26 @@ async def reschedule_effects(
     else:
         sr.resume_status = SR(from_status)
     clear_appointment(session, sr)
+    await supersede_all(session, sr.id)
     await release_pending_stop(session, sr.id, TourStopOutcome.RESCHEDULED)
+
+
+async def supersede_all(session: AsyncSession, sr_id: int) -> None:
+    """SPEC_RESOLUTIONS #7: bookings that exist when the SR is rescheduled never become
+    current again (the sync ignores superseded appointments)."""
+    rows = (
+        await session.scalars(
+            select(Appointment).where(
+                Appointment.service_request_id == sr_id,
+                Appointment.status == AppointmentStatus.BOOKED,
+                Appointment.superseded_at.is_(None),
+            )
+        )
+    ).all()
+    now = now_utc()
+    for row in rows:
+        row.is_current = False
+        row.superseded_at = now
 
 
 async def supersede_current(session: AsyncSession, sr_id: int) -> None:

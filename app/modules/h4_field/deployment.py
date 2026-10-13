@@ -12,6 +12,7 @@ from app.core.assets import asset_service
 from app.core.auth import can
 from app.core.enums import (
     LR_TERMINAL,
+    NEW_SLOTS,
     OLD_SLOTS,
     AssetAction,
     AssetSource,
@@ -268,7 +269,7 @@ async def scan(
                 )
                 .where(
                     ServiceRequestItem.asset_id == asset.id,
-                    ServiceRequestItem.slot.like("new_%"),
+                    ServiceRequestItem.slot.in_(NEW_SLOTS),
                     ServiceRequest.id != sr.id,
                 )
                 .order_by(ServiceRequest.id.desc())
@@ -386,7 +387,6 @@ async def register_unknown(
         article_id=article.id if article else None,
         source=AssetSource.TECHNICIAN_SCAN,
     )
-    session.add(asset)
     await asset_service.move(
         session,
         asset,
