@@ -5219,6 +5219,2140 @@
           }
         }
       }
+    },
+    "/api/v1/scan/installation-place": {
+      "post": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "Scan a serial onto an installation place",
+        "operationId": "staging-scan_installation_place",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstallationPlaceScanIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanResult_AssetSummary_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/scan/installation-place/undo": {
+      "post": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "Undo an installation place scan",
+        "operationId": "staging-undo_installation_place",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstallationPlaceUndoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanResult_AssetSummary_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/staging/installation-places": {
+      "get": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "Occupied installation places",
+        "operationId": "staging-list_installation_places",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Siteid"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 20
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Place prefix",
+              "title": "Q"
+            },
+            "description": "Place prefix"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_InstallationPlaceOccupancy_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/personalization/queue": {
+      "get": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "Personalization queue (appointment order)",
+        "operationId": "staging-personalization_queue",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "Supplying hub (required).",
+              "title": "Siteid"
+            },
+            "description": "Supplying hub (required)."
+          },
+          {
+            "name": "appointmentFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Appointmentfrom"
+            }
+          },
+          {
+            "name": "appointmentTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Appointmentto"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: appointmentStartAt, number, claimedAt. Default: appointmentStartAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: appointmentStartAt, number, claimedAt. Default: appointmentStartAt."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "appointment_booked, personalization_in_progress (default both)",
+              "title": "Status"
+            },
+            "description": "appointment_booked, personalization_in_progress (default both)"
+          },
+          {
+            "name": "editorId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "me | none | user id",
+              "title": "Editorid"
+            },
+            "description": "me | none | user id"
+          },
+          {
+            "name": "regionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Regionid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "procurementType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: replacement, new_hire, additional_device, removal.",
+              "title": "Procurementtype"
+            },
+            "description": "Comma-separated: replacement, new_hire, additional_device, removal."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_PersonalizationQueueItem_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/asset-candidates": {
+      "get": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "FIFO asset candidates for a new item",
+        "operationId": "staging-asset_candidates",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          },
+          {
+            "name": "slot",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ItemSlot"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetCandidates"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/items/{slot}/assignment": {
+      "post": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "Assign a stocked device to a new item by scanning its serial",
+        "operationId": "staging-assign_item",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          },
+          {
+            "name": "slot",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ItemSlot"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignmentIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanResult_ServiceRequestItemOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "Unassign the device of a new item",
+        "operationId": "staging-unassign_item",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          },
+          {
+            "name": "slot",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ItemSlot"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRequestItemOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/staging": {
+      "patch": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "Staging options (OS reinstall, added software)",
+        "operationId": "staging-patch_staging",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StagingPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRequestDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/software-checklist": {
+      "get": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "Software checklist",
+        "operationId": "staging-get_software_checklist",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoftwareChecklistOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "Save the software checklist",
+        "operationId": "staging-put_software_checklist",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SoftwareChecklistIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoftwareChecklistOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/order-closing/queue": {
+      "get": {
+        "tags": [
+          "staging"
+        ],
+        "summary": "Orders waiting for closing",
+        "operationId": "staging-order_closing_queue",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "Supplying hub (required).",
+              "title": "Siteid"
+            },
+            "description": "Supplying hub (required)."
+          },
+          {
+            "name": "appointmentFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Appointmentfrom"
+            }
+          },
+          {
+            "name": "appointmentTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Appointmentto"
+            }
+          },
+          {
+            "name": "checklistComplete",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Checklistcomplete"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: appointmentStartAt, number. Default: appointmentStartAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: appointmentStartAt, number. Default: appointmentStartAt."
+          },
+          {
+            "name": "regionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Regionid"
+            },
+            "description": "Comma-separated ids."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_OrderClosingQueueItem_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/picking/technician": {
+      "get": {
+        "tags": [
+          "fulfilment"
+        ],
+        "summary": "Technician picking list for a hub and date",
+        "operationId": "fulfilment-technician_picking",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Siteid"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Default: today",
+              "title": "Date"
+            },
+            "description": "Default: today"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicianPicking"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/picking/parcel": {
+      "get": {
+        "tags": [
+          "fulfilment"
+        ],
+        "summary": "Parcel orders ready for packing",
+        "operationId": "fulfilment-parcel_picking",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Siteid"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "appointmentTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Appointmentto"
+            }
+          },
+          {
+            "name": "deliveryType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: technician, parcel_to_user, parcel_to_pickup_point.",
+              "title": "Deliverytype"
+            },
+            "description": "Comma-separated: technician, parcel_to_user, parcel_to_pickup_point."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_ParcelPickingItem_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scan/parcel": {
+      "post": {
+        "tags": [
+          "fulfilment"
+        ],
+        "summary": "Packing scan for a parcel order",
+        "operationId": "fulfilment-scan_parcel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParcelScanIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanResult_ServiceRequestItemOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/items/{slot}/packing": {
+      "delete": {
+        "tags": [
+          "fulfilment"
+        ],
+        "summary": "Remove the packed mark of a new item",
+        "operationId": "fulfilment-unpack_item",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          },
+          {
+            "name": "slot",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ItemSlot"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRequestItemOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/shipments": {
+      "post": {
+        "tags": [
+          "fulfilment"
+        ],
+        "summary": "Create a parcel shipment (transition ship)",
+        "operationId": "fulfilment-create_shipment",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/ShipmentCreate"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentCreated"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "fulfilment"
+        ],
+        "summary": "Shipments of a service request",
+        "operationId": "fulfilment-sr_shipments",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_ShipmentOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/shipments": {
+      "get": {
+        "tags": [
+          "fulfilment"
+        ],
+        "summary": "Shipments (newest first)",
+        "operationId": "fulfilment-list_shipments",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ShipmentOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/shipments/{shipment_id}/label": {
+      "get": {
+        "tags": [
+          "fulfilment"
+        ],
+        "summary": "Download link for a shipment's label PDF",
+        "operationId": "fulfilment-shipment_label",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "shipment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Shipment Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5854,6 +7988,95 @@
         ],
         "title": "AssetAction"
       },
+      "AssetCandidate": {
+        "properties": {
+          "asset": {
+            "$ref": "#/components/schemas/AssetSummary"
+          },
+          "checkedInAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checkedinat"
+          },
+          "ageDays": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agedays"
+          },
+          "fifoRank": {
+            "type": "integer",
+            "title": "Fiforank"
+          }
+        },
+        "type": "object",
+        "required": [
+          "asset",
+          "checkedInAt",
+          "ageDays",
+          "fifoRank"
+        ],
+        "title": "AssetCandidate"
+      },
+      "AssetCandidates": {
+        "properties": {
+          "slot": {
+            "$ref": "#/components/schemas/ItemSlot"
+          },
+          "article": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArticleRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "site": {
+            "$ref": "#/components/schemas/SiteRef"
+          },
+          "suggestedAssetId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suggestedassetid"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/AssetCandidate"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slot",
+          "article",
+          "site",
+          "suggestedAssetId",
+          "data"
+        ],
+        "title": "AssetCandidates"
+      },
       "AssetDetail": {
         "properties": {
           "id": {
@@ -6336,6 +8559,22 @@
           "serviceRequest"
         ],
         "title": "AssetSummary"
+      },
+      "AssignmentIn": {
+        "properties": {
+          "serial": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Serial"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "serial"
+        ],
+        "title": "AssignmentIn"
       },
       "AttentionFlag": {
         "type": "string",
@@ -7905,6 +10144,69 @@
         ],
         "title": "ImportType"
       },
+      "InstallationPlaceOccupancy": {
+        "properties": {
+          "place": {
+            "type": "string",
+            "title": "Place"
+          },
+          "assets": {
+            "items": {
+              "$ref": "#/components/schemas/AssetSummary"
+            },
+            "type": "array",
+            "title": "Assets"
+          }
+        },
+        "type": "object",
+        "required": [
+          "place",
+          "assets"
+        ],
+        "title": "InstallationPlaceOccupancy"
+      },
+      "InstallationPlaceScanIn": {
+        "properties": {
+          "siteId": {
+            "type": "integer",
+            "title": "Siteid"
+          },
+          "serial": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Serial"
+          },
+          "place": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 1,
+            "title": "Place"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "siteId",
+          "serial",
+          "place"
+        ],
+        "title": "InstallationPlaceScanIn"
+      },
+      "InstallationPlaceUndoIn": {
+        "properties": {
+          "movementId": {
+            "type": "integer",
+            "title": "Movementid"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "movementId"
+        ],
+        "title": "InstallationPlaceUndoIn"
+      },
       "ItemSlot": {
         "type": "string",
         "enum": [
@@ -8521,6 +10823,38 @@
         ],
         "title": "ImportTemplateList"
       },
+      "ListResponse_InstallationPlaceOccupancy_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/InstallationPlaceOccupancy"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "InstallationPlaceOccupancyList"
+      },
+      "ListResponse_ParcelPickingItem_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ParcelPickingItem"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "ParcelPickingItemList"
+      },
       "ListResponse_Persona_": {
         "properties": {
           "data": {
@@ -8584,6 +10918,22 @@
           "data"
         ],
         "title": "SavedViewOutList"
+      },
+      "ListResponse_ShipmentOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ShipmentOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "ShipmentOutList"
       },
       "ListResponse_SiteOut_": {
         "properties": {
@@ -8944,6 +11294,253 @@
         ],
         "title": "NormalizedInputOut"
       },
+      "OrderClosingQueueItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "taskNumber": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasknumber"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStage"
+          },
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/ContactRef"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supplyingSite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deliveryType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "procurementType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcurementType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "newItemTypes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Newitemtypes"
+          },
+          "appointmentStartAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentstartat"
+          },
+          "appointmentEndAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentendat"
+          },
+          "appointmentCalendarId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarid"
+          },
+          "appointmentCalendarName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarname"
+          },
+          "communicationDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationdate"
+          },
+          "communicationPaused": {
+            "type": "boolean",
+            "title": "Communicationpaused"
+          },
+          "communicationResumeDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationresumedate"
+          },
+          "editor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "importedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Importedat"
+          },
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/AttentionFlag"
+            },
+            "type": "array",
+            "title": "Attention"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ServiceRequestItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "checklist": {
+            "$ref": "#/components/schemas/SoftwareChecklistOut"
+          },
+          "osReinstall": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OsReinstallTiming"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "taskNumber",
+          "status",
+          "stage",
+          "statusChangedAt",
+          "contact",
+          "region",
+          "supplyingSite",
+          "deliveryType",
+          "isCampus",
+          "isVip",
+          "procurementType",
+          "newItemTypes",
+          "appointmentStartAt",
+          "appointmentEndAt",
+          "appointmentCalendarId",
+          "appointmentCalendarName",
+          "communicationDate",
+          "communicationPaused",
+          "communicationResumeDate",
+          "editor",
+          "importedAt",
+          "attention",
+          "availableActions",
+          "items",
+          "checklist",
+          "osReinstall"
+        ],
+        "title": "OrderClosingQueueItem"
+      },
       "OsReinstallTiming": {
         "type": "string",
         "enum": [
@@ -9040,6 +11637,333 @@
         ],
         "title": "ImportRowIssuePage"
       },
+      "Page_OrderClosingQueueItem_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/OrderClosingQueueItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "OrderClosingQueueItemPage"
+      },
+      "Page_PersonalizationQueueItem_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/PersonalizationQueueItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "PersonalizationQueueItemPage"
+      },
+      "Page_ShipmentOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ShipmentOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "ShipmentOutPage"
+      },
+      "ParcelPickingItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "taskNumber": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasknumber"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStage"
+          },
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/ContactRef"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supplyingSite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deliveryType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "procurementType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcurementType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "newItemTypes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Newitemtypes"
+          },
+          "appointmentStartAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentstartat"
+          },
+          "appointmentEndAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentendat"
+          },
+          "appointmentCalendarId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarid"
+          },
+          "appointmentCalendarName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarname"
+          },
+          "communicationDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationdate"
+          },
+          "communicationPaused": {
+            "type": "boolean",
+            "title": "Communicationpaused"
+          },
+          "communicationResumeDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationresumedate"
+          },
+          "editor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "importedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Importedat"
+          },
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/AttentionFlag"
+            },
+            "type": "array",
+            "title": "Attention"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ServiceRequestItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "allPacked": {
+            "type": "boolean",
+            "title": "Allpacked"
+          },
+          "hasOldItems": {
+            "type": "boolean",
+            "title": "Hasolditems"
+          },
+          "shipTo": {
+            "$ref": "#/components/schemas/ShipTo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "taskNumber",
+          "status",
+          "stage",
+          "statusChangedAt",
+          "contact",
+          "region",
+          "supplyingSite",
+          "deliveryType",
+          "isCampus",
+          "isVip",
+          "procurementType",
+          "newItemTypes",
+          "appointmentStartAt",
+          "appointmentEndAt",
+          "appointmentCalendarId",
+          "appointmentCalendarName",
+          "communicationDate",
+          "communicationPaused",
+          "communicationResumeDate",
+          "editor",
+          "importedAt",
+          "attention",
+          "availableActions",
+          "items",
+          "allPacked",
+          "hasOldItems",
+          "shipTo"
+        ],
+        "title": "ParcelPickingItem"
+      },
+      "ParcelScanIn": {
+        "properties": {
+          "serviceRequestId": {
+            "type": "integer",
+            "title": "Servicerequestid"
+          },
+          "serial": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Serial"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "serviceRequestId",
+          "serial"
+        ],
+        "title": "ParcelScanIn"
+      },
       "PermissionDef": {
         "properties": {
           "key": {
@@ -9130,6 +12054,301 @@
           "email"
         ],
         "title": "PersonaLoginRequest"
+      },
+      "PersonalizationQueueItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "taskNumber": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasknumber"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStage"
+          },
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/ContactRef"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supplyingSite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deliveryType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "procurementType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcurementType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "newItemTypes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Newitemtypes"
+          },
+          "appointmentStartAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentstartat"
+          },
+          "appointmentEndAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentendat"
+          },
+          "appointmentCalendarId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarid"
+          },
+          "appointmentCalendarName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarname"
+          },
+          "communicationDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationdate"
+          },
+          "communicationPaused": {
+            "type": "boolean",
+            "title": "Communicationpaused"
+          },
+          "communicationResumeDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationresumedate"
+          },
+          "editor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "importedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Importedat"
+          },
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/AttentionFlag"
+            },
+            "type": "array",
+            "title": "Attention"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ServiceRequestItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "stockHints": {
+            "items": {
+              "$ref": "#/components/schemas/StockHint"
+            },
+            "type": "array",
+            "title": "Stockhints"
+          },
+          "allNewItemsAssigned": {
+            "type": "boolean",
+            "title": "Allnewitemsassigned"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "taskNumber",
+          "status",
+          "stage",
+          "statusChangedAt",
+          "contact",
+          "region",
+          "supplyingSite",
+          "deliveryType",
+          "isCampus",
+          "isVip",
+          "procurementType",
+          "newItemTypes",
+          "appointmentStartAt",
+          "appointmentEndAt",
+          "appointmentCalendarId",
+          "appointmentCalendarName",
+          "communicationDate",
+          "communicationPaused",
+          "communicationResumeDate",
+          "editor",
+          "importedAt",
+          "attention",
+          "availableActions",
+          "items",
+          "stockHints",
+          "allNewItemsAssigned"
+        ],
+        "title": "PersonalizationQueueItem"
+      },
+      "PickingCalendar": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "PickingCalendar"
+      },
+      "PickingTotals": {
+        "properties": {
+          "toPick": {
+            "type": "integer",
+            "title": "Topick"
+          },
+          "picked": {
+            "type": "integer",
+            "title": "Picked"
+          }
+        },
+        "type": "object",
+        "required": [
+          "toPick",
+          "picked"
+        ],
+        "title": "PickingTotals"
       },
       "PickupPoint": {
         "properties": {
@@ -10325,6 +13544,172 @@
         ],
         "title": "ScanCodeValue"
       },
+      "ScanProgress": {
+        "properties": {
+          "done": {
+            "type": "integer",
+            "title": "Done"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "done",
+          "total"
+        ],
+        "title": "ScanProgress"
+      },
+      "ScanResult_AssetSummary_": {
+        "properties": {
+          "verdict": {
+            "$ref": "#/components/schemas/ScanVerdict"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "scannedValue": {
+            "type": "string",
+            "title": "Scannedvalue"
+          },
+          "applied": {
+            "type": "boolean",
+            "title": "Applied"
+          },
+          "entity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "undo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UndoLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "progress": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScanProgress"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "canRegister": {
+            "type": "boolean",
+            "title": "Canregister",
+            "default": false
+          },
+          "suggestedSlots": {
+            "items": {
+              "$ref": "#/components/schemas/ItemSlot"
+            },
+            "type": "array",
+            "title": "Suggestedslots"
+          }
+        },
+        "type": "object",
+        "required": [
+          "verdict",
+          "code",
+          "message",
+          "scannedValue",
+          "applied"
+        ],
+        "title": "ScanResult[AssetSummary]"
+      },
+      "ScanResult_ServiceRequestItemOut_": {
+        "properties": {
+          "verdict": {
+            "$ref": "#/components/schemas/ScanVerdict"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "scannedValue": {
+            "type": "string",
+            "title": "Scannedvalue"
+          },
+          "applied": {
+            "type": "boolean",
+            "title": "Applied"
+          },
+          "entity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ServiceRequestItemOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "undo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UndoLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "progress": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScanProgress"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "canRegister": {
+            "type": "boolean",
+            "title": "Canregister",
+            "default": false
+          },
+          "suggestedSlots": {
+            "items": {
+              "$ref": "#/components/schemas/ItemSlot"
+            },
+            "type": "array",
+            "title": "Suggestedslots"
+          }
+        },
+        "type": "object",
+        "required": [
+          "verdict",
+          "code",
+          "message",
+          "scannedValue",
+          "applied"
+        ],
+        "title": "ScanResult[ServiceRequestItemOut]"
+      },
       "ScanVerdict": {
         "type": "string",
         "enum": [
@@ -11220,6 +14605,182 @@
         ],
         "title": "ServiceRequestStatus"
       },
+      "ShipTo": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "user",
+              "pickup_point"
+            ],
+            "title": "Kind"
+          },
+          "recipientName": {
+            "type": "string",
+            "title": "Recipientname"
+          },
+          "name2": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name2"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "recipientName",
+          "name2",
+          "address"
+        ],
+        "title": "ShipTo"
+      },
+      "ShipmentCreate": {
+        "properties": {
+          "includeReturnLabel": {
+            "type": "boolean",
+            "title": "Includereturnlabel",
+            "default": true
+          },
+          "combinedParcel": {
+            "type": "boolean",
+            "title": "Combinedparcel",
+            "default": false
+          },
+          "sendConfirmation": {
+            "type": "boolean",
+            "title": "Sendconfirmation",
+            "default": true
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ShipmentCreate"
+      },
+      "ShipmentCreated": {
+        "properties": {
+          "shipment": {
+            "$ref": "#/components/schemas/ShipmentOut"
+          },
+          "serviceRequest": {
+            "$ref": "#/components/schemas/ServiceRequestDetail"
+          },
+          "label": {
+            "$ref": "#/components/schemas/DownloadLink"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "shipment",
+          "serviceRequest",
+          "label",
+          "warnings"
+        ],
+        "title": "ShipmentCreated"
+      },
+      "ShipmentOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "serviceRequest": {
+            "$ref": "#/components/schemas/SrRef"
+          },
+          "carrierShipmentId": {
+            "type": "string",
+            "title": "Carriershipmentid"
+          },
+          "parcelCount": {
+            "type": "integer",
+            "title": "Parcelcount"
+          },
+          "trackingUrls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Trackingurls"
+          },
+          "returnTrackingUrls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Returntrackingurls"
+          },
+          "includeReturnLabel": {
+            "type": "boolean",
+            "title": "Includereturnlabel"
+          },
+          "combinedParcel": {
+            "type": "boolean",
+            "title": "Combinedparcel"
+          },
+          "confirmationMailSent": {
+            "type": "boolean",
+            "title": "Confirmationmailsent"
+          },
+          "recipientName": {
+            "type": "string",
+            "title": "Recipientname"
+          },
+          "deliveryAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "serviceRequest",
+          "carrierShipmentId",
+          "parcelCount",
+          "trackingUrls",
+          "returnTrackingUrls",
+          "includeReturnLabel",
+          "combinedParcel",
+          "confirmationMailSent",
+          "recipientName",
+          "deliveryAddress",
+          "createdBy",
+          "createdAt"
+        ],
+        "title": "ShipmentOut"
+      },
       "SiteKind": {
         "type": "string",
         "enum": [
@@ -11353,6 +14914,78 @@
         ],
         "title": "SiteSettingPatch"
       },
+      "SoftwareChecklistIn": {
+        "properties": {
+          "installedSoftware": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Installedsoftware"
+          },
+          "addedSoftware": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Addedsoftware"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "installedSoftware",
+          "addedSoftware"
+        ],
+        "title": "SoftwareChecklistIn"
+      },
+      "SoftwareChecklistOut": {
+        "properties": {
+          "required": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Required"
+          },
+          "installed": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Installed"
+          },
+          "added": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Added"
+          },
+          "missing": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Missing"
+          },
+          "complete": {
+            "type": "boolean",
+            "title": "Complete"
+          }
+        },
+        "type": "object",
+        "required": [
+          "required",
+          "installed",
+          "added",
+          "missing",
+          "complete"
+        ],
+        "title": "SoftwareChecklistOut"
+      },
       "SrRef": {
         "properties": {
           "id": {
@@ -11370,6 +15003,89 @@
           "number"
         ],
         "title": "SrRef"
+      },
+      "StagingPatch": {
+        "properties": {
+          "osReinstall": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OsReinstallTiming"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "addedSoftware": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "maxItems": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Addedsoftware"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "StagingPatch",
+        "description": "``PATCH /service-requests/{id}/staging``.\n\nAPI.md defines ``osReinstall`` (+ ``version``); ``addedSoftware`` is accepted as a\nconvenience so the work panel can save both options in one call (same rules as\n``PUT …/software-checklist``). Omitted fields stay unchanged."
+      },
+      "StockHint": {
+        "properties": {
+          "slot": {
+            "$ref": "#/components/schemas/ItemSlot"
+          },
+          "article": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArticleRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "availableCount": {
+            "type": "integer",
+            "title": "Availablecount"
+          },
+          "suggested": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "slot",
+          "article",
+          "availableCount",
+          "suggested"
+        ],
+        "title": "StockHint"
       },
       "StockLocationOut": {
         "properties": {
@@ -11430,6 +15146,293 @@
           "site"
         ],
         "title": "StockLocationOut"
+      },
+      "TechnicianPicking": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "site": {
+            "$ref": "#/components/schemas/SiteRef"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/TechnicianPickingGroup"
+            },
+            "type": "array",
+            "title": "Groups"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/PickingTotals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "site",
+          "groups",
+          "totals"
+        ],
+        "title": "TechnicianPicking"
+      },
+      "TechnicianPickingGroup": {
+        "properties": {
+          "calendar": {
+            "$ref": "#/components/schemas/PickingCalendar"
+          },
+          "serviceRequests": {
+            "items": {
+              "$ref": "#/components/schemas/TechnicianPickingRow"
+            },
+            "type": "array",
+            "title": "Servicerequests"
+          }
+        },
+        "type": "object",
+        "required": [
+          "calendar",
+          "serviceRequests"
+        ],
+        "title": "TechnicianPickingGroup"
+      },
+      "TechnicianPickingRow": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "taskNumber": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasknumber"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStage"
+          },
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/ContactRef"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supplyingSite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deliveryType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "procurementType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcurementType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "newItemTypes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Newitemtypes"
+          },
+          "appointmentStartAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentstartat"
+          },
+          "appointmentEndAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentendat"
+          },
+          "appointmentCalendarId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarid"
+          },
+          "appointmentCalendarName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarname"
+          },
+          "communicationDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationdate"
+          },
+          "communicationPaused": {
+            "type": "boolean",
+            "title": "Communicationpaused"
+          },
+          "communicationResumeDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationresumedate"
+          },
+          "editor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "importedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Importedat"
+          },
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/AttentionFlag"
+            },
+            "type": "array",
+            "title": "Attention"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ServiceRequestItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "picked": {
+            "type": "boolean",
+            "title": "Picked"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "taskNumber",
+          "status",
+          "stage",
+          "statusChangedAt",
+          "contact",
+          "region",
+          "supplyingSite",
+          "deliveryType",
+          "isCampus",
+          "isVip",
+          "procurementType",
+          "newItemTypes",
+          "appointmentStartAt",
+          "appointmentEndAt",
+          "appointmentCalendarId",
+          "appointmentCalendarName",
+          "communicationDate",
+          "communicationPaused",
+          "communicationResumeDate",
+          "editor",
+          "importedAt",
+          "attention",
+          "availableActions",
+          "items",
+          "picked"
+        ],
+        "title": "TechnicianPickingRow"
       },
       "TemplateColumn": {
         "properties": {
@@ -11709,6 +15712,40 @@
           "system"
         ],
         "title": "Trigger"
+      },
+      "UndoLink": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "POST",
+              "DELETE"
+            ],
+            "title": "Method"
+          },
+          "href": {
+            "type": "string",
+            "title": "Href"
+          },
+          "body": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body"
+          }
+        },
+        "type": "object",
+        "required": [
+          "method",
+          "href"
+        ],
+        "title": "UndoLink"
       },
       "UserCreate": {
         "properties": {
