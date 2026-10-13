@@ -3,7 +3,7 @@ read models (SPEC_RESOLUTIONS #1); only H1-specific shapes are defined here."""
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Annotated, Any, Literal
 
 from pydantic import EmailStr, Field, field_validator
@@ -165,11 +165,23 @@ class PipelineStatusCount(ApiModel):
     attention_count: int
 
 
+class AgingSplit(ApiModel):
+    """Column aging bar (DESIGN.md §3.5): fresh ≤ 60 % of the stage SLA, aging ≤ 100 %, overdue."""
+
+    on_time: int
+    aging: int
+    overdue: int
+
+
 class PipelineStageSummary(ApiModel):
     stage: PipelineStage
     label: str
     count: int
     statuses: list[PipelineStatusCount]
+    #: additive: requests that entered this stage in the last 24 h (the flow chip "→ 37")
+    entered_last_24h: int = Field(default=0, alias="enteredLast24h")
+    #: additive: aging split of ``count`` against the stage SLA (DESIGN.md §3.5 defaults)
+    aging: AgingSplit = AgingSplit(on_time=0, aging=0, overdue=0)
 
 
 class PipelineTotals(ApiModel):
@@ -179,12 +191,24 @@ class PipelineTotals(ApiModel):
     completed_last_7_days: int
     cancelled_last_7_days: int
     appointments_today: int
+    #: additive: median days import → deployed of requests completed in the last 30 days
+    lead_time_days: float | None = None
+
+
+class PipelineTrends(ApiModel):
+    """Additive: 12 business days ending today, for the KPI sparklines."""
+
+    days: list[date]
+    open: list[int]
+    imported: list[int]
+    completed: list[int]
 
 
 class PipelineSummary(ApiModel):
     generated_at: datetime
     stages: list[PipelineStageSummary]
     totals: PipelineTotals
+    trends: PipelineTrends | None = None
 
 
 # --- communications --------------------------------------------------------------------------------

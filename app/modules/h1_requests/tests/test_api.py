@@ -384,6 +384,17 @@ async def test_pipeline_summary(client: AsyncClient, headers: Headers) -> None:
     assert totals["vipOpen"] >= 6
     assert totals["needsAttention"] > 0
     assert totals["appointmentsToday"] >= 5
+    for stage in summary["stages"]:
+        split = stage["aging"]
+        assert split["onTime"] + split["aging"] + split["overdue"] == stage["count"]
+        assert stage["enteredLast24h"] >= 0
+    assert summary["stages"][-1]["aging"]["onTime"] == summary["stages"][-1]["count"]  # no SLA
+    assert sum(s["enteredLast24h"] for s in summary["stages"]) > 0
+    trends = summary["trends"]
+    assert len(trends["days"]) == len(trends["open"]) == 12
+    assert trends["days"][-1] == business_today().isoformat()
+    assert trends["open"][-1] >= totals["open"]
+    assert totals["leadTimeDays"] > 0
     vip = await _get(client, headers, "/pipeline/summary?vip=include")
     assert vip["stages"][0]["statuses"][1]["count"] == 6
     riverton = await _get(client, headers, "/pipeline/summary?siteId=1")

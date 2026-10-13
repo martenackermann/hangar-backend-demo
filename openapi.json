@@ -5905,6 +5905,30 @@
         "type": "object",
         "title": "Address"
       },
+      "AgingSplit": {
+        "properties": {
+          "onTime": {
+            "type": "integer",
+            "title": "Ontime"
+          },
+          "aging": {
+            "type": "integer",
+            "title": "Aging"
+          },
+          "overdue": {
+            "type": "integer",
+            "title": "Overdue"
+          }
+        },
+        "type": "object",
+        "required": [
+          "onTime",
+          "aging",
+          "overdue"
+        ],
+        "title": "AgingSplit",
+        "description": "Column aging bar (DESIGN.md §3.5): fresh ≤ 60 % of the stage SLA, aging ≤ 100 %, overdue."
+      },
       "AppConfig": {
         "properties": {
           "appName": {
@@ -10564,6 +10588,19 @@
             },
             "type": "array",
             "title": "Statuses"
+          },
+          "enteredLast24h": {
+            "type": "integer",
+            "title": "Enteredlast24H",
+            "default": 0
+          },
+          "aging": {
+            "$ref": "#/components/schemas/AgingSplit",
+            "default": {
+              "onTime": 0,
+              "aging": 0,
+              "overdue": 0
+            }
           }
         },
         "type": "object",
@@ -10642,6 +10679,16 @@
           },
           "totals": {
             "$ref": "#/components/schemas/PipelineTotals"
+          },
+          "trends": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PipelineTrends"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -10677,6 +10724,17 @@
           "appointmentsToday": {
             "type": "integer",
             "title": "Appointmentstoday"
+          },
+          "leadTimeDays": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Leadtimedays"
           }
         },
         "type": "object",
@@ -10689,6 +10747,48 @@
           "appointmentsToday"
         ],
         "title": "PipelineTotals"
+      },
+      "PipelineTrends": {
+        "properties": {
+          "days": {
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "type": "array",
+            "title": "Days"
+          },
+          "open": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Open"
+          },
+          "imported": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Imported"
+          },
+          "completed": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Completed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "days",
+          "open",
+          "imported",
+          "completed"
+        ],
+        "title": "PipelineTrends",
+        "description": "Additive: 12 business days ending today, for the KPI sparklines."
       },
       "ProcurementType": {
         "type": "string",

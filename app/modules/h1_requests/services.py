@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from statistics import median
 from typing import Any
 
 from sqlalchemy import func, select
@@ -18,11 +19,19 @@ from app.core.enums import (
     stage_of,
 )
 from app.core.errors import ConflictError, ValidationProblem
-from app.core.models import Contact, LeaseReturn, LeaseReturnComment, Region, ServiceRequest, User
+from app.core.models import (
+    Contact,
+    LeaseReturn,
+    LeaseReturnComment,
+    Region,
+    ServiceRequest,
+    StatusTransition,
+    User,
+)
 from app.core.read_models import sr_needs_attention_clause
 from app.core.region_resolver import apply_lease_campus, apply_region, set_region_override
 from app.core.rules import normalize_cost_center, normalize_email, normalize_zip
-from app.core.timeutil import business_today, now_utc
+from app.core.timeutil import business_datetime, business_today, now_utc, to_business_date
 from app.core.transitions import check_version
 
 from .queries import (
@@ -34,12 +43,14 @@ from .queries import (
     status_meta,
 )
 from .schemas import (
+    AgingSplit,
     ContactPatch,
     LeaseReturnPatch,
     PipelineStageSummary,
     PipelineStatusCount,
     PipelineSummary,
     PipelineTotals,
+    PipelineTrends,
     ServiceRequestPatch,
 )
 
@@ -282,4 +293,109 @@ async def pipeline_summary(session: AsyncSession, filters: PipelineFilters) -> P
             business_date(ServiceRequest.appointment_start_at) == today,
         ),
     )
-    return PipelineSummary(generated_at=now, stages=stages, totals=totals)
+    await _board_extras(session, scope, stages, totals, today, now)
+    trends = await _trends(session, scope, today)
+    return PipelineSummary(generated_at=now, stages=stages, totals=totals, trends=trends)
+
+
+#: DESIGN.md §3.5 stage SLAs in days (the frontend mirrors them as ``STAGE_SLA_DAYS``).
+STAGE_SLA_DAYS: dict[PipelineStage, int | None] = {
+    PipelineStage.IMPORTED: 2,
+    PipelineStage.INVITED: 10,
+    PipelineStage.BOOKED: 14,
+    PipelineStage.PERSONALIZING: 3,
+    PipelineStage.READY: 2,
+    PipelineStage.DELIVERY: 3,
+    PipelineStage.DEPLOYED: 5,
+    PipelineStage.CLOSED: None,
+}
+
+
+def aging_level(stage: PipelineStage, since: datetime, now: datetime) -> str:
+    sla = STAGE_SLA_DAYS[stage]
+    if not sla:
+        return "on_time"
+    ratio = (now - since).total_seconds() / (sla * 86_400)
+    return "on_time" if ratio <= 0.6 else "aging" if ratio <= 1 else "overdue"
+
+
+async def _board_extras(
+    session: AsyncSession,
+    scope: list[Any],
+    stages: list[PipelineStageSummary],
+    totals: PipelineTotals,
+    today: date,
+    now: datetime,
+) -> None:
+    by_stage = {s.stage: s for s in stages}
+    rows = await session.execute(
+        select(ServiceRequest.status, ServiceRequest.status_changed_at).where(
+            *scope, recent_closed_clause(today)
+        )
+    )
+    splits: dict[PipelineStage, dict[str, int]] = {
+        stage: {"on_time": 0, "aging": 0, "overdue": 0} for stage in PipelineStage
+    }
+    for status, since in rows.all():
+        stage = stage_of(status)
+        splits[stage][aging_level(stage, since, now)] += 1
+    for stage, split in splits.items():
+        by_stage[stage].aging = AgingSplit(**split)
+
+    stage_case = {s.value: stage_of(s).value for s in SR}
+    entered = await session.execute(
+        select(StatusTransition.from_status, StatusTransition.to_status)
+        .join(ServiceRequest, ServiceRequest.id == StatusTransition.entity_id)
+        .where(
+            StatusTransition.entity_type == "service_request",
+            StatusTransition.occurred_at >= now - timedelta(hours=24),
+            *scope,
+        )
+    )
+    for from_status, to_status in entered.all():
+        to_stage = stage_case.get(to_status)
+        if to_stage is None or stage_case.get(from_status or "") == to_stage:
+            continue
+        by_stage[PipelineStage(to_stage)].entered_last_24h += 1
+
+    durations = (
+        await session.execute(
+            select(ServiceRequest.imported_at, ServiceRequest.completed_at).where(
+                *scope,
+                ServiceRequest.status == SR.COMPLETED,
+                ServiceRequest.completed_at >= now - timedelta(days=30),
+            )
+        )
+    ).all()
+    days = sorted(
+        (completed - imported).total_seconds() / 86_400
+        for imported, completed in durations
+        if imported and completed
+    )
+    totals.lead_time_days = round(median(days), 1) if days else None
+
+
+async def _trends(session: AsyncSession, scope: list[Any], today: date) -> PipelineTrends:
+    days = [today - timedelta(days=offset) for offset in range(11, -1, -1)]
+    rows = (
+        await session.execute(
+            select(
+                ServiceRequest.imported_at,
+                func.coalesce(ServiceRequest.completed_at, ServiceRequest.cancelled_at),
+                ServiceRequest.completed_at,
+            ).where(*scope)
+        )
+    ).all()
+    open_: list[int] = []
+    imported: list[int] = []
+    completed: list[int] = []
+    for day in days:
+        end = business_datetime(day + timedelta(days=1), 0)
+        open_.append(
+            sum(1 for imp, closed, _ in rows if imp < end and (closed is None or closed >= end))
+        )
+        imported.append(sum(1 for imp, _, _ in rows if to_business_date(imp) == day))
+        completed.append(
+            sum(1 for _, _, done in rows if done is not None and to_business_date(done) == day)
+        )
+    return PipelineTrends(days=days, open=open_, imported=imported, completed=completed)
