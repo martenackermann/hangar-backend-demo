@@ -268,7 +268,9 @@ async def test_bulk_mark_missing_and_correct(
     found = await client.post(f"{URL}/bulk/mark_found", headers=auth, json={"ids": [a_id]})
     assert found.status_code == 404  # not a bulk action
     moves = (
-        await db_session.scalars(select(AssetMovement).where(AssetMovement.asset_id == a_id))
+        await db_session.scalars(
+            select(AssetMovement).where(AssetMovement.asset_id == a_id).order_by(AssetMovement.id)
+        )
     ).all()
     assert [m.action for m in moves][-2:] == ["mark_missing", "correct"]
 
