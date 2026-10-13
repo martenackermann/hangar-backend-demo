@@ -1,0 +1,8 @@
+Hello {{ technician_first_name }},
+
+the tour {{ calendar_name }} on {{ tour_date | date }} is now assigned to you ({{ stop_count }} stops).
+{% for s in stops %}
+- {{ s.time | time if s.time else '--:--' }}  {{ s.sr_number }}  {{ s.town }}
+{% endfor %}
+
+Open My tour: {{ frontend_url }}{{ my_tour_path }}

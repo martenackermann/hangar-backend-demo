@@ -7353,6 +7353,2302 @@
           }
         }
       }
+    },
+    "/api/v1/booking-calendars": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Booking calendars",
+        "operationId": "field-list_calendars",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_BookingCalendarOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/booking-calendars/{calendar_id}": {
+      "patch": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Edit a booking calendar",
+        "operationId": "field-patch_calendar",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "calendar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Calendar Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingCalendarPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingCalendarOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/appointments": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Appointments",
+        "operationId": "field-list_appointments",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "name": "serviceRequestId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Servicerequestid"
+            }
+          },
+          {
+            "name": "unmatched",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Unmatched"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: startAt, bookedAt. Default: startAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: startAt, bookedAt. Default: startAt."
+          },
+          {
+            "name": "calendarId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Calendarid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: booked, cancelled.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: booked, cancelled."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AppointmentOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/appointments/sync": {
+      "post": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Run the appointment sync now",
+        "operationId": "field-sync_now",
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/appointments/sync-state": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Appointment sync state",
+        "operationId": "field-sync_state",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncStateOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/appointments/{appointment_id}/link": {
+      "post": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Link an unmatched appointment to a service request",
+        "operationId": "field-link",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Appointment Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentLinkBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/appointments": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Appointments of a service request",
+        "operationId": "field-sr_appointments",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_AppointmentOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tours": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Tours",
+        "operationId": "field-list_tours",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "name": "technicianId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "me | none | user id",
+              "title": "Technicianid"
+            },
+            "description": "me | none | user id"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: tourDate, calendar. Default: tourDate.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: tourDate, calendar. Default: tourDate."
+          },
+          {
+            "name": "calendarId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Calendarid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "regionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Regionid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: draft, planned, in_progress, completed, cancelled.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: draft, planned, in_progress, completed, cancelled."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_TourSummaryOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Create a tour",
+        "operationId": "field-post_tour",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TourCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourDetailOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tours/{tour_id}": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Tour",
+        "operationId": "field-get_tour",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "tour_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Tour Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourDetailOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Edit a tour",
+        "operationId": "field-patch_tour",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "tour_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Tour Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TourPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourDetailOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tours/{tour_id}/stops": {
+      "put": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Replace the ordered pending stops of a tour",
+        "operationId": "field-put_stops",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "tour_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Tour Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TourStopsPut"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourDetailOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tours/{tour_id}/actions/{action}": {
+      "post": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Run a tour action (start, finish, cancel)",
+        "operationId": "field-tour_action",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "tour_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Tour Id"
+            }
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Action"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/TourActionBody"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourDetailOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tour-planner/candidates": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Tour candidates for a route and day",
+        "operationId": "field-candidates",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "calendarId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Calendarid"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourCandidatesOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tour-planner/overview": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Week grid of routes, appointments and tours",
+        "operationId": "field-overview",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "name": "regionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Regionid"
+            },
+            "description": "Comma-separated ids."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourPlannerOverviewOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/my/tours": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "My tours on a day",
+        "operationId": "field-my_tours",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_TourDetailOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/tour-stops": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Tour stops of a service request",
+        "operationId": "field-sr_tour_stops",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_TourStopRef_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tours/{tour_id}/stops/{stop_id}/deployment": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Deployment view of a tour stop",
+        "operationId": "field-get_deployment",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "tour_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Tour Id"
+            }
+          },
+          {
+            "name": "stop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Stop Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeploymentViewOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scan/deployment": {
+      "post": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Deployment scan (verify a new or old device)",
+        "operationId": "field-scan_deployment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeploymentScanBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanResult_ServiceRequestItemOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/items/{slot}/verification": {
+      "delete": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Undo a deployment verification",
+        "operationId": "field-delete_verification",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          },
+          {
+            "name": "slot",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ItemSlot"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRequestItemOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/items/{slot}/register-unknown": {
+      "post": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Register an unknown old device found on site",
+        "operationId": "field-post_register_unknown",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          },
+          {
+            "name": "slot",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ItemSlot"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUnknownBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRequestItemOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/protocol": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Download link of the handover protocol",
+        "operationId": "field-get_protocol",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/protocol/send": {
+      "post": {
+        "tags": [
+          "field"
+        ],
+        "summary": "E-mail the handover protocol again",
+        "operationId": "field-post_protocol_send",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/ProtocolSendBody"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolQueued"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -7468,6 +9764,212 @@
           "limits"
         ],
         "title": "AppConfig"
+      },
+      "AppointmentLinkBody": {
+        "properties": {
+          "serviceRequestNumber": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 1,
+            "title": "Servicerequestnumber"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "serviceRequestNumber"
+        ],
+        "title": "AppointmentLinkBody"
+      },
+      "AppointmentOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "externalId": {
+            "type": "string",
+            "title": "Externalid"
+          },
+          "calendar": {
+            "$ref": "#/components/schemas/CalendarRef"
+          },
+          "serviceRequest": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AppointmentSrRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AppointmentStatus"
+          },
+          "startAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Startat"
+          },
+          "endAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Endat"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "contactName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contactname"
+          },
+          "contactEmail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contactemail"
+          },
+          "street": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Street"
+          },
+          "town": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Town"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "bookedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bookedat"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "sync",
+              "manual"
+            ],
+            "title": "Source"
+          },
+          "isCurrent": {
+            "type": "boolean",
+            "title": "Iscurrent"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "externalId",
+          "calendar",
+          "serviceRequest",
+          "reference",
+          "status",
+          "startAt",
+          "endAt",
+          "title",
+          "contactName",
+          "contactEmail",
+          "street",
+          "town",
+          "notes",
+          "bookedAt",
+          "source",
+          "isCurrent"
+        ],
+        "title": "AppointmentOut"
+      },
+      "AppointmentSrRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status"
+        ],
+        "title": "AppointmentSrRef"
+      },
+      "AppointmentStatus": {
+        "type": "string",
+        "enum": [
+          "booked",
+          "cancelled"
+        ],
+        "title": "AppointmentStatus"
       },
       "ArticleCategory": {
         "type": "string",
@@ -8789,6 +11291,125 @@
         ],
         "title": "Body_imports-upload_import"
       },
+      "BookingCalendarOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "externalId": {
+            "type": "string",
+            "title": "Externalid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "serviceIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Serviceids"
+          },
+          "calendarType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calendartype"
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "title": "Isenabled"
+          },
+          "syncedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Syncedat"
+          },
+          "upcomingAppointments": {
+            "type": "integer",
+            "title": "Upcomingappointments"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "externalId",
+          "name",
+          "region",
+          "serviceIds",
+          "calendarType",
+          "isEnabled",
+          "syncedAt",
+          "upcomingAppointments"
+        ],
+        "title": "BookingCalendarOut"
+      },
+      "BookingCalendarPatch": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "regionId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Regionid"
+          },
+          "isEnabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Isenabled"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "BookingCalendarPatch"
+      },
       "BulkFailure": {
         "properties": {
           "id": {
@@ -8839,6 +11460,53 @@
         ],
         "title": "BulkResult"
       },
+      "CalendarRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "CalendarRef"
+      },
+      "CalendarWithRegion": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "region"
+        ],
+        "title": "CalendarWithRegion"
+      },
       "CodeMessage": {
         "properties": {
           "code": {
@@ -8856,6 +11524,251 @@
           "message"
         ],
         "title": "CodeMessage"
+      },
+      "ContactAddress": {
+        "properties": {
+          "street": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Street"
+          },
+          "zip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zip"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "building": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Building"
+          },
+          "room": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Room"
+          }
+        },
+        "type": "object",
+        "required": [
+          "street",
+          "zip",
+          "city",
+          "building",
+          "room"
+        ],
+        "title": "ContactAddress"
+      },
+      "ContactDetail": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid"
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "department": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "openServiceRequests": {
+            "type": "integer",
+            "title": "Openservicerequests"
+          },
+          "openLeaseReturns": {
+            "type": "integer",
+            "title": "Openleasereturns"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "firstName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Firstname"
+          },
+          "lastName": {
+            "type": "string",
+            "title": "Lastname"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "mobile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mobile"
+          },
+          "address": {
+            "$ref": "#/components/schemas/ContactAddress"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive"
+          },
+          "vip": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContactVip"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "serviceRequests": {
+            "items": {
+              "$ref": "#/components/schemas/ContactSrRef"
+            },
+            "type": "array",
+            "title": "Servicerequests"
+          },
+          "leaseReturns": {
+            "items": {
+              "$ref": "#/components/schemas/ContactLeaseRef"
+            },
+            "type": "array",
+            "title": "Leasereturns"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "displayName",
+          "email",
+          "department",
+          "city",
+          "isVip",
+          "openServiceRequests",
+          "openLeaseReturns",
+          "gender",
+          "firstName",
+          "lastName",
+          "phone",
+          "mobile",
+          "address",
+          "isActive",
+          "vip",
+          "serviceRequests",
+          "leaseReturns"
+        ],
+        "title": "ContactDetail"
+      },
+      "ContactLeaseRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "assetTag": {
+            "type": "string",
+            "title": "Assettag"
+          },
+          "status": {
+            "$ref": "#/components/schemas/LeaseReturnStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "assetTag",
+          "status"
+        ],
+        "title": "ContactLeaseRef"
       },
       "ContactRef": {
         "properties": {
@@ -8891,6 +11804,53 @@
           "email"
         ],
         "title": "ContactRef"
+      },
+      "ContactSrRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status"
+        ],
+        "title": "ContactSrRef"
+      },
+      "ContactVip": {
+        "properties": {
+          "vipType": {
+            "type": "string",
+            "title": "Viptype"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vipType",
+          "title"
+        ],
+        "title": "ContactVip"
       },
       "DeliveryAddress": {
         "properties": {
@@ -8972,6 +11932,95 @@
           "parcel_to_pickup_point"
         ],
         "title": "DeliveryType"
+      },
+      "DeploymentProgress": {
+        "properties": {
+          "newVerified": {
+            "type": "integer",
+            "title": "Newverified"
+          },
+          "newTotal": {
+            "type": "integer",
+            "title": "Newtotal"
+          },
+          "oldVerified": {
+            "type": "integer",
+            "title": "Oldverified"
+          },
+          "oldTotal": {
+            "type": "integer",
+            "title": "Oldtotal"
+          }
+        },
+        "type": "object",
+        "required": [
+          "newVerified",
+          "newTotal",
+          "oldVerified",
+          "oldTotal"
+        ],
+        "title": "DeploymentProgress"
+      },
+      "DeploymentScanBody": {
+        "properties": {
+          "serviceRequestId": {
+            "type": "integer",
+            "title": "Servicerequestid"
+          },
+          "serial": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Serial"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "serviceRequestId",
+          "serial"
+        ],
+        "title": "DeploymentScanBody"
+      },
+      "DeploymentViewOut": {
+        "properties": {
+          "tour": {
+            "$ref": "#/components/schemas/TourSummaryOut"
+          },
+          "stop": {
+            "$ref": "#/components/schemas/TourStopOut"
+          },
+          "serviceRequest": {
+            "$ref": "#/components/schemas/ServiceRequestDetail"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/ContactDetail"
+          },
+          "workInstructions": {
+            "$ref": "#/components/schemas/WorkInstructions"
+          },
+          "deviationCodes": {
+            "items": {
+              "$ref": "#/components/schemas/DeviationCodeOut"
+            },
+            "type": "array",
+            "title": "Deviationcodes"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/DeploymentProgress"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tour",
+          "stop",
+          "serviceRequest",
+          "contact",
+          "workInstructions",
+          "deviationCodes",
+          "progress"
+        ],
+        "title": "DeploymentViewOut"
       },
       "DeviationCategory": {
         "type": "string",
@@ -9517,6 +12566,16 @@
           "mailer"
         ],
         "title": "GatewayBindings"
+      },
+      "Gender": {
+        "type": "string",
+        "enum": [
+          "female",
+          "male",
+          "diverse",
+          "unspecified"
+        ],
+        "title": "Gender"
       },
       "GenerateSampleIn": {
         "properties": {
@@ -10775,6 +13834,22 @@
         ],
         "title": "LinkedLeaseReturn"
       },
+      "ListResponse_AppointmentOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/AppointmentOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "AppointmentOutList"
+      },
       "ListResponse_BackgroundJobOut_": {
         "properties": {
           "data": {
@@ -10790,6 +13865,22 @@
           "data"
         ],
         "title": "BackgroundJobOutList"
+      },
+      "ListResponse_BookingCalendarOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/BookingCalendarOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "BookingCalendarOutList"
       },
       "ListResponse_DeviationCodeOut_": {
         "properties": {
@@ -10966,6 +14057,38 @@
           "data"
         ],
         "title": "StockLocationOutList"
+      },
+      "ListResponse_TourDetailOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/TourDetailOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "TourDetailOutList"
+      },
+      "ListResponse_TourStopRef_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/TourStopRef"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "TourStopRefList"
       },
       "ListResponse_UserSummary_": {
         "properties": {
@@ -11549,6 +14672,89 @@
         ],
         "title": "OsReinstallTiming"
       },
+      "OverviewCell": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "appointmentCount": {
+            "type": "integer",
+            "title": "Appointmentcount"
+          },
+          "plannedCount": {
+            "type": "integer",
+            "title": "Plannedcount"
+          },
+          "tour": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OverviewTour"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "appointmentCount",
+          "plannedCount",
+          "tour"
+        ],
+        "title": "OverviewCell"
+      },
+      "OverviewRow": {
+        "properties": {
+          "calendar": {
+            "$ref": "#/components/schemas/CalendarWithRegion"
+          },
+          "cells": {
+            "items": {
+              "$ref": "#/components/schemas/OverviewCell"
+            },
+            "type": "array",
+            "title": "Cells"
+          }
+        },
+        "type": "object",
+        "required": [
+          "calendar",
+          "cells"
+        ],
+        "title": "OverviewRow"
+      },
+      "OverviewTour": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TourStatus"
+          },
+          "technician": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "technician"
+        ],
+        "title": "OverviewTour"
+      },
       "PageMeta": {
         "properties": {
           "page": {
@@ -11576,6 +14782,26 @@
           "totalPages"
         ],
         "title": "PageMeta"
+      },
+      "Page_AppointmentOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/AppointmentOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "AppointmentOutPage"
       },
       "Page_ArticleOut_": {
         "properties": {
@@ -11696,6 +14922,26 @@
           "meta"
         ],
         "title": "ShipmentOutPage"
+      },
+      "Page_TourSummaryOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/TourSummaryOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "TourSummaryOutPage"
       },
       "ParcelPickingItem": {
         "properties": {
@@ -12516,6 +15762,38 @@
         ],
         "title": "ProcurementType"
       },
+      "ProtocolQueued": {
+        "properties": {
+          "notificationId": {
+            "type": "string",
+            "title": "Notificationid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "notificationId"
+        ],
+        "title": "ProtocolQueued"
+      },
+      "ProtocolSendBody": {
+        "properties": {
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ProtocolSendBody"
+      },
       "RankedRule": {
         "properties": {
           "rule": {
@@ -12532,6 +15810,16 @@
           "rank"
         ],
         "title": "RankedRule"
+      },
+      "Readiness": {
+        "type": "string",
+        "enum": [
+          "ready",
+          "to_pick",
+          "in_staging",
+          "not_started"
+        ],
+        "title": "Readiness"
       },
       "Readyz": {
         "properties": {
@@ -13312,6 +16600,46 @@
         "additionalProperties": false,
         "type": "object",
         "title": "RegionTestIn"
+      },
+      "RegisterUnknownBody": {
+        "properties": {
+          "serial": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Serial"
+          },
+          "assetTag": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assettag"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "serial"
+        ],
+        "title": "RegisterUnknownBody"
       },
       "ResetPasswordIn": {
         "properties": {
@@ -14582,6 +17910,230 @@
         ],
         "title": "ServiceRequestItemOut"
       },
+      "ServiceRequestListItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "taskNumber": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasknumber"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStage"
+          },
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/ContactRef"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supplyingSite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deliveryType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "procurementType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcurementType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "newItemTypes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Newitemtypes"
+          },
+          "appointmentStartAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentstartat"
+          },
+          "appointmentEndAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentendat"
+          },
+          "appointmentCalendarId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarid"
+          },
+          "appointmentCalendarName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarname"
+          },
+          "communicationDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationdate"
+          },
+          "communicationPaused": {
+            "type": "boolean",
+            "title": "Communicationpaused"
+          },
+          "communicationResumeDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationresumedate"
+          },
+          "editor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "importedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Importedat"
+          },
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/AttentionFlag"
+            },
+            "type": "array",
+            "title": "Attention"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "taskNumber",
+          "status",
+          "stage",
+          "statusChangedAt",
+          "contact",
+          "region",
+          "supplyingSite",
+          "deliveryType",
+          "isCampus",
+          "isVip",
+          "procurementType",
+          "newItemTypes",
+          "appointmentStartAt",
+          "appointmentEndAt",
+          "appointmentCalendarId",
+          "appointmentCalendarName",
+          "communicationDate",
+          "communicationPaused",
+          "communicationResumeDate",
+          "editor",
+          "importedAt",
+          "attention",
+          "availableActions"
+        ],
+        "title": "ServiceRequestListItem"
+      },
       "ServiceRequestStatus": {
         "type": "string",
         "enum": [
@@ -15147,6 +18699,345 @@
         ],
         "title": "StockLocationOut"
       },
+      "StopContact": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid"
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "mobile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mobile"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "displayName",
+          "email",
+          "phone",
+          "mobile"
+        ],
+        "title": "StopContact"
+      },
+      "StopItem": {
+        "properties": {
+          "slot": {
+            "$ref": "#/components/schemas/ItemSlot"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "verified": {
+            "type": "boolean",
+            "title": "Verified"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slot",
+          "label",
+          "verified"
+        ],
+        "title": "StopItem"
+      },
+      "StopServiceRequest": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          },
+          "deliveryType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/StopContact"
+          },
+          "onsiteContactPhone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onsitecontactphone"
+          },
+          "deliveryAddress": {
+            "$ref": "#/components/schemas/DeliveryAddress"
+          },
+          "appointmentStartAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentstartat"
+          },
+          "appointmentEndAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentendat"
+          },
+          "newItems": {
+            "items": {
+              "$ref": "#/components/schemas/StopItem"
+            },
+            "type": "array",
+            "title": "Newitems"
+          },
+          "oldItems": {
+            "items": {
+              "$ref": "#/components/schemas/StopItem"
+            },
+            "type": "array",
+            "title": "Olditems"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status",
+          "deliveryType",
+          "isCampus",
+          "isVip",
+          "contact",
+          "onsiteContactPhone",
+          "deliveryAddress",
+          "appointmentStartAt",
+          "appointmentEndAt",
+          "newItems",
+          "oldItems"
+        ],
+        "title": "StopServiceRequest"
+      },
+      "SyncCounts": {
+        "properties": {
+          "calendars": {
+            "type": "integer",
+            "title": "Calendars",
+            "default": 0
+          },
+          "created": {
+            "type": "integer",
+            "title": "Created",
+            "default": 0
+          },
+          "updated": {
+            "type": "integer",
+            "title": "Updated",
+            "default": 0
+          },
+          "cancelled": {
+            "type": "integer",
+            "title": "Cancelled",
+            "default": 0
+          },
+          "matched": {
+            "type": "integer",
+            "title": "Matched",
+            "default": 0
+          },
+          "unmatched": {
+            "type": "integer",
+            "title": "Unmatched",
+            "default": 0
+          },
+          "transitions": {
+            "type": "integer",
+            "title": "Transitions",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "SyncCounts"
+      },
+      "SyncStateOut": {
+        "properties": {
+          "running": {
+            "type": "boolean",
+            "title": "Running"
+          },
+          "lastJobId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastjobid"
+          },
+          "lastIncrementalSyncAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastincrementalsyncat"
+          },
+          "lastFullSyncAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastfullsyncat"
+          },
+          "lastResult": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SyncCounts"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nextScheduledAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Nextscheduledat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "running",
+          "lastJobId",
+          "lastIncrementalSyncAt",
+          "lastFullSyncAt",
+          "lastResult",
+          "nextScheduledAt"
+        ],
+        "title": "SyncStateOut"
+      },
+      "TechnicianDay": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "tourCount": {
+            "type": "integer",
+            "title": "Tourcount"
+          },
+          "stopCount": {
+            "type": "integer",
+            "title": "Stopcount"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "tourCount",
+          "stopCount"
+        ],
+        "title": "TechnicianDay"
+      },
+      "TechnicianLoad": {
+        "properties": {
+          "technician": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/TechnicianDay"
+            },
+            "type": "array",
+            "title": "Days"
+          }
+        },
+        "type": "object",
+        "required": [
+          "technician",
+          "days"
+        ],
+        "title": "TechnicianLoad"
+      },
       "TechnicianPicking": {
         "properties": {
           "date": {
@@ -15581,6 +19472,639 @@
           "count"
         ],
         "title": "TopErrorCode"
+      },
+      "TourActionBody": {
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "TourActionBody"
+      },
+      "TourCandidate": {
+        "properties": {
+          "serviceRequest": {
+            "$ref": "#/components/schemas/ServiceRequestListItem"
+          },
+          "readiness": {
+            "$ref": "#/components/schemas/Readiness"
+          },
+          "inTourId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intourid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "serviceRequest",
+          "readiness",
+          "inTourId"
+        ],
+        "title": "TourCandidate"
+      },
+      "TourCandidatesOut": {
+        "properties": {
+          "calendar": {
+            "$ref": "#/components/schemas/CalendarWithRegion"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "tour": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TourSummaryOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/TourCandidate"
+            },
+            "type": "array",
+            "title": "Candidates"
+          }
+        },
+        "type": "object",
+        "required": [
+          "calendar",
+          "date",
+          "tour",
+          "candidates"
+        ],
+        "title": "TourCandidatesOut"
+      },
+      "TourCreate": {
+        "properties": {
+          "calendarId": {
+            "type": "integer",
+            "title": "Calendarid"
+          },
+          "tourDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Tourdate"
+          },
+          "technicianId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technicianid"
+          },
+          "serviceRequestIds": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "maxItems": 60,
+            "title": "Servicerequestids"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "calendarId",
+          "tourDate"
+        ],
+        "title": "TourCreate"
+      },
+      "TourDetailOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "calendar": {
+            "$ref": "#/components/schemas/CalendarWithRegion"
+          },
+          "tourDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Tourdate"
+          },
+          "technician": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/TourStatus"
+          },
+          "stopCount": {
+            "type": "integer",
+            "title": "Stopcount"
+          },
+          "pendingCount": {
+            "type": "integer",
+            "title": "Pendingcount"
+          },
+          "completedCount": {
+            "type": "integer",
+            "title": "Completedcount"
+          },
+          "rescheduledCount": {
+            "type": "integer",
+            "title": "Rescheduledcount"
+          },
+          "cancelledCount": {
+            "type": "integer",
+            "title": "Cancelledcount"
+          },
+          "firstAppointmentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Firstappointmentat"
+          },
+          "lastAppointmentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastappointmentat"
+          },
+          "readiness": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/Readiness"
+            },
+            "type": "object",
+            "title": "Readiness"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "startedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Startedat"
+          },
+          "finishedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finishedat"
+          },
+          "stops": {
+            "items": {
+              "$ref": "#/components/schemas/TourStopOut"
+            },
+            "type": "array",
+            "title": "Stops"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "calendar",
+          "tourDate",
+          "technician",
+          "status",
+          "stopCount",
+          "pendingCount",
+          "completedCount",
+          "rescheduledCount",
+          "cancelledCount",
+          "firstAppointmentAt",
+          "lastAppointmentAt",
+          "readiness",
+          "availableActions",
+          "notes",
+          "startedAt",
+          "finishedAt",
+          "stops",
+          "warnings",
+          "version"
+        ],
+        "title": "TourDetailOut"
+      },
+      "TourPatch": {
+        "properties": {
+          "technicianId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technicianid"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "TourPatch"
+      },
+      "TourPlannerOverviewOut": {
+        "properties": {
+          "days": {
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "type": "array",
+            "title": "Days"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/OverviewRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          },
+          "technicians": {
+            "items": {
+              "$ref": "#/components/schemas/TechnicianLoad"
+            },
+            "type": "array",
+            "title": "Technicians"
+          }
+        },
+        "type": "object",
+        "required": [
+          "days",
+          "rows",
+          "technicians"
+        ],
+        "title": "TourPlannerOverviewOut"
+      },
+      "TourStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "planned",
+          "in_progress",
+          "completed",
+          "cancelled"
+        ],
+        "title": "TourStatus"
+      },
+      "TourStopOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "position": {
+            "type": "integer",
+            "title": "Position"
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/TourStopOutcome"
+          },
+          "outcomeAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcomeat"
+          },
+          "readiness": {
+            "$ref": "#/components/schemas/Readiness"
+          },
+          "serviceRequest": {
+            "$ref": "#/components/schemas/StopServiceRequest"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "position",
+          "outcome",
+          "outcomeAt",
+          "readiness",
+          "serviceRequest"
+        ],
+        "title": "TourStopOut"
+      },
+      "TourStopOutcome": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "completed",
+          "rescheduled",
+          "cancelled"
+        ],
+        "title": "TourStopOutcome"
+      },
+      "TourStopRef": {
+        "properties": {
+          "tourId": {
+            "type": "integer",
+            "title": "Tourid"
+          },
+          "stopId": {
+            "type": "integer",
+            "title": "Stopid"
+          },
+          "tourDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Tourdate"
+          },
+          "technicianName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technicianname"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TourStatus"
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/TourStopOutcome"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tourId",
+          "stopId",
+          "tourDate",
+          "technicianName",
+          "status",
+          "outcome"
+        ],
+        "title": "TourStopRef",
+        "description": "``GET /service-requests/{id}/tour-stops`` item (SPEC_RESOLUTIONS #21)."
+      },
+      "TourStopsPut": {
+        "properties": {
+          "serviceRequestIds": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "maxItems": 60,
+            "title": "Servicerequestids"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "serviceRequestIds"
+        ],
+        "title": "TourStopsPut"
+      },
+      "TourSummaryOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "calendar": {
+            "$ref": "#/components/schemas/CalendarWithRegion"
+          },
+          "tourDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Tourdate"
+          },
+          "technician": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/TourStatus"
+          },
+          "stopCount": {
+            "type": "integer",
+            "title": "Stopcount"
+          },
+          "pendingCount": {
+            "type": "integer",
+            "title": "Pendingcount"
+          },
+          "completedCount": {
+            "type": "integer",
+            "title": "Completedcount"
+          },
+          "rescheduledCount": {
+            "type": "integer",
+            "title": "Rescheduledcount"
+          },
+          "cancelledCount": {
+            "type": "integer",
+            "title": "Cancelledcount"
+          },
+          "firstAppointmentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Firstappointmentat"
+          },
+          "lastAppointmentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastappointmentat"
+          },
+          "readiness": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/Readiness"
+            },
+            "type": "object",
+            "title": "Readiness"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "calendar",
+          "tourDate",
+          "technician",
+          "status",
+          "stopCount",
+          "pendingCount",
+          "completedCount",
+          "rescheduledCount",
+          "cancelledCount",
+          "firstAppointmentAt",
+          "lastAppointmentAt",
+          "readiness",
+          "availableActions"
+        ],
+        "title": "TourSummaryOut"
       },
       "TransitionDef": {
         "properties": {
@@ -16177,6 +20701,106 @@
         "additionalProperties": false,
         "type": "object",
         "title": "VipEntryPatch"
+      },
+      "WorkInstructions": {
+        "properties": {
+          "procurementType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcurementType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scopeOfDelivery": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scopeofdelivery"
+          },
+          "clientComponent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clientcomponent"
+          },
+          "osReinstall": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OsReinstallTiming"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "withoutAssetPrep": {
+            "type": "boolean",
+            "title": "Withoutassetprep"
+          },
+          "software": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Software"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "onsiteContactPhone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onsitecontactphone"
+          },
+          "deliveryAddress": {
+            "$ref": "#/components/schemas/DeliveryAddress"
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "procurementType",
+          "scopeOfDelivery",
+          "clientComponent",
+          "osReinstall",
+          "withoutAssetPrep",
+          "software",
+          "note",
+          "onsiteContactPhone",
+          "deliveryAddress",
+          "isCampus"
+        ],
+        "title": "WorkInstructions"
       },
       "GuardInfo": {
         "properties": {

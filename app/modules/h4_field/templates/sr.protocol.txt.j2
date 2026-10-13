@@ -1,0 +1,23 @@
+{{ salutation(gender, first_name, last_name) }},
+
+thank you for your time today. Your hardware order {{ sr_number }} was completed on {{ completed_at | datetime }}. The handover protocol is attached as a PDF.
+{% if delivered %}
+
+Delivered:
+{% for d in delivered %}- {{ d.article }} · {{ d.asset_tag }}
+{% endfor %}
+{% endif %}
+{% if collected %}
+
+Collected:
+{% for c in collected %}- {{ c.model }} · {{ c.asset_tag }}
+{% endfor %}
+{% endif %}
+{% if deviation %}
+
+Note from the visit: {{ deviation.code }} · {{ deviation.label }}
+{% endif %}
+
+Recipient: {{ recipient_name }} · Technician: {{ technician_name }}
+
+Please keep the protocol for your records. If anything is missing, reply to this mail and mention {{ sr_number }}.
