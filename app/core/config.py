@@ -39,6 +39,7 @@ class Settings(BaseSettings):
         extra="ignore",
         case_sensitive=False,
         populate_by_name=True,
+        hide_input_in_errors=True,  # startup errors never echo secrets
     )
 
     # --- runtime ------------------------------------------------------------------------

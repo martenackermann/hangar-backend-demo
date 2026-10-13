@@ -1,15 +1,36 @@
+# VCS, CI and editor files
 .git
 .github
+.editorconfig
+.gitattributes
+.idea
+.vscode
+
+# Local environments, caches and runtime data
 .venv
 **/__pycache__
 **/*.pyc
 .pytest_cache
 .ruff_cache
+.pyright
 .coverage
+.coverage.*
 htmlcov
+coverage.xml
 .env
 .env.*
 !.env.example
 var
+
+# Tests and test helpers never ship in the image
 tests
+conftest.py
+app/testing
 app/modules/*/tests
+
+# Repo-only files (contract snapshot, contributor guide, container definitions)
+openapi.json
+CONVENTIONS.md
+Dockerfile
+docker-compose.yml
+.dockerignore

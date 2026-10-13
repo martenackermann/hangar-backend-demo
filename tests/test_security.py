@@ -381,6 +381,32 @@ def test_settings_reject_wildcard_cors_and_weak_jwt_algorithms() -> None:
     ]
 
 
+def test_settings_errors_do_not_echo_secrets() -> None:
+    with pytest.raises(ValidationError) as error:
+        _settings(
+            environment="production",
+            demo_mode=False,
+            jwt_secret="demo-only-Sup3rS3cretValue-0123456789abcdef",
+            file_url_signing_key=STRONG,
+        )
+    assert "Sup3rS3cretValue" not in str(error.value)
+    assert STRONG not in str(error.value)
+
+
+def test_job_arguments_are_not_logged_at_info() -> None:
+    import logging
+
+    from app.core.logging import configure_logging
+
+    root_level = logging.getLogger().level
+    try:
+        configure_logging("INFO", "json")
+        assert logging.getLogger("procrastinate.jobs").getEffectiveLevel() == logging.WARNING
+        assert logging.getLogger("procrastinate.worker").getEffectiveLevel() == logging.WARNING
+    finally:
+        configure_logging(logging.getLevelName(root_level), get_settings().log_format)
+
+
 # --- request size --------------------------------------------------------------------------
 
 

@@ -2,7 +2,10 @@
 #   docker compose up --build
 #   API      http://localhost:8100/api/v1/docs   (login: dana.dispatcher@example.com / demo1234)
 #   Mailpit  http://localhost:8025
-# Demo credentials/secrets below are placeholders for local use only.
+# Demo credentials/secrets below are placeholders for local use only. Ports are published on
+# 127.0.0.1 (HANGAR_BIND_ADDRESS); override API_PORT / MAILPIT_UI_PORT if 8100/8025 are taken.
+# With DEMO_MODE=false the API refuses these placeholder secrets: set JWT_SECRET and
+# FILE_URL_SIGNING_KEY (32+ random characters each).
 
 name: hangar
 
@@ -10,10 +13,10 @@ x-app-env: &app-env
   DATABASE_URL: postgresql+psycopg://hangar:hangar@postgres:5432/hangar
   SMTP_HOST: mailpit
   SMTP_PORT: "1025"
-  MAILPIT_URL: ${MAILPIT_URL:-http://localhost:8025}
+  MAILPIT_URL: ${MAILPIT_URL:-http://localhost:${MAILPIT_UI_PORT:-8025}}
   JWT_SECRET: ${JWT_SECRET:-demo-only-jwt-secret-change-me-0123456789}
   FILE_URL_SIGNING_KEY: ${FILE_URL_SIGNING_KEY:-demo-only-file-signing-key-change-me}
-  HANGAR_PUBLIC_API_URL: ${HANGAR_PUBLIC_API_URL:-http://localhost:8100/api/v1}
+  HANGAR_PUBLIC_API_URL: ${HANGAR_PUBLIC_API_URL:-http://localhost:${API_PORT:-8100}/api/v1}
   HANGAR_BUSINESS_TZ: ${HANGAR_BUSINESS_TZ:-Europe/Zurich}
   HANGAR_CORS_ORIGINS: ${HANGAR_CORS_ORIGINS:-http://localhost:5173}
   FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
@@ -40,20 +43,23 @@ services:
   mailpit:
     image: axllent/mailpit:latest
     ports:
-      - "${MAILPIT_UI_PORT:-8025}:8025"
+      - "${HANGAR_BIND_ADDRESS:-127.0.0.1}:${MAILPIT_UI_PORT:-8025}:8025"
 
   api:
     build: .
-    image: hangar-backend-demo:local
+    image: ${HANGAR_IMAGE:-hangar-backend-demo:local}
     environment:
       <<: *app-env
-    # Migrations + idempotent demo seed run before the server starts.
+    # Migrations, then the idempotent demo seed (demo mode only), then the server.
     command:
       - sh
       - -c
-      - hangar db upgrade && hangar seed && exec hangar serve
+      - >-
+        hangar db upgrade &&
+        if [ "$${DEMO_MODE}" != "false" ]; then hangar seed; fi &&
+        exec hangar serve
     ports:
-      - "${API_PORT:-8100}:8100"
+      - "${HANGAR_BIND_ADDRESS:-127.0.0.1}:${API_PORT:-8100}:8100"
     volumes:
       - files:/app/var/files
     depends_on:
@@ -63,7 +69,7 @@ services:
         condition: service_started
 
   worker:
-    image: hangar-backend-demo:local
+    image: ${HANGAR_IMAGE:-hangar-backend-demo:local}
     pull_policy: never
     environment:
       <<: *app-env

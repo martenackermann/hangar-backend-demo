@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -12,7 +15,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     services:
       postgres:
         image: postgres:17
@@ -35,6 +38,7 @@ jobs:
 
       - uses: astral-sh/setup-uv@v6
         with:
+          version: "0.13.0"
           python-version: "3.13"
           enable-cache: true
 
@@ -55,7 +59,7 @@ jobs:
           uv run coverage run -m pytest
           uv run coverage report
 
-      - name: Migrations (upgrade heads on an empty DB, models match)
+      - name: Migrations (upgrade heads on an empty DB, models match, seed + export)
         env:
           PGPASSWORD: dev
           DATABASE_URL: postgresql+psycopg://dev:dev@localhost:5432/hangar_migrate
@@ -76,3 +80,17 @@ jobs:
           path: |
             openapi.json
             var/seed-export/seed.json
+
+  image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build the container image (not pushed)
+        run: docker build --tag hangar-backend-demo:ci .
+
+      - name: Image runs as a non-root user and ships no tests
+        run: |
+          test "$(docker run --rm hangar-backend-demo:ci id -u)" = "10001"
+          docker run --rm hangar-backend-demo:ci sh -c '! test -e /app/tests && ! test -e /app/conftest.py && ! test -e /app/app/testing'

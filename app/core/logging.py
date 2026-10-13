@@ -81,3 +81,8 @@ def configure_logging(level: str = "INFO", fmt: str = "json") -> None:
         "procrastinate.periodic",
     ):
         logging.getLogger(name).setLevel(logging.WARNING)
+    # procrastinate logs every deferred/started/finished job with its full arguments (mail
+    # recipients, template context = personal data). Keep those lines for DEBUG only; failures
+    # (WARNING+) and the app's own worker/job/notification events still reach the log.
+    if root.level > logging.DEBUG:
+        logging.getLogger("procrastinate").setLevel(logging.WARNING)

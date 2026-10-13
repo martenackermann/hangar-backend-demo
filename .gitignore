@@ -10,6 +10,7 @@ dist/
 .pytest_cache/
 .ruff_cache/
 .pyright/
+.mypy_cache/
 .coverage
 .coverage.*
 htmlcov/
@@ -27,3 +28,4 @@ var/
 *.swp
 .DS_Store
 Thumbs.db
+*.log
