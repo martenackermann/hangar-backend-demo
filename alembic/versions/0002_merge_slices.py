@@ -5,8 +5,8 @@ revision (`alembic merge heads --rev-id 0002_merge_slices`) whenever another
 slice branch lands, so `alembic heads` always shows exactly one head.
 
 Revision ID: 0002_merge_slices
-Revises: h2_0001_imports, h3_0001_staging, h4_0001_field, h5_0001_stock
-Create Date: 2026-10-13 12:51:54.705605+00:00
+Revises: h1_0001_requests, h2_0001_imports, h3_0001_staging, h4_0001_field, h5_0001_stock
+Create Date: 2026-10-13 13:21:38.235356+00:00
 """
 
 from collections.abc import Sequence
@@ -14,6 +14,7 @@ from collections.abc import Sequence
 # revision identifiers, used by Alembic.
 revision: str = "0002_merge_slices"
 down_revision: str | Sequence[str] | None = (
+    "h1_0001_requests",
     "h2_0001_imports",
     "h3_0001_staging",
     "h4_0001_field",
