@@ -1,0 +1,7 @@
+{% from "modules/h1_requests/templates/_macros.html.j2" import button, item_list, signature %}
+<p>{{ salutation(gender, first_name, last_name) }},</p>
+<p>your hardware order <strong>{{ sr_number }}</strong> has arrived with us. It contains:</p>
+{{ item_list(items) }}
+<p>Because you work on the Campus, you do not need to book anything yourself: <strong>a technician will phone you</strong> in the next few days to agree a date for the handover at your desk.</p>
+<p>If you are away for a longer period, just reply to this mail and let us know when you are back.</p>
+{{ signature(operator_name) }}

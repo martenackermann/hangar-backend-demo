@@ -1,0 +1,12 @@
+{% set campus = true %}
+{% from "modules/h1_requests/templates/_macros.html.j2" import signature %}
+<p>{{ salutation(gender, first_name, last_name) }},</p>
+<p><strong>Action required:</strong> the lease of your device <strong>{{ model }}</strong> (asset tag <strong>{{ asset_tag }}</strong>) ends on <strong>{{ retirement_date | date }}</strong> ({% if days_left > 0 %}{{ days_left }} days left{% elif days_left == 0 %}ends today{% else %}{{ -days_left }} days overdue{% endif %}) and no replacement has been ordered.</p>
+{% if prior_mails %}<p>We contacted you on these dates:</p>
+<ul>
+{% for mail in prior_mails %}  <li>{{ mail.label }}: {{ mail.date | date }}</li>
+{% endfor %}</ul>{% endif %}
+<p>Devices returned after the end of the lease cause additional rental costs for {{ client_name }}, and late returns may incur penalty fees from the lessor. This mail was also sent to the escalation contacts.</p>
+<p><strong>Please order the replacement in the ITSM portal now</strong> or reply to this mail if the device is no longer in use.</p>
+{% if campus %}<p>{% if campus %}As you work on the Campus, you can also bring the device to the Campus service point, or reply to this mail to arrange a desk visit.{% endif %}</p>{% endif %}
+{{ signature(operator_name) }}

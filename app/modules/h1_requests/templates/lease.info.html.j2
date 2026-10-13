@@ -1,0 +1,13 @@
+{% set campus = false %}
+{% from "modules/h1_requests/templates/_macros.html.j2" import signature %}
+<p>{{ salutation(gender, first_name, last_name) }},</p>
+<p>the lease of your device <strong>{{ model }}</strong> (asset tag <strong>{{ asset_tag }}</strong>) ends on <strong>{{ retirement_date | date }}</strong>. The device has to be returned by then.</p>
+<p>Please order a replacement device via the ITSM portal. Once the order reaches us, we take care of the exchange and collect the old device.</p>
+{% if campus %}<p>{% if campus %}As you work on the Campus, you can also bring the device to the Campus service point, or reply to this mail to arrange a desk visit.{% endif %}</p>{% endif %}
+<p style="margin-bottom:4px;"><strong>What happens next</strong></p>
+<ol style="margin-top:4px;padding-left:20px;">
+  <li>You order the replacement in the ITSM portal.</li>
+  <li>We send you a link to book the handover.</li>
+  <li>A technician brings the new device and takes back the old one.</li>
+</ol>
+{{ signature(operator_name) }}

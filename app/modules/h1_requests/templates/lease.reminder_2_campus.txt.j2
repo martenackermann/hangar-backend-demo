@@ -1,0 +1,15 @@
+{% set campus = true %}
+{{ salutation(gender, first_name, last_name) }},
+
+the replacement for your device {{ model }} (asset tag {{ asset_tag }}) has still not been ordered. The lease ends on {{ retirement_date | date }} ({% if days_left > 0 %}{{ days_left }} days left{% elif days_left == 0 %}ends today{% else %}{{ -days_left }} days overdue{% endif %}).
+
+Devices returned after the end of the lease cause additional rental costs for {{ client_name }}, and late returns may incur penalty fees from the lessor.
+
+Please order the replacement in the ITSM portal today.
+
+{% if campus %}
+As you work on the Campus, you can also bring the device to the Campus service point, or reply to this mail to arrange a desk visit.
+
+{% endif %}
+Kind regards
+Your rollout team · {{ operator_name }}

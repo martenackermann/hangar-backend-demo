@@ -1,0 +1,13 @@
+{% set campus = true %}
+{{ salutation(gender, first_name, last_name) }},
+
+this is a reminder that the lease of your device {{ model }} (asset tag {{ asset_tag }}) ends on {{ retirement_date | date }} ({% if days_left > 0 %}{{ days_left }} days left{% elif days_left == 0 %}ends today{% else %}{{ -days_left }} days overdue{% endif %}). We have not received a replacement order yet.
+
+Please order a replacement device via the ITSM portal. Once the order reaches us, we take care of the exchange and collect the old device.
+
+{% if campus %}
+As you work on the Campus, you can also bring the device to the Campus service point, or reply to this mail to arrange a desk visit.
+
+{% endif %}
+Kind regards
+Your rollout team · {{ operator_name }}

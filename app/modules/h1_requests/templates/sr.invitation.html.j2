@@ -1,0 +1,14 @@
+{% from "modules/h1_requests/templates/_macros.html.j2" import button, item_list, signature %}
+<p>{{ salutation(gender, first_name, last_name) }},</p>
+<p>your hardware order <strong>{{ sr_number }}</strong> has arrived with us. It contains:</p>
+{{ item_list(items) }}
+<p>Please book a time for the handover. A technician brings your new devices, sets them up at your desk{% if old_items %} and takes back your old device ({{ old_items | join(", ") }}){% endif %}.</p>
+{% if booking_link %}{{ button(booking_link, "Book your appointment") }}{% endif %}
+<p style="margin-bottom:4px;"><strong>What happens next</strong></p>
+<ol style="margin-top:4px;padding-left:20px;">
+  <li>You book an appointment with the link above.</li>
+  <li>We prepare and personalize your devices at our hub.</li>
+  <li>Your hardware is delivered{% if region_name %} in {{ region_name }}{% endif %}.</li>
+  <li>The technician hands everything over and collects your old devices.</li>
+</ol>
+{{ signature(operator_name) }}

@@ -1,0 +1,7 @@
+{% from "modules/h1_requests/templates/_macros.html.j2" import button, item_list, signature %}
+<p>{{ salutation(gender, first_name, last_name) }},</p>
+<p>despite several reminders, no appointment has been booked for your hardware order <strong>{{ sr_number }}</strong>.</p>
+<p>Please book now. Your current device{% if old_items %} ({{ old_items | join(", ") }}){% endif %} has to be replaced for <strong>security reasons</strong>, and every week of delay causes additional <strong>lease costs</strong> for {{ client_name }}.</p>
+{% if booking_link %}{{ button(booking_link, "Book your appointment now") }}{% endif %}
+<p>This mail was also sent to the escalation mailbox. If there is a reason you cannot book, reply to this mail.</p>
+{{ signature(operator_name) }}

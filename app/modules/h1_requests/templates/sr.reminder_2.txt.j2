@@ -1,0 +1,12 @@
+{{ salutation(gender, first_name, last_name) }},
+
+the appointment for your hardware order {{ sr_number }} is still open. Your new devices are reserved for you, and we would like to hand them over soon.
+
+{% if booking_link %}
+Please book your appointment now: {{ booking_link }}
+
+{% endif %}
+If none of the offered times work for you, reply to this mail and we will find a solution together.
+
+Kind regards
+Your rollout team · {{ operator_name }}
