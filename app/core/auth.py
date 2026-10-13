@@ -96,7 +96,8 @@ async def get_current_user(
     except (TypeError, ValueError) as exc:
         raise AuthenticationError("The access token is invalid.") from exc
     user = await session.get(User, user_id)
-    if user is None:
+    # Demo personas share the published demo password: their tokens die with demo mode.
+    if user is None or (user.is_demo_persona and not get_settings().demo_mode):
         raise AuthenticationError("The access token is invalid.")
     if not user.is_active:
         raise ForbiddenError("This account is deactivated.", code="account_inactive")

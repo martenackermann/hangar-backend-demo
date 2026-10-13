@@ -15,6 +15,7 @@ import secrets
 from collections.abc import AsyncIterator
 from datetime import date, datetime
 from typing import Any
+from urllib.parse import quote
 
 import httpx
 from tenacity import AsyncRetrying, retry_if_exception_type, stop_after_attempt, wait_exponential
@@ -63,6 +64,11 @@ def _to_appointment(raw: dict[str, Any]) -> ProviderAppointment:
     )
 
 
+def _seg(value: str) -> str:
+    """One URL path segment: provider ids never add path levels or switch the host."""
+    return quote(str(value), safe="")
+
+
 class RealBookingProvider:
     def __init__(self, client: httpx.AsyncClient | None = None) -> None:
         settings = get_settings()
@@ -98,7 +104,9 @@ class RealBookingProvider:
         ]
 
     async def list_calendar_services(self, calendar_external_id: str) -> list[ProviderService]:
-        data = (await self._request("GET", f"/calendars/{calendar_external_id}/services")).json()
+        data = (
+            await self._request("GET", f"/calendars/{_seg(calendar_external_id)}/services")
+        ).json()
         return [ProviderService(str(s["id"]), s["name"], int(s["duration"])) for s in data]
 
     async def list_appointments(
@@ -115,7 +123,7 @@ class RealBookingProvider:
                 params["until"] = until.isoformat()
             items = (
                 await self._request(
-                    "GET", f"/calendars/{calendar_external_id}/appointments", params=params
+                    "GET", f"/calendars/{_seg(calendar_external_id)}/appointments", params=params
                 )
             ).json()
             for raw in items:
@@ -152,7 +160,9 @@ class RealBookingProvider:
         return _to_appointment((await self._request("POST", "/appointments", json=payload)).json())
 
     async def cancel_appointment(self, external_id: str, *, reason: str | None = None) -> None:
-        await self._request("POST", f"/appointments/{external_id}/cancel", json={"reason": reason})
+        await self._request(
+            "POST", f"/appointments/{_seg(external_id)}/cancel", json={"reason": reason}
+        )
 
     def build_booking_link(self, *, destination_id: str, service_id: str, reference: str) -> str:
         base = get_settings().booking_base_url.rstrip("/")

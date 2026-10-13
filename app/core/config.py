@@ -21,6 +21,10 @@ from sqlalchemy.engine import make_url
 # "dev-only-change-me" because HS256 keys should be >= 32 bytes.
 DEV_JWT_SECRET = "dev-only-change-me-0123456789abcdef"  # noqa: S105
 DEV_SIGNING_KEY = "dev-only-signing-key"
+#: Markers of the documented placeholder secrets (``.env.example``, ``docker-compose.yml``).
+#: ``ENVIRONMENT=production`` with ``DEMO_MODE=false`` refuses any secret containing one.
+PLACEHOLDER_MARKERS = ("change-me", "dev-only", "demo-only")
+MIN_SECRET_LENGTH = 32
 DEFAULT_CORS = [f"http://localhost:{port}" for port in range(5173, 5179)]
 
 
@@ -51,8 +55,15 @@ class Settings(BaseSettings):
 
     # --- auth ---------------------------------------------------------------------------
     jwt_secret: SecretStr = SecretStr(DEV_JWT_SECRET)
-    jwt_algorithm: str = "HS256"
-    jwt_ttl_minutes: int = 720
+    # Pinned to the HMAC family: never "none", never an asymmetric algorithm with a shared key.
+    jwt_algorithm: Literal["HS256", "HS384", "HS512"] = "HS256"
+    jwt_ttl_minutes: int = Field(default=720, ge=5, le=7 * 24 * 60)
+    # In-process login throttling (per API process): failed password logins per
+    # (client IP, email) and per client IP, and persona logins per client IP, in a sliding window.
+    login_rate_limit_window_seconds: int = Field(default=300, ge=1)
+    login_rate_limit_per_account: int = Field(default=10, ge=1)
+    login_rate_limit_per_ip: int = Field(default=50, ge=1)
+    persona_login_rate_limit_per_ip: int = Field(default=60, ge=1)
 
     # --- demo ---------------------------------------------------------------------------
     demo_mode: bool = True
@@ -76,6 +87,13 @@ class Settings(BaseSettings):
     import_max_bytes: int = 20 * 1024 * 1024
     import_max_rows: int = 50_000
     deactivation_max_rows: int = 10_000
+    #: XLSX files are zip archives: cap the *decompressed* size before parsing (zip bombs).
+    xlsx_max_uncompressed_bytes: int = 128 * 1024 * 1024
+    xlsx_max_entries: int = 1_000
+
+    # --- request limits -----------------------------------------------------------------
+    #: Body limit for JSON (non-multipart) requests; uploads get ``import_max_bytes`` + 1 MiB.
+    max_request_bytes: int = 2 * 1024 * 1024
 
     # --- http ---------------------------------------------------------------------------
     cors_origins: Annotated[list[str], NoDecode] = Field(
@@ -123,6 +141,15 @@ class Settings(BaseSettings):
             return [part.strip() for part in text.split(",") if part.strip()]
         return value
 
+    @field_validator("cors_origins")
+    @classmethod
+    def _no_wildcard_origin(cls, value: list[str]) -> list[str]:
+        # Credentials are allowed (CORSMiddleware allow_credentials=True): a wildcard would
+        # let Starlette reflect any origin. List the frontend origins explicitly.
+        if any(origin.strip() == "*" for origin in value):
+            raise ValueError("HANGAR_CORS_ORIGINS must list explicit origins, not '*'.")
+        return [origin.rstrip("/") for origin in value]
+
     @field_validator("public_api_url", "frontend_url")
     @classmethod
     def _strip_slash(cls, value: str) -> str:
@@ -130,10 +157,31 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _check(self) -> Settings:
-        if len(self.jwt_secret.get_secret_value()) < 32:
-            raise ValueError("JWT_SECRET must be at least 32 characters.")
-        if self.is_production and self.jwt_secret.get_secret_value() == DEV_JWT_SECRET:
-            raise ValueError("Set JWT_SECRET: the development placeholder is not allowed here.")
+        jwt_secret = self.jwt_secret.get_secret_value()
+        signing_key = self.file_url_signing_key.get_secret_value()
+        if len(jwt_secret) < MIN_SECRET_LENGTH:
+            raise ValueError(f"JWT_SECRET must be at least {MIN_SECRET_LENGTH} characters.")
+        if self.is_production:
+            if jwt_secret == DEV_JWT_SECRET:
+                raise ValueError("Set JWT_SECRET: the development placeholder is not allowed here.")
+            if signing_key == DEV_SIGNING_KEY:
+                raise ValueError(
+                    "Set FILE_URL_SIGNING_KEY: the development placeholder is not allowed here."
+                )
+            if len(signing_key) < MIN_SECRET_LENGTH:
+                raise ValueError(
+                    f"FILE_URL_SIGNING_KEY must be at least {MIN_SECRET_LENGTH} characters."
+                )
+            if not self.demo_mode:
+                for name, value in (
+                    ("JWT_SECRET", jwt_secret),
+                    ("FILE_URL_SIGNING_KEY", signing_key),
+                ):
+                    if any(marker in value.lower() for marker in PLACEHOLDER_MARKERS):
+                        raise ValueError(
+                            f"{name} is a documented placeholder; production without "
+                            "DEMO_MODE needs a long random value."
+                        )
         ZoneInfo(self.business_tz)  # validates the zone name
         return self
 

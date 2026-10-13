@@ -29,8 +29,10 @@ import structlog
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import get_settings
 from app.core.db import after_commit, open_session
 from app.core.enums import JobKind, JobStatus, Trigger
+from app.core.errors import ApiError
 from app.core.models import BackgroundJob, User
 from app.core.schemas import EntityRef
 from app.core.timeutil import now_utc
@@ -38,6 +40,23 @@ from app.core.timeutil import now_utc
 log = structlog.get_logger(__name__)
 
 TERMINAL_JOB_STATUSES = frozenset({JobStatus.SUCCEEDED, JobStatus.FAILED, JobStatus.CANCELLED})
+_PUBLIC_ERROR_MAX = 500
+
+
+def public_error(exc: BaseException) -> str:
+    """``background_jobs.error`` text — readable by every signed-in user (``GET /jobs``).
+
+    Problem details keep their message; anything else is reduced to its type and first line
+    (no SQL statements or parameters), and to the type only in production. The full
+    traceback goes to the log.
+    """
+    if isinstance(exc, ApiError):
+        return (exc.detail or exc.resolved_title)[:_PUBLIC_ERROR_MAX]
+    name = type(exc).__name__
+    if get_settings().is_production:
+        return f"{name}: the job failed unexpectedly (details are in the server log)."
+    lines = str(exc).strip().splitlines()
+    return (f"{name}: {lines[0]}" if lines else name)[:_PUBLIC_ERROR_MAX]
 
 
 async def create_job(
@@ -212,9 +231,7 @@ async def tracked(job_id: int, *, trigger: Trigger = Trigger.JOB) -> AsyncIterat
             yield run
         except Exception as exc:
             log.exception("job_failed", job_id=job_id)
-            await finish_job(
-                job_id, JobStatus.FAILED, run.result, error=f"{type(exc).__name__}: {exc}"
-            )
+            await finish_job(job_id, JobStatus.FAILED, run.result, error=public_error(exc))
             raise
     await finish_job(job_id, run.status, run.result, message=run.message)
 

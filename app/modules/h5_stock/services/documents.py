@@ -15,6 +15,7 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 
 from app.core.config import get_settings
 from app.core.notifications.renderer import CLIENT, OPERATOR, format_date, format_datetime
+from app.core.spreadsheets import XLSX_WORKBOOK_OPTIONS
 
 PARTNER = "Initech Logistics"
 XLSX_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -65,7 +66,7 @@ class OrderDocument:
 
 def order_xlsx(doc: OrderDocument) -> bytes:
     buffer = io.BytesIO()
-    workbook = xlsxwriter.Workbook(buffer, {"in_memory": True})
+    workbook = xlsxwriter.Workbook(buffer, {**XLSX_WORKBOOK_OPTIONS, "in_memory": True})
     bold = workbook.add_format({"bold": True, "bg_color": "#E9ECEF", "border": 1})
     number = workbook.add_format({"num_format": "0"})
     sheet = workbook.add_worksheet("Lines")
@@ -124,7 +125,7 @@ def order_pdf(doc: OrderDocument) -> bytes:
         Paragraph(f"{OPERATOR} · on behalf of {CLIENT}", small),
         Spacer(1, 4 * mm),
         Paragraph(f"Call-off order {doc.number}", styles["Title"]),
-        Paragraph(f"To {PARTNER} · {doc.recipient_email}", styles["Normal"]),
+        Paragraph(f"To {PARTNER} · {_escape(doc.recipient_email)}", styles["Normal"]),
         Spacer(1, 4 * mm),
     ]
     facts = [
@@ -150,7 +151,7 @@ def order_pdf(doc: OrderDocument) -> bytes:
         [
             line.article_number,
             line.external_part_number or "",
-            Paragraph(line.name, small),
+            Paragraph(_escape(line.name), small),  # Paragraph text is markup
             line.model_number,
             str(line.quantity),
         ]
@@ -185,7 +186,7 @@ def order_pdf(doc: OrderDocument) -> bytes:
     story += [
         Spacer(1, 8 * mm),
         Paragraph(
-            f"Questions: {get_settings().mail_team_mailbox}. "
+            f"Questions: {_escape(get_settings().mail_team_mailbox)}. "
             + (
                 "This is a demo system; all names and addresses are fictional."
                 if get_settings().demo_mode
@@ -199,4 +200,5 @@ def order_pdf(doc: OrderDocument) -> bytes:
 
 
 def _escape(value: str) -> str:
+    """ReportLab ``Paragraph`` text is mini-markup (``<img src>``, ``<a href>``, ...)."""
     return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")

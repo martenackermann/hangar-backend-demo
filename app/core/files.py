@@ -5,16 +5,19 @@
 - ``signed_url(file)`` → :class:`DownloadLink` pointing at
   ``{HANGAR_PUBLIC_API_URL}/files/{id}/download?expires=<unix>&signature=<hex>``
   (HMAC-SHA256 over ``"{id}:{expires}"`` with ``FILE_URL_SIGNING_KEY``; default TTL 10 min).
-- ``read_upload`` validates multipart uploads (extension + magic bytes + size).
+- ``read_upload`` validates multipart uploads (extension + magic bytes + size; XLSX archives
+  are checked for zip bombs before any parser sees them).
 """
 
 from __future__ import annotations
 
 import hashlib
 import hmac
+import io
 import re
 import time
 import uuid
+import zipfile
 from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -42,6 +45,7 @@ _MAGIC: Mapping[str, tuple[bytes, ...]] = {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": (b"PK\x03\x04",),
 }
 _SAFE_NAME = re.compile(r"[^\w.\- ()]+")
+_XLSX_TYPE = XLSX[".xlsx"]
 
 
 # --- storage backend -----------------------------------------------------------------------
@@ -230,4 +234,39 @@ async def read_upload(
         raise BadRequestError("The file content does not match its type.", code="invalid_file")
     if content_type.startswith("text/") and b"\x00" in data[:4096]:
         raise BadRequestError("The file content does not match its type.", code="invalid_file")
+    if content_type == _XLSX_TYPE:
+        check_xlsx_archive(data)
     return Upload(data, name, content_type, ext)
+
+
+def check_xlsx_archive(
+    data: bytes, *, max_uncompressed: int | None = None, max_entries: int | None = None
+) -> None:
+    """Reject zip bombs before a spreadsheet parser inflates the workbook.
+
+    Every member is actually decompressed (streamed, nothing kept) and counted, so lying
+    size headers do not help: ``413 too_large`` past the limit, ``400 invalid_file`` for
+    archives that are not readable zips (bad CRC, truncated, encrypted, ...).
+    """
+    settings = get_settings()
+    limit = settings.xlsx_max_uncompressed_bytes if max_uncompressed is None else max_uncompressed
+    entries = settings.xlsx_max_entries if max_entries is None else max_entries
+    too_large = ApiError("The workbook is too large when unpacked.", status=413, code="too_large")
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+            members = archive.infolist()
+            if len(members) > entries or sum(m.file_size for m in members) > limit:
+                raise too_large
+            total = 0
+            for member in members:
+                with archive.open(member) as stream:
+                    while chunk := stream.read(1024 * 1024):
+                        total += len(chunk)
+                        if total > limit:
+                            raise too_large
+    except ApiError:
+        raise
+    except (zipfile.BadZipFile, zipfile.LargeZipFile, RuntimeError, ValueError, OSError) as exc:
+        raise BadRequestError(
+            "The file content does not match its type.", code="invalid_file"
+        ) from exc

@@ -14,6 +14,7 @@ from typing import Literal
 from sqlalchemy import String, cast, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.auth import can
 from app.core.enums import AssetStatus, LeaseReturnStatus, ServiceRequestStatus, Tone, label, tone
 from app.core.models import Asset, Contact, LeaseReturn, ServiceRequest, User
 from app.core.rules import normalize_place
@@ -37,6 +38,14 @@ KIND_LABELS: dict[str, str] = {
     "asset": "Assets",
     "contact": "Contacts",
     "installation_place": "Installation places",
+}
+#: Read permission behind each hit kind: hits the caller may not open are dropped.
+KIND_PERMISSIONS: dict[str, str] = {
+    "service_request": "sr.read",
+    "lease_return": "lease.read",
+    "asset": "stock.read",
+    "contact": "sr.read",
+    "installation_place": "stock.read",
 }
 PER_GROUP = 5
 TOTAL = 20
@@ -300,6 +309,7 @@ async def search(session: AsyncSession, q: str, user: User, limit: int = TOTAL) 
     collected: list[SearchHit] = []
     for provider in _providers:
         collected += await provider(session, query, user)
+    collected = [h for h in collected if can(user, KIND_PERMISSIONS.get(h.kind, "sr.read"))]
     seen: set[tuple[str, int | None, str]] = set()
     unique: list[SearchHit] = []
     for hit in sorted(collected, key=lambda h: not h.exact):  # stable: exact first

@@ -122,15 +122,25 @@ def _seed(*, reset: bool, export: Path | None) -> None:
 )
 def seed(reset: bool, export: Path | None) -> None:
     """Run the seed pipeline (idempotent) and optionally export ``seed.json``."""
-    if reset and get_settings().is_production and not get_settings().demo_mode:
-        raise click.ClickException("Refusing to reset outside demo mode in production.")
+    _refuse_demo_data_in_production()
     _seed(reset=reset, export=export)
 
 
 @cli.command("demo-reset")
 def demo_reset() -> None:
     """Truncate demo data and re-seed (synchronous ``demo.reset``)."""
+    _refuse_demo_data_in_production()
     _seed(reset=True, export=None)
+
+
+def _refuse_demo_data_in_production() -> None:
+    from app.core.demo import demo_reset_allowed
+
+    if not demo_reset_allowed():
+        raise click.ClickException(
+            "Refusing to load demo data in production outside demo mode: the demo personas "
+            "share a published password. Set DEMO_MODE=true for a demo deployment."
+        )
 
 
 @cli.command("jobs-schema")

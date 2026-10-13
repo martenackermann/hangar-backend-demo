@@ -17,7 +17,11 @@ from app.core.config import Settings, get_settings
 from app.core.db import dispose_engine
 from app.core.errors import install_error_handlers
 from app.core.logging import configure_logging
-from app.core.middleware import REQUEST_ID_HEADER, RequestContextMiddleware
+from app.core.middleware import (
+    REQUEST_ID_HEADER,
+    BodySizeLimitMiddleware,
+    RequestContextMiddleware,
+)
 from app.core.openapi import install_openapi, unique_operation_id
 from app.core.slices import slice_routers
 from app.jobs.app import job_app
@@ -71,6 +75,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         redoc_url=None,
         swagger_ui_oauth2_redirect_url=f"{API_PREFIX}/docs/oauth2-redirect",
         generate_unique_id_function=unique_operation_id,
+    )
+    # Innermost first: body limit < CORS (so a 413 still carries CORS headers) < request id.
+    app.add_middleware(
+        BodySizeLimitMiddleware,
+        max_bytes=settings.max_request_bytes,
+        upload_bytes=settings.import_max_bytes,
     )
     app.add_middleware(
         CORSMiddleware,

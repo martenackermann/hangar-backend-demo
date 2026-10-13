@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 from typing import Any
+from urllib.parse import quote
 
 import httpx
 
@@ -81,7 +82,7 @@ class RealParcelCarrier:
         )
 
     async def get_label(self, carrier_shipment_id: str) -> bytes:
-        response = await self._client.get(f"/shipments/{carrier_shipment_id}/label")
+        response = await self._client.get(f"/shipments/{quote(carrier_shipment_id, safe='')}/label")
         if response.status_code >= 400:
             raise CarrierError("Label not available")
         return base64.b64decode(response.json()["labelPdf"])

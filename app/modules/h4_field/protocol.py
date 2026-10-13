@@ -11,6 +11,7 @@ from __future__ import annotations
 import io
 from dataclasses import dataclass, field
 from datetime import datetime
+from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
@@ -291,7 +292,8 @@ def render_protocol_pdf(data: ProtocolData) -> bytes:
     story.append(Paragraph("Installed software", styles["h2"]))
     story.append(
         Paragraph(
-            ", ".join(data.software) if data.software else "No additional software.", styles["body"]
+            escape(", ".join(data.software)) if data.software else "No additional software.",
+            styles["body"],
         )
     )
     if data.deviation is not None:
@@ -299,7 +301,10 @@ def render_protocol_pdf(data: ProtocolData) -> bytes:
         story.append(Paragraph("Deviation", styles["h2"]))
         story.append(
             Paragraph(
-                f"<b>{code}</b> {text}" + (f"<br/>{comment}" if comment else ""), styles["body"]
+                # Paragraph text is markup: user text must not inject tags (<img src=...>).
+                f"<b>{escape(code)}</b> {escape(text)}"
+                + (f"<br/>{escape(comment)}" if comment else ""),
+                styles["body"],
             )
         )
     story.append(Spacer(1, 4 * mm))

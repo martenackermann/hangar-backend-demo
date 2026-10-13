@@ -24,6 +24,7 @@ from app.core.files import signed_url, store_file
 from app.core.models import LeaseReturn, ServiceRequest, User
 from app.core.read_models import sr_attention
 from app.core.schemas import DownloadLink
+from app.core.spreadsheets import XLSX_WORKBOOK_OPTIONS
 from app.core.timeutil import business_today
 
 EXPORT_TTL = timedelta(hours=24)
@@ -54,7 +55,9 @@ def _yes(flag: bool) -> str:
 
 def workbook(sheet: str, columns: Sequence[tuple[str, int]], rows: list[list[Any]]) -> bytes:
     buffer = io.BytesIO()
-    book = xlsxwriter.Workbook(buffer, {"in_memory": True, "remove_timezone": True})
+    book = xlsxwriter.Workbook(
+        buffer, {**XLSX_WORKBOOK_OPTIONS, "in_memory": True, "remove_timezone": True}
+    )
     ws = book.add_worksheet(sheet)
     header = book.add_format({"bold": True, "bg_color": "#E8EBEF", "border": 1})
     date_fmt = book.add_format({"num_format": "yyyy-mm-dd"})
@@ -70,6 +73,8 @@ def workbook(sheet: str, columns: Sequence[tuple[str, int]], rows: list[list[Any
                 ws.write_datetime(r, c, datetime(value.year, value.month, value.day), date_fmt)  # noqa: DTZ001
             elif value is None:
                 ws.write_blank(r, c, None)
+            elif isinstance(value, str):
+                ws.write_string(r, c, value)  # imported text is never a formula
             else:
                 ws.write(r, c, value)
     ws.freeze_panes(1, 0)

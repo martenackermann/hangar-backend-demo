@@ -19,6 +19,7 @@ from app.core.errors import ValidationProblem
 from app.core.files import signed_url, store_file
 from app.core.models import Site, User
 from app.core.schemas import DownloadLink, EntityRef
+from app.core.spreadsheets import safe_cell
 from app.core.timeutil import business_today
 
 log = structlog.get_logger(__name__)
@@ -34,7 +35,8 @@ RECALC_DEBOUNCE_SECONDS = 60
 
 
 def csv_bytes(header: Sequence[str], rows: Iterable[Sequence[Any]]) -> bytes:
-    """UTF-8 **with BOM**, comma, RFC 4180 quoting, CRLF (SPEC §6.20)."""
+    """UTF-8 **with BOM**, comma, RFC 4180 quoting, CRLF (SPEC §6.20); text cells that could
+    start a formula are neutralised (``app.core.spreadsheets``)."""
     buffer = io.StringIO()
     writer = csv.writer(buffer, lineterminator="\r\n")
     writer.writerow(header)
@@ -50,6 +52,8 @@ def _cell(value: Any) -> str:
         return format_datetime(value)
     if isinstance(value, date):
         return value.isoformat()
+    if isinstance(value, str):
+        return safe_cell(value)
     return str(value)
 
 

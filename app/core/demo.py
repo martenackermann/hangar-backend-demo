@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import get_settings
 from app.core.db import open_session
 from app.core.enums import JobKind, JobStatus
+from app.core.jobs import public_error
 from app.core.models import BackgroundJob
 from app.core.seed import framework
 from app.core.timeutil import business_hour, business_today, now_utc
@@ -95,14 +96,24 @@ async def run_demo_reset(job_id: int | None = None) -> None:
             job = await session.get(BackgroundJob, job.id)
             if job is not None:
                 job.status = JobStatus.FAILED
-                job.error = f"{type(exc).__name__}: {exc}"
+                job.error = public_error(exc)
                 job.finished_at = now_utc()
                 await session.commit()
             raise
     log.info("demo_reset_done", job_id=job_id)
 
 
+def demo_reset_allowed() -> bool:
+    """Demo data may be (re)loaded: always outside production, in production only in demo
+    mode (the demo personas share the published password ``demo1234``)."""
+    settings = get_settings()
+    return settings.demo_mode or not settings.is_production
+
+
 async def demo_reset_task(job_id: int | None = None) -> None:
+    if not get_settings().demo_mode:  # the endpoint is demo-only; a stale queued job is not
+        log.warning("demo_reset_skipped", job_id=job_id, reason="demo mode is off")
+        return
     await run_demo_reset(job_id)
 
 

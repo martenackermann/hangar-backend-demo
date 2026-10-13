@@ -8,6 +8,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth import hash_password
+from app.core.config import get_settings
 from app.core.errors import ConflictError, NotFoundError, ValidationProblem
 from app.core.events import UserDeactivated, emit
 from app.core.models import Site, User
@@ -92,6 +93,10 @@ async def update_user(session: AsyncSession, user: User, body: UserPatch, actor:
 async def set_active(session: AsyncSession, user: User, active: bool, actor: User) -> User:
     if not active and user.id == actor.id:
         raise ConflictError("You cannot deactivate your own account.")
+    if not active and user.is_demo_persona and get_settings().demo_mode:
+        # Anyone can sign in as a persona on a public demo: locking one out (or every admin)
+        # would break the shared demo until the next reset.
+        raise ConflictError("Demo personas stay active so the demo stays usable for everyone.")
     was_active = user.is_active
     user.is_active = active
     await session.flush()

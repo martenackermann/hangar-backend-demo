@@ -59,6 +59,7 @@ from app.core.dbadmin import recreate_schema  # noqa: E402
 from app.core.files import LocalFileStore, set_file_store  # noqa: E402
 from app.core.gateways.mailers import MemoryMailer  # noqa: E402
 from app.core.models import User  # noqa: E402
+from app.core.ratelimit import SlidingWindowLimiter, login_limiter  # noqa: E402
 from app.core.seed.framework import run_seeders  # noqa: E402
 from app.core.slices import load_slices  # noqa: E402
 from app.jobs.app import job_app  # noqa: E402
@@ -133,6 +134,16 @@ def mailer() -> Iterator[MemoryMailer]:
         yield memory
     finally:
         restore()
+
+
+@pytest.fixture(autouse=True)
+def login_throttle() -> Iterator[SlidingWindowLimiter]:
+    """Login throttling starts empty in every test (it is per-process state)."""
+    login_limiter.reset()
+    try:
+        yield login_limiter
+    finally:
+        login_limiter.reset()
 
 
 @pytest.fixture(autouse=True)
