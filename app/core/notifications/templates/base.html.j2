@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ subject }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:Arial,Helvetica,sans-serif;color:#1f2933;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:6px;overflow:hidden;">
+          <tr>
+            <td style="background:#1f3a5f;color:#ffffff;padding:18px 28px;">
+              <div style="font-size:18px;font-weight:bold;">{{ operator_name }}</div>
+              <div style="font-size:13px;opacity:0.85;">On behalf of {{ client_name }}</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px;font-size:15px;line-height:1.55;">
+              {{ body }}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:18px 28px;border-top:1px solid #e4e7eb;font-size:12px;color:#616e7c;line-height:1.5;">
+              Questions? Reply to this mail or write to
+              <a href="mailto:{{ team_mailbox }}" style="color:#1f3a5f;">{{ team_mailbox }}</a>.<br>
+              {{ operator_name }} · Hardware rollout for {{ client_name }}
+              {% if demo_mode %}<br><strong>This is a demo system.</strong> All names and addresses are fictional.{% endif %}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

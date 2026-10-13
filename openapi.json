@@ -6,30 +6,919 @@
     "version": "0.1.0"
   },
   "paths": {
-    "/api/v1/health": {
-      "get": {
+    "/api/v1/auth/login": {
+      "post": {
         "tags": [
-          "system"
+          "auth"
         ],
-        "summary": "Service health",
-        "operationId": "system-health",
+        "summary": "Log in with email and password",
+        "operationId": "auth-login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HealthOut"
+                  "$ref": "#/components/schemas/LoginResponse"
                 }
               }
             }
           },
-          "503": {
-            "description": "A dependency is unavailable",
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Log out (stateless)",
+        "operationId": "auth-logout",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/personas": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Demo personas (demo mode only)",
+        "operationId": "auth-personas",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HealthOut"
+                  "$ref": "#/components/schemas/ListResponse_Persona_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/persona-login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Log in as a demo persona (demo mode only)",
+        "operationId": "auth-persona_login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonaLoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me": {
+      "get": {
+        "tags": [
+          "auth",
+          "auth"
+        ],
+        "summary": "The current user",
+        "operationId": "auth-me",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/meta/config": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "Public app configuration",
+        "operationId": "meta-get_config",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppConfig"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/meta/enums": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "Enum labels, tones, transitions and permissions",
+        "operationId": "meta-get_enums",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnumsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sites": {
+      "get": {
+        "tags": [
+          "reference"
+        ],
+        "summary": "Sites",
+        "operationId": "reference-list_sites",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_SiteOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/regions": {
+      "get": {
+        "tags": [
+          "reference"
+        ],
+        "summary": "Regions",
+        "operationId": "reference-list_regions",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ActiveFilter",
+              "default": "true"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_RegionOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stock-locations": {
+      "get": {
+        "tags": [
+          "reference"
+        ],
+        "summary": "Stock locations",
+        "operationId": "reference-list_stock_locations",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ActiveFilter",
+              "default": "all"
+            }
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: goods_in, staging, goods_out, return, in_transit, in_use, off_fleet.",
+              "title": "Type"
+            },
+            "description": "Comma-separated: goods_in, staging, goods_out, return, in_transit, in_use, off_fleet."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_StockLocationOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "tags": [
+          "reference"
+        ],
+        "summary": "Users (names and roles)",
+        "operationId": "reference-list_users",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ActiveFilter",
+              "default": "true"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: viewer, technician, dispatcher, admin.",
+              "title": "Role"
+            },
+            "description": "Comma-separated: viewer, technician, dispatcher, admin."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_UserSummary_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deviation-codes": {
+      "get": {
+        "tags": [
+          "reference"
+        ],
+        "summary": "Deviation codes",
+        "operationId": "reference-list_deviation_codes",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ActiveFilter",
+              "default": "true"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_DeviationCodeOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/search": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "summary": "Global search / command palette",
+        "operationId": "search-global_search",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100,
+              "title": "Q"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 20,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/{file_id}/download": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Download a file via a signed URL",
+        "operationId": "files-download_file",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "File Id"
+            }
+          },
+          {
+            "name": "expires",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Expires"
+            }
+          },
+          {
+            "name": "signature",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "title": "Signature"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File",
+            "content": {
+              "application/octet-stream": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Background jobs (running-jobs indicator)",
+        "operationId": "jobs-list_jobs",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "mine",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Mine"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: queued, running, succeeded, failed, cancelled.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: queued, running, succeeded, failed, cancelled."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_BackgroundJobOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -66,7 +955,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobOut"
+                  "$ref": "#/components/schemas/BackgroundJobOut"
                 }
               }
             }
@@ -76,7 +965,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -86,7 +975,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -96,7 +985,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ValidationProblem"
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -104,41 +993,42 @@
         }
       }
     },
-    "/api/v1/files/{token}": {
-      "get": {
+    "/api/v1/demo/reset": {
+      "post": {
         "tags": [
-          "files"
+          "demo"
         ],
-        "summary": "Download a file (signed URL)",
-        "operationId": "files-download_file",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Token"
+        "summary": "Reset demo data (demo mode only)",
+        "operationId": "demo-demo_reset",
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
             }
           },
-          {
-            "name": "inline",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "description": "Render inline instead of as attachment.",
-              "default": false,
-              "title": "Inline"
-            },
-            "description": "Render inline instead of as attachment."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The file",
+          "401": {
+            "description": "Unauthorized",
             "content": {
-              "application/octet-stream": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           },
           "404": {
@@ -146,17 +1036,119 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/healthz": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Process liveness",
+        "operationId": "health-healthz",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Healthz"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/readyz": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Readiness (DB + job queue)",
+        "operationId": "health-readyz",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readyz"
                 }
               }
             }
           },
-          "410": {
-            "description": "Gone",
+          "503": {
+            "description": "Not ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readyz"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/saved-views": {
+      "get": {
+        "tags": [
+          "saved-views"
+        ],
+        "summary": "Own and shared views",
+        "operationId": "saved-views-list_views",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "route",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Route"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse_SavedViewOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -166,7 +1158,930 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ValidationProblem"
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "saved-views"
+        ],
+        "summary": "Create a view",
+        "operationId": "saved-views-create_view",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SavedViewCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedViewOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/saved-views/{view_id}": {
+      "patch": {
+        "tags": [
+          "saved-views"
+        ],
+        "summary": "Update a view",
+        "operationId": "saved-views-update_view",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "view_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "View Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SavedViewPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedViewOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "saved-views"
+        ],
+        "summary": "Delete a view",
+        "operationId": "saved-views-delete_view",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "view_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "View Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{entity_id}/actions/{action}": {
+      "post": {
+        "tags": [
+          "actions"
+        ],
+        "summary": "Run a service request action",
+        "operationId": "actions-sr_action",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entity Id"
+            }
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Action"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "Action-specific fields + comment/version",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRequestDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/bulk/{action}": {
+      "post": {
+        "tags": [
+          "actions"
+        ],
+        "summary": "Run a service request action in bulk",
+        "operationId": "actions-sr_bulk",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Action"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "{ ids: number[] (1–200), comment?, ...actionFields }",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lease-returns/{entity_id}/actions/{action}": {
+      "post": {
+        "tags": [
+          "actions"
+        ],
+        "summary": "Run a lease return action",
+        "operationId": "actions-lease_action",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entity Id"
+            }
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Action"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "Action-specific fields + comment/version",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaseReturnDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lease-returns/bulk/{action}": {
+      "post": {
+        "tags": [
+          "actions"
+        ],
+        "summary": "Run a lease return action in bulk",
+        "operationId": "actions-lease_bulk",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Action"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "{ ids: number[] (1–200), comment?, ...actionFields }",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assets/{entity_id}/actions/{action}": {
+      "post": {
+        "tags": [
+          "actions"
+        ],
+        "summary": "Run an asset action",
+        "operationId": "actions-asset_action",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entity Id"
+            }
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Action"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "Action-specific fields + comment/version",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assets/bulk/{action}": {
+      "post": {
+        "tags": [
+          "actions"
+        ],
+        "summary": "Run an asset action in bulk",
+        "operationId": "actions-asset_bulk",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Action"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "{ ids: number[] (1–200), comment?, ...actionFields }",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -177,31 +2092,17 @@
   },
   "components": {
     "schemas": {
-      "CheckStatus": {
+      "ActiveFilter": {
         "type": "string",
         "enum": [
-          "ok",
-          "degraded",
-          "error"
+          "true",
+          "false",
+          "all"
         ]
       },
-      "DatabaseCheck": {
+      "Address": {
         "properties": {
-          "status": {
-            "$ref": "#/components/schemas/CheckStatus"
-          },
-          "latencyMs": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Latencyms"
-          },
-          "detail": {
+          "street": {
             "anyOf": [
               {
                 "type": "string"
@@ -210,84 +2111,267 @@
                 "type": "null"
               }
             ],
-            "title": "Detail"
-          }
-        },
-        "type": "object",
-        "required": [
-          "status"
-        ],
-        "title": "DatabaseCheck"
-      },
-      "HealthChecks": {
-        "properties": {
-          "database": {
-            "$ref": "#/components/schemas/DatabaseCheck"
+            "title": "Street"
           },
-          "jobQueue": {
-            "$ref": "#/components/schemas/JobQueueCheck"
+          "zip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zip"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country"
           }
         },
         "type": "object",
-        "required": [
-          "database",
-          "jobQueue"
-        ],
-        "title": "HealthChecks"
+        "title": "Address"
       },
-      "HealthOut": {
+      "AppConfig": {
         "properties": {
-          "status": {
-            "$ref": "#/components/schemas/CheckStatus"
+          "appName": {
+            "type": "string",
+            "const": "Hangar",
+            "title": "Appname",
+            "default": "Hangar"
           },
           "version": {
             "type": "string",
             "title": "Version"
           },
-          "environment": {
-            "type": "string",
-            "title": "Environment"
-          },
           "demoMode": {
             "type": "boolean",
             "title": "Demomode"
           },
-          "checks": {
-            "$ref": "#/components/schemas/HealthChecks"
+          "businessTimeZone": {
+            "type": "string",
+            "title": "Businesstimezone"
+          },
+          "today": {
+            "type": "string",
+            "title": "Today"
+          },
+          "gateways": {
+            "$ref": "#/components/schemas/GatewayBindings"
+          },
+          "mailpitUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mailpiturl"
+          },
+          "limits": {
+            "$ref": "#/components/schemas/Limits"
           }
         },
         "type": "object",
         "required": [
-          "status",
           "version",
-          "environment",
           "demoMode",
-          "checks"
+          "businessTimeZone",
+          "today",
+          "gateways",
+          "mailpitUrl",
+          "limits"
         ],
-        "title": "HealthOut"
+        "title": "AppConfig"
       },
-      "JobOut": {
+      "ArticleCategory": {
+        "type": "string",
+        "enum": [
+          "laptop",
+          "desktop",
+          "tablet",
+          "docking_station",
+          "monitor",
+          "headset",
+          "keyboard",
+          "mouse",
+          "webcam",
+          "bag",
+          "accessory"
+        ],
+        "title": "ArticleCategory"
+      },
+      "ArticleRef": {
         "properties": {
           "id": {
             "type": "integer",
             "title": "Id"
           },
-          "task": {
+          "number": {
             "type": "string",
-            "title": "Task"
+            "title": "Number"
           },
-          "queue": {
+          "name": {
             "type": "string",
-            "title": "Queue"
+            "title": "Name"
+          },
+          "modelNumber": {
+            "type": "string",
+            "title": "Modelnumber"
+          },
+          "internalDescription": {
+            "type": "string",
+            "title": "Internaldescription"
+          },
+          "category": {
+            "$ref": "#/components/schemas/ArticleCategory"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "name",
+          "modelNumber",
+          "internalDescription",
+          "category"
+        ],
+        "title": "ArticleRef"
+      },
+      "AssetAction": {
+        "type": "string",
+        "enum": [
+          "receive",
+          "place",
+          "assign",
+          "unassign",
+          "prepare",
+          "provide",
+          "return_to_hub",
+          "release",
+          "deploy",
+          "register_unknown",
+          "collect",
+          "sync_in_use",
+          "sync_collected",
+          "mark_missing",
+          "mark_found",
+          "inventory_relocate",
+          "deactivate",
+          "correct"
+        ],
+        "title": "AssetAction"
+      },
+      "AssetDetail": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "serialNumber": {
+            "type": "string",
+            "title": "Serialnumber"
+          },
+          "assetTag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assettag"
+          },
+          "article": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArticleRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
           },
           "status": {
-            "$ref": "#/components/schemas/JobStatus"
+            "$ref": "#/components/schemas/AssetStatus"
           },
-          "attempts": {
-            "type": "integer",
-            "title": "Attempts"
+          "location": {
+            "$ref": "#/components/schemas/LocationRef"
           },
-          "scheduledAt": {
+          "installationPlace": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Installationplace"
+          },
+          "serviceRequest": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SrRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "site": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "assignedContact": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContactRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "checkedInAt": {
             "anyOf": [
               {
                 "type": "string",
@@ -297,122 +2381,1510 @@
                 "type": "null"
               }
             ],
-            "title": "Scheduledat"
+            "title": "Checkedinat"
           },
-          "finished": {
-            "type": "boolean",
-            "title": "Finished"
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "source": {
+            "$ref": "#/components/schemas/AssetSource"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "externalAssetId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Externalassetid"
+          },
+          "ciName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ciname"
+          },
+          "orderNumber": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ordernumber"
+          },
+          "macAddress": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Macaddress"
+          },
+          "leaseReturn": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetLeaseRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "recentMovements": {
+            "items": {
+              "$ref": "#/components/schemas/AssetMovementOut"
+            },
+            "type": "array",
+            "title": "Recentmovements"
+          },
+          "blockedActions": {
+            "items": {
+              "$ref": "#/components/schemas/BlockedAction"
+            },
+            "type": "array",
+            "title": "Blockedactions"
           }
         },
         "type": "object",
         "required": [
           "id",
-          "task",
-          "queue",
+          "serialNumber",
+          "assetTag",
+          "article",
+          "model",
           "status",
-          "attempts",
-          "finished"
+          "location",
+          "installationPlace",
+          "serviceRequest",
+          "site",
+          "assignedContact",
+          "checkedInAt",
+          "statusChangedAt",
+          "source",
+          "availableActions",
+          "version",
+          "externalAssetId",
+          "ciName",
+          "orderNumber",
+          "macAddress",
+          "leaseReturn",
+          "recentMovements",
+          "blockedActions"
         ],
-        "title": "JobOut"
+        "title": "AssetDetail"
       },
-      "JobQueueCheck": {
+      "AssetLeaseRef": {
         "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
           "status": {
-            "$ref": "#/components/schemas/CheckStatus"
+            "$ref": "#/components/schemas/LeaseReturnStatus"
           },
-          "pending": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pending"
-          },
-          "running": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Running"
-          },
-          "failed": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Failed"
-          },
-          "workers": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Workers"
-          },
-          "detail": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Detail"
+          "retirementDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Retirementdate"
           }
         },
         "type": "object",
         "required": [
-          "status"
+          "id",
+          "status",
+          "retirementDate"
         ],
-        "title": "JobQueueCheck"
+        "title": "AssetLeaseRef"
+      },
+      "AssetMovementOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "action": {
+            "$ref": "#/components/schemas/AssetAction"
+          },
+          "actionLabel": {
+            "type": "string",
+            "title": "Actionlabel"
+          },
+          "fromStatus": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "toStatus": {
+            "$ref": "#/components/schemas/AssetStatus"
+          },
+          "fromLocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LocationRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "toLocation": {
+            "$ref": "#/components/schemas/LocationRef"
+          },
+          "fromInstallationPlace": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frominstallationplace"
+          },
+          "toInstallationPlace": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Toinstallationplace"
+          },
+          "serviceRequest": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SrRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "actor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trigger": {
+            "$ref": "#/components/schemas/Trigger"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "sourceRef": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sourceref"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Occurredat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "action",
+          "actionLabel",
+          "fromStatus",
+          "toStatus",
+          "fromLocation",
+          "toLocation",
+          "fromInstallationPlace",
+          "toInstallationPlace",
+          "serviceRequest",
+          "actor",
+          "trigger",
+          "reason",
+          "sourceRef",
+          "occurredAt"
+        ],
+        "title": "AssetMovementOut"
+      },
+      "AssetSource": {
+        "type": "string",
+        "enum": [
+          "import_new",
+          "import_status_sync",
+          "technician_scan",
+          "manual",
+          "seed"
+        ],
+        "title": "AssetSource"
+      },
+      "AssetStatus": {
+        "type": "string",
+        "enum": [
+          "available",
+          "assigned",
+          "prepared",
+          "provided",
+          "in_use",
+          "collected",
+          "missing",
+          "deactivated_returned",
+          "deactivated_bought_out",
+          "deactivated_disposed"
+        ],
+        "title": "AssetStatus"
+      },
+      "AssetSummary": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "serialNumber": {
+            "type": "string",
+            "title": "Serialnumber"
+          },
+          "assetTag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assettag"
+          },
+          "article": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArticleRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AssetStatus"
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationRef"
+          },
+          "installationPlace": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Installationplace"
+          },
+          "serviceRequest": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SrRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "serialNumber",
+          "assetTag",
+          "article",
+          "model",
+          "status",
+          "location",
+          "installationPlace",
+          "serviceRequest"
+        ],
+        "title": "AssetSummary"
+      },
+      "AttentionFlag": {
+        "type": "string",
+        "enum": [
+          "region_unresolved",
+          "contact_email_missing",
+          "unknown_article",
+          "appointment_soon_not_ready",
+          "appointment_overdue",
+          "escalated_stale",
+          "itsm_closed",
+          "hold_group_left",
+          "retirement_passed",
+          "not_collected"
+        ],
+        "title": "AttentionFlag"
+      },
+      "BackgroundJobOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/JobKind"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/JobProgress"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "cancelRequested": {
+            "type": "boolean",
+            "title": "Cancelrequested"
+          },
+          "entity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EntityRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "startedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Startedat"
+          },
+          "finishedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finishedat"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "progress",
+          "message",
+          "error",
+          "cancelRequested",
+          "entity",
+          "createdBy",
+          "createdAt",
+          "startedAt",
+          "finishedAt",
+          "result"
+        ],
+        "title": "BackgroundJobOut"
+      },
+      "BlockedAction": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "guard": {
+            "type": "string",
+            "title": "Guard"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action",
+          "guard",
+          "reason"
+        ],
+        "title": "BlockedAction"
+      },
+      "BulkFailure": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "message"
+        ],
+        "title": "BulkFailure"
+      },
+      "BulkResult": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "succeeded": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Succeeded"
+          },
+          "failed": {
+            "items": {
+              "$ref": "#/components/schemas/BulkFailure"
+            },
+            "type": "array",
+            "title": "Failed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "title": "BulkResult"
+      },
+      "ContactRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid"
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "displayName",
+          "email"
+        ],
+        "title": "ContactRef"
+      },
+      "DeliveryAddress": {
+        "properties": {
+          "street": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Street"
+          },
+          "zip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zip"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country"
+          },
+          "room": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Room"
+          },
+          "building": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Building"
+          }
+        },
+        "type": "object",
+        "title": "DeliveryAddress"
+      },
+      "DeliveryType": {
+        "type": "string",
+        "enum": [
+          "technician",
+          "parcel_to_user",
+          "parcel_to_pickup_point"
+        ],
+        "title": "DeliveryType"
+      },
+      "DeviationCategory": {
+        "type": "string",
+        "enum": [
+          "provider_reschedule",
+          "customer_reschedule",
+          "refusal",
+          "extra_effort",
+          "cancellation",
+          "site_issue"
+        ],
+        "title": "DeviationCategory"
+      },
+      "DeviationCodeOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "category": {
+            "$ref": "#/components/schemas/DeviationCategory"
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/DeviationOutcome"
+          },
+          "requiresComment": {
+            "type": "boolean",
+            "title": "Requirescomment"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "title": "Sortorder"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "label",
+          "description",
+          "category",
+          "outcome",
+          "requiresComment",
+          "isActive",
+          "sortOrder"
+        ],
+        "title": "DeviationCodeOut"
+      },
+      "DeviationCodeRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/DeviationOutcome"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "label",
+          "outcome"
+        ],
+        "title": "DeviationCodeRef"
+      },
+      "DeviationOut": {
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/DeviationCodeRef"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "comment"
+        ],
+        "title": "DeviationOut"
+      },
+      "DeviationOutcome": {
+        "type": "string",
+        "enum": [
+          "complete",
+          "reschedule",
+          "cancel"
+        ],
+        "title": "DeviationOutcome"
+      },
+      "EntityRef": {
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/EntityType"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "id",
+          "label"
+        ],
+        "title": "EntityRef"
+      },
+      "EntityType": {
+        "type": "string",
+        "enum": [
+          "service_request",
+          "lease_return",
+          "asset",
+          "calloff_order",
+          "inventory",
+          "import_job",
+          "tour",
+          "contact"
+        ]
+      },
+      "EnumValue": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "EnumsResponse": {
+        "properties": {
+          "serviceRequestStatus": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Servicerequeststatus"
+          },
+          "pipelineStage": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Pipelinestage"
+          },
+          "leaseReturnStatus": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Leasereturnstatus"
+          },
+          "assetStatus": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Assetstatus"
+          },
+          "locationType": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Locationtype"
+          },
+          "deliveryType": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Deliverytype"
+          },
+          "procurementType": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Procurementtype"
+          },
+          "itemSlot": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Itemslot"
+          },
+          "osReinstallTiming": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Osreinstalltiming"
+          },
+          "deactivationReason": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Deactivationreason"
+          },
+          "gender": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Gender"
+          },
+          "role": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Role"
+          },
+          "siteKind": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Sitekind"
+          },
+          "regionRuleMatchKind": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Regionrulematchkind"
+          },
+          "articleCategory": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Articlecategory"
+          },
+          "importType": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Importtype"
+          },
+          "importJobStatus": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Importjobstatus"
+          },
+          "inventoryStatus": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Inventorystatus"
+          },
+          "inventoryScanResult": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Inventoryscanresult"
+          },
+          "tourStatus": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Tourstatus"
+          },
+          "tourStopOutcome": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Tourstopoutcome"
+          },
+          "callOffOrderStatus": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Callofforderstatus"
+          },
+          "jobStatus": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Jobstatus"
+          },
+          "jobKind": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Jobkind"
+          },
+          "deviationCategory": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Deviationcategory"
+          },
+          "deviationOutcome": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Deviationoutcome"
+          },
+          "mailStatus": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Mailstatus"
+          },
+          "appointmentStatus": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Appointmentstatus"
+          },
+          "attentionFlag": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Attentionflag"
+          },
+          "trigger": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Trigger"
+          },
+          "assetAction": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Assetaction"
+          },
+          "readiness": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Readiness"
+          },
+          "scanVerdict": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Scanverdict"
+          },
+          "assetSource": {
+            "items": {
+              "$ref": "#/components/schemas/EnumValue"
+            },
+            "type": "array",
+            "title": "Assetsource"
+          },
+          "scanCode": {
+            "items": {
+              "$ref": "#/components/schemas/ScanCodeValue"
+            },
+            "type": "array",
+            "title": "Scancode"
+          },
+          "transitions": {
+            "$ref": "#/components/schemas/TransitionsMeta"
+          },
+          "permissions": {
+            "items": {
+              "$ref": "#/components/schemas/PermissionDef"
+            },
+            "type": "array",
+            "title": "Permissions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "serviceRequestStatus",
+          "pipelineStage",
+          "leaseReturnStatus",
+          "assetStatus",
+          "locationType",
+          "deliveryType",
+          "procurementType",
+          "itemSlot",
+          "osReinstallTiming",
+          "deactivationReason",
+          "gender",
+          "role",
+          "siteKind",
+          "regionRuleMatchKind",
+          "articleCategory",
+          "importType",
+          "importJobStatus",
+          "inventoryStatus",
+          "inventoryScanResult",
+          "tourStatus",
+          "tourStopOutcome",
+          "callOffOrderStatus",
+          "jobStatus",
+          "jobKind",
+          "deviationCategory",
+          "deviationOutcome",
+          "mailStatus",
+          "appointmentStatus",
+          "attentionFlag",
+          "trigger",
+          "assetAction",
+          "readiness",
+          "scanVerdict",
+          "assetSource",
+          "scanCode",
+          "transitions",
+          "permissions"
+        ],
+        "title": "EnumsResponse"
+      },
+      "GatewayBindings": {
+        "properties": {
+          "booking": {
+            "type": "string",
+            "enum": [
+              "fake",
+              "real"
+            ],
+            "title": "Booking"
+          },
+          "carrier": {
+            "type": "string",
+            "enum": [
+              "fake",
+              "real"
+            ],
+            "title": "Carrier"
+          },
+          "mailer": {
+            "type": "string",
+            "enum": [
+              "smtp",
+              "memory",
+              "console"
+            ],
+            "title": "Mailer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "booking",
+          "carrier",
+          "mailer"
+        ],
+        "title": "GatewayBindings"
+      },
+      "Healthz": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok",
+            "title": "Status",
+            "default": "ok"
+          }
+        },
+        "type": "object",
+        "title": "Healthz"
+      },
+      "HoldSource": {
+        "type": "string",
+        "enum": [
+          "import",
+          "manual"
+        ],
+        "title": "HoldSource",
+        "description": "Who put an SR on hardware hold (SPEC_RESOLUTIONS #37)."
+      },
+      "ItemSlot": {
+        "type": "string",
+        "enum": [
+          "new_base",
+          "new_peripheral_1",
+          "new_peripheral_2",
+          "old_base",
+          "old_peripheral_1",
+          "old_peripheral_2"
+        ],
+        "title": "ItemSlot"
+      },
+      "JobAccepted": {
+        "properties": {
+          "jobId": {
+            "type": "integer",
+            "title": "Jobid"
+          },
+          "status": {
+            "type": "string",
+            "const": "queued",
+            "title": "Status",
+            "default": "queued"
+          },
+          "importJobId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Importjobid"
+          },
+          "dispatchRunId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dispatchrunid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "jobId"
+        ],
+        "title": "JobAccepted"
+      },
+      "JobKind": {
+        "type": "string",
+        "enum": [
+          "import",
+          "appointments_sync",
+          "stock_recalculate",
+          "comms_dispatch",
+          "regions_reapply",
+          "demo_reset"
+        ],
+        "title": "JobKind"
+      },
+      "JobProgress": {
+        "properties": {
+          "processed": {
+            "type": "integer",
+            "title": "Processed"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          },
+          "percent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percent"
+          }
+        },
+        "type": "object",
+        "required": [
+          "processed",
+          "total",
+          "percent"
+        ],
+        "title": "JobProgress"
       },
       "JobStatus": {
         "type": "string",
         "enum": [
-          "todo",
-          "doing",
+          "queued",
+          "running",
           "succeeded",
           "failed",
-          "cancelled",
-          "aborting",
-          "aborted"
-        ]
+          "cancelled"
+        ],
+        "title": "JobStatus"
       },
-      "ProblemDetails": {
-        "additionalProperties": true,
-        "description": "RFC 9457 problem details. Extension members may be present.",
+      "LeaseReturnDetail": {
         "properties": {
-          "type": {
-            "default": "about:blank",
-            "description": "URI identifying the problem type.",
-            "title": "Type",
-            "type": "string"
+          "id": {
+            "type": "integer",
+            "title": "Id"
           },
-          "title": {
-            "title": "Title",
-            "type": "string"
+          "assetTag": {
+            "type": "string",
+            "title": "Assettag"
+          },
+          "serialNumber": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Serialnumber"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "modelCategory": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Modelcategory"
+          },
+          "retirementDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Retirementdate"
+          },
+          "daysUntilRetirement": {
+            "type": "integer",
+            "title": "Daysuntilretirement"
+          },
+          "contact": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContactRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid"
           },
           "status": {
-            "title": "Status",
-            "type": "integer"
+            "$ref": "#/components/schemas/LeaseReturnStatus"
           },
-          "detail": {
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          },
+          "communicationDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationdate"
+          },
+          "communicationPaused": {
+            "type": "boolean",
+            "title": "Communicationpaused"
+          },
+          "communicationResumeDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationresumedate"
+          },
+          "serviceRequest": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LeaseSrRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "commentCount": {
+            "type": "integer",
+            "title": "Commentcount"
+          },
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/AttentionFlag"
+            },
+            "type": "array",
+            "title": "Attention"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "checkedInAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checkedinat"
+          },
+          "installStatus": {
             "anyOf": [
               {
                 "type": "string"
@@ -421,10 +3893,9 @@
                 "type": "null"
               }
             ],
-            "default": null,
-            "title": "Detail"
+            "title": "Installstatus"
           },
-          "instance": {
+          "ciName": {
             "anyOf": [
               {
                 "type": "string"
@@ -433,10 +3904,9 @@
                 "type": "null"
               }
             ],
-            "default": null,
-            "title": "Instance"
+            "title": "Ciname"
           },
-          "requestId": {
+          "costCenter": {
             "anyOf": [
               {
                 "type": "string"
@@ -445,23 +3915,2553 @@
                 "type": "null"
               }
             ],
-            "default": null,
-            "title": "Requestid"
+            "title": "Costcenter"
+          },
+          "communicationPauseReason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationpausereason"
+          },
+          "infoSentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Infosentat"
+          },
+          "reminder1SentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reminder1Sentat"
+          },
+          "reminder2SentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reminder2Sentat"
+          },
+          "escalationSentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Escalationsentat"
+          },
+          "escalationEmail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Escalationemail"
+          },
+          "linkedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linkedat"
+          },
+          "closedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closedat"
+          },
+          "closeReason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closereason"
+          },
+          "importedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Importedat"
+          },
+          "lastSeenAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Lastseenat"
+          },
+          "asset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "blockedActions": {
+            "items": {
+              "$ref": "#/components/schemas/BlockedAction"
+            },
+            "type": "array",
+            "title": "Blockedactions"
           }
         },
+        "type": "object",
         "required": [
-          "title",
+          "id",
+          "assetTag",
+          "serialNumber",
+          "model",
+          "modelCategory",
+          "retirementDate",
+          "daysUntilRetirement",
+          "contact",
+          "userId",
+          "status",
+          "statusChangedAt",
+          "isVip",
+          "isCampus",
+          "communicationDate",
+          "communicationPaused",
+          "communicationResumeDate",
+          "serviceRequest",
+          "commentCount",
+          "attention",
+          "availableActions",
+          "version",
+          "checkedInAt",
+          "installStatus",
+          "ciName",
+          "costCenter",
+          "communicationPauseReason",
+          "infoSentAt",
+          "reminder1SentAt",
+          "reminder2SentAt",
+          "escalationSentAt",
+          "escalationEmail",
+          "linkedAt",
+          "closedAt",
+          "closeReason",
+          "importedAt",
+          "lastSeenAt",
+          "asset",
+          "blockedActions"
+        ],
+        "title": "LeaseReturnDetail"
+      },
+      "LeaseReturnStatus": {
+        "type": "string",
+        "enum": [
+          "imported",
+          "imported_vip",
+          "info_sent",
+          "reminder_1_sent",
+          "reminder_2_sent",
+          "escalated",
+          "replacement_ordered",
+          "probably_closed",
+          "closed"
+        ],
+        "title": "LeaseReturnStatus"
+      },
+      "LeaseSrRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
           "status"
         ],
-        "title": "ProblemDetails",
+        "title": "LeaseSrRef"
+      },
+      "Limits": {
+        "properties": {
+          "importMaxBytes": {
+            "type": "integer",
+            "title": "Importmaxbytes"
+          },
+          "importMaxRows": {
+            "type": "integer",
+            "title": "Importmaxrows"
+          },
+          "deactivationMaxRows": {
+            "type": "integer",
+            "title": "Deactivationmaxrows"
+          },
+          "bulkMaxIds": {
+            "type": "integer",
+            "title": "Bulkmaxids"
+          },
+          "perPageMax": {
+            "type": "integer",
+            "title": "Perpagemax"
+          }
+        },
+        "type": "object",
+        "required": [
+          "importMaxBytes",
+          "importMaxRows",
+          "deactivationMaxRows",
+          "bulkMaxIds",
+          "perPageMax"
+        ],
+        "title": "Limits"
+      },
+      "LinkedLeaseReturn": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "assetTag": {
+            "type": "string",
+            "title": "Assettag"
+          },
+          "status": {
+            "$ref": "#/components/schemas/LeaseReturnStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "assetTag",
+          "status"
+        ],
+        "title": "LinkedLeaseReturn"
+      },
+      "ListResponse_BackgroundJobOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/BackgroundJobOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "BackgroundJobOutList"
+      },
+      "ListResponse_DeviationCodeOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/DeviationCodeOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "DeviationCodeOutList"
+      },
+      "ListResponse_Persona_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/Persona"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "PersonaList"
+      },
+      "ListResponse_RegionOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/RegionOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "RegionOutList"
+      },
+      "ListResponse_SavedViewOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/SavedViewOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "SavedViewOutList"
+      },
+      "ListResponse_SiteOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/SiteOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "SiteOutList"
+      },
+      "ListResponse_StockLocationOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/StockLocationOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "StockLocationOutList"
+      },
+      "ListResponse_UserSummary_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/UserSummary"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "UserSummaryList"
+      },
+      "LocationRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "type": {
+            "$ref": "#/components/schemas/LocationType"
+          },
+          "siteId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Siteid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name",
+          "type",
+          "siteId"
+        ],
+        "title": "LocationRef"
+      },
+      "LocationType": {
+        "type": "string",
+        "enum": [
+          "goods_in",
+          "staging",
+          "goods_out",
+          "return",
+          "in_transit",
+          "in_use",
+          "off_fleet"
+        ],
+        "title": "LocationType"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 254,
+            "minLength": 3,
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "LoginResponse": {
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "title": "Accesstoken"
+          },
+          "tokenType": {
+            "type": "string",
+            "const": "Bearer",
+            "title": "Tokentype",
+            "default": "Bearer"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expiresat"
+          },
+          "user": {
+            "$ref": "#/components/schemas/Me"
+          }
+        },
+        "type": "object",
+        "required": [
+          "accessToken",
+          "expiresAt",
+          "user"
+        ],
+        "title": "LoginResponse"
+      },
+      "Me": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "firstName": {
+            "type": "string",
+            "title": "Firstname"
+          },
+          "lastName": {
+            "type": "string",
+            "title": "Lastname"
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Permissions"
+          },
+          "homeSite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isDemoPersona": {
+            "type": "boolean",
+            "title": "Isdemopersona"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "firstName",
+          "lastName",
+          "displayName",
+          "role",
+          "permissions",
+          "homeSite",
+          "isDemoPersona"
+        ],
+        "title": "Me"
+      },
+      "Milestones": {
+        "properties": {
+          "personalizedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Personalizedat"
+          },
+          "orderClosedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Orderclosedat"
+          },
+          "providedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Providedat"
+          },
+          "shippedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shippedat"
+          },
+          "completedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completedat"
+          },
+          "cancelledAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancelledat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "personalizedAt",
+          "orderClosedAt",
+          "providedAt",
+          "shippedAt",
+          "completedAt",
+          "cancelledAt"
+        ],
+        "title": "Milestones"
+      },
+      "OsReinstallTiming": {
+        "type": "string",
+        "enum": [
+          "on_pickup",
+          "on_delivery"
+        ],
+        "title": "OsReinstallTiming"
+      },
+      "PermissionDef": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label"
+        ],
+        "title": "PermissionDef"
+      },
+      "Persona": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "roleLabel": {
+            "type": "string",
+            "title": "Rolelabel"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "homeSite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "more_technicians"
+            ],
+            "title": "Group"
+          },
+          "initials": {
+            "type": "string",
+            "title": "Initials"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "displayName",
+          "role",
+          "roleLabel",
+          "description",
+          "homeSite",
+          "group",
+          "initials"
+        ],
+        "title": "Persona"
+      },
+      "PersonaLoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 254,
+            "minLength": 3,
+            "title": "Email"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "PersonaLoginRequest"
+      },
+      "PickupPoint": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "street": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Street"
+          },
+          "zip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zip"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "street",
+          "zip",
+          "city"
+        ],
+        "title": "PickupPoint"
+      },
+      "PipelineStage": {
+        "type": "string",
+        "enum": [
+          "imported",
+          "invited",
+          "booked",
+          "personalizing",
+          "ready",
+          "delivery",
+          "deployed",
+          "closed"
+        ],
+        "title": "PipelineStage"
+      },
+      "ProcurementType": {
+        "type": "string",
+        "enum": [
+          "replacement",
+          "new_hire",
+          "additional_device",
+          "removal"
+        ],
+        "title": "ProcurementType"
+      },
+      "Readyz": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ],
+            "title": "Status"
+          },
+          "db": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ],
+            "title": "Db"
+          },
+          "queue": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ],
+            "title": "Queue"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "db",
+          "queue"
+        ],
+        "title": "Readyz"
+      },
+      "RegionOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "supplyingSite": {
+            "$ref": "#/components/schemas/SiteRef"
+          },
+          "defaultDeliveryType": {
+            "$ref": "#/components/schemas/DeliveryType"
+          },
+          "bookingDestinationId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bookingdestinationid"
+          },
+          "bookingServiceId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bookingserviceid"
+          },
+          "pickupPoint": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PickupPoint"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "title": "Sortorder"
+          },
+          "ruleCount": {
+            "type": "integer",
+            "title": "Rulecount"
+          },
+          "openServiceRequests": {
+            "type": "integer",
+            "title": "Openservicerequests"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name",
+          "supplyingSite",
+          "defaultDeliveryType",
+          "bookingDestinationId",
+          "bookingServiceId",
+          "pickupPoint",
+          "isActive",
+          "sortOrder",
+          "ruleCount",
+          "openServiceRequests"
+        ],
+        "title": "RegionOut"
+      },
+      "RegionRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name"
+        ],
+        "title": "RegionRef"
+      },
+      "RegionRuleMatchKind": {
+        "type": "string",
+        "enum": [
+          "cost_center",
+          "zip",
+          "zip_prefix",
+          "city"
+        ],
+        "title": "RegionRuleMatchKind"
+      },
+      "RegionRuleRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "matchKind": {
+            "$ref": "#/components/schemas/RegionRuleMatchKind"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "Pattern"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "matchKind",
+          "pattern"
+        ],
+        "title": "RegionRuleRef"
+      },
+      "Role": {
+        "type": "string",
+        "enum": [
+          "viewer",
+          "technician",
+          "dispatcher",
+          "admin"
+        ],
+        "title": "Role"
+      },
+      "SavedViewCreate": {
+        "properties": {
+          "route": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Route"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "search": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Search"
+          },
+          "isShared": {
+            "type": "boolean",
+            "title": "Isshared",
+            "default": false
+          },
+          "sortOrder": {
+            "type": "integer",
+            "maximum": 32000.0,
+            "minimum": 0.0,
+            "title": "Sortorder",
+            "default": 0
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "route",
+          "name",
+          "search"
+        ],
+        "title": "SavedViewCreate"
+      },
+      "SavedViewOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "route": {
+            "type": "string",
+            "title": "Route"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "search": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Search"
+          },
+          "isShared": {
+            "type": "boolean",
+            "title": "Isshared"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "title": "Sortorder"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "isOwn": {
+            "type": "boolean",
+            "title": "Isown"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "route",
+          "name",
+          "search",
+          "isShared",
+          "sortOrder",
+          "owner",
+          "isOwn",
+          "createdAt"
+        ],
+        "title": "SavedViewOut"
+      },
+      "SavedViewPatch": {
+        "properties": {
+          "route": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Route"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "search": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Search"
+          },
+          "isShared": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Isshared"
+          },
+          "sortOrder": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 32000.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sortorder"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "SavedViewPatch"
+      },
+      "ScanCodeValue": {
+        "properties": {
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "verdict": {
+            "$ref": "#/components/schemas/ScanVerdict"
+          },
+          "tone": {
+            "$ref": "#/components/schemas/Tone"
+          },
+          "sound": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "warn",
+              "error"
+            ],
+            "title": "Sound"
+          },
+          "order": {
+            "type": "integer",
+            "title": "Order"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value",
+          "label",
+          "verdict",
+          "tone",
+          "sound",
+          "order"
+        ],
+        "title": "ScanCodeValue"
+      },
+      "ScanVerdict": {
+        "type": "string",
+        "enum": [
+          "ok",
+          "warning",
+          "error"
+        ],
+        "title": "ScanVerdict"
+      },
+      "SearchGroup": {
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/SearchKind"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "hits": {
+            "items": {
+              "$ref": "#/components/schemas/SearchHit"
+            },
+            "type": "array",
+            "title": "Hits"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "label",
+          "hits"
+        ],
+        "title": "SearchGroup"
+      },
+      "SearchHit": {
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/SearchKind"
+          },
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "tone": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Tone"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "href": {
+            "type": "string",
+            "title": "Href"
+          },
+          "exact": {
+            "type": "boolean",
+            "title": "Exact"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "id",
+          "title",
+          "subtitle",
+          "status",
+          "tone",
+          "href",
+          "exact"
+        ],
+        "title": "SearchHit"
+      },
+      "SearchKind": {
+        "type": "string",
+        "enum": [
+          "service_request",
+          "lease_return",
+          "asset",
+          "contact",
+          "installation_place"
+        ]
+      },
+      "SearchResponse": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "title": "Query"
+          },
+          "exact": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SearchHit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/SearchGroup"
+            },
+            "type": "array",
+            "title": "Groups"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query",
+          "exact",
+          "groups"
+        ],
+        "title": "SearchResponse"
+      },
+      "ServiceRequestDetail": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "taskNumber": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasknumber"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStage"
+          },
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/ContactRef"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supplyingSite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deliveryType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "procurementType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcurementType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "newItemTypes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Newitemtypes"
+          },
+          "appointmentStartAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentstartat"
+          },
+          "appointmentEndAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentendat"
+          },
+          "appointmentCalendarId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarid"
+          },
+          "appointmentCalendarName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarname"
+          },
+          "communicationDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationdate"
+          },
+          "communicationPaused": {
+            "type": "boolean",
+            "title": "Communicationpaused"
+          },
+          "communicationResumeDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationresumedate"
+          },
+          "editor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "importedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Importedat"
+          },
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/AttentionFlag"
+            },
+            "type": "array",
+            "title": "Attention"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "itsmState": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Itsmstate"
+          },
+          "assignmentGroup": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignmentgroup"
+          },
+          "openedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Openedat"
+          },
+          "catalogItem": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catalogitem"
+          },
+          "shortDescription": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shortdescription"
+          },
+          "costCenter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Costcenter"
+          },
+          "scopeOfDelivery": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scopeofdelivery"
+          },
+          "clientComponent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clientcomponent"
+          },
+          "requestedSoftware": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Requestedsoftware"
+          },
+          "addedSoftware": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Addedsoftware"
+          },
+          "installedSoftware": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Installedsoftware"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "onsiteContactPhone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onsitecontactphone"
+          },
+          "deliveryAddress": {
+            "$ref": "#/components/schemas/DeliveryAddress"
+          },
+          "regionRule": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionRuleRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "regionOverridden": {
+            "type": "boolean",
+            "title": "Regionoverridden"
+          },
+          "resolvedDeliveryType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deliveryTypeOverride": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "resumeStatus": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ServiceRequestStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "communicationPauseReason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationpausereason"
+          },
+          "hardwareUnavailableNotifiedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hardwareunavailablenotifiedat"
+          },
+          "holdSource": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HoldSource"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "claimedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Claimedat"
+          },
+          "withoutAssetPrep": {
+            "type": "boolean",
+            "title": "Withoutassetprep"
+          },
+          "osReinstall": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OsReinstallTiming"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deviation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeviationOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ServiceRequestItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "linkedLeaseReturns": {
+            "items": {
+              "$ref": "#/components/schemas/LinkedLeaseReturn"
+            },
+            "type": "array",
+            "title": "Linkedleasereturns"
+          },
+          "milestones": {
+            "$ref": "#/components/schemas/Milestones"
+          },
+          "bookingLink": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bookinglink"
+          },
+          "protocolAvailable": {
+            "type": "boolean",
+            "title": "Protocolavailable"
+          },
+          "lastImportedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Lastimportedat"
+          },
+          "lastImportJobId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastimportjobid"
+          },
+          "blockedActions": {
+            "items": {
+              "$ref": "#/components/schemas/BlockedAction"
+            },
+            "type": "array",
+            "title": "Blockedactions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "taskNumber",
+          "status",
+          "stage",
+          "statusChangedAt",
+          "contact",
+          "region",
+          "supplyingSite",
+          "deliveryType",
+          "isCampus",
+          "isVip",
+          "procurementType",
+          "newItemTypes",
+          "appointmentStartAt",
+          "appointmentEndAt",
+          "appointmentCalendarId",
+          "appointmentCalendarName",
+          "communicationDate",
+          "communicationPaused",
+          "communicationResumeDate",
+          "editor",
+          "importedAt",
+          "attention",
+          "availableActions",
+          "version",
+          "itsmState",
+          "assignmentGroup",
+          "openedAt",
+          "catalogItem",
+          "shortDescription",
+          "costCenter",
+          "scopeOfDelivery",
+          "clientComponent",
+          "requestedSoftware",
+          "addedSoftware",
+          "installedSoftware",
+          "note",
+          "onsiteContactPhone",
+          "deliveryAddress",
+          "regionRule",
+          "regionOverridden",
+          "resolvedDeliveryType",
+          "deliveryTypeOverride",
+          "resumeStatus",
+          "communicationPauseReason",
+          "hardwareUnavailableNotifiedAt",
+          "holdSource",
+          "claimedAt",
+          "withoutAssetPrep",
+          "osReinstall",
+          "deviation",
+          "items",
+          "linkedLeaseReturns",
+          "milestones",
+          "bookingLink",
+          "protocolAvailable",
+          "lastImportedAt",
+          "lastImportJobId",
+          "blockedActions"
+        ],
+        "title": "ServiceRequestDetail"
+      },
+      "ServiceRequestItemOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "slot": {
+            "$ref": "#/components/schemas/ItemSlot"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "deliver",
+              "collect"
+            ],
+            "title": "Direction"
+          },
+          "requestedType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestedtype"
+          },
+          "article": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArticleRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "expectedAssetTag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expectedassettag"
+          },
+          "asset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "assignedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignedat"
+          },
+          "assignedBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "packedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Packedat"
+          },
+          "packedBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "verifiedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verifiedat"
+          },
+          "verifiedBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "verifiedSerial": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verifiedserial"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "slot",
+          "direction",
+          "requestedType",
+          "article",
+          "expectedAssetTag",
+          "asset",
+          "assignedAt",
+          "assignedBy",
+          "packedAt",
+          "packedBy",
+          "verifiedAt",
+          "verifiedBy",
+          "verifiedSerial"
+        ],
+        "title": "ServiceRequestItemOut"
+      },
+      "ServiceRequestStatus": {
+        "type": "string",
+        "enum": [
+          "imported",
+          "imported_vip",
+          "hardware_unavailable",
+          "invited",
+          "campus_info_sent",
+          "reminder_1_sent",
+          "reminder_2_sent",
+          "escalated",
+          "appointment_booked",
+          "personalization_in_progress",
+          "personalization_done",
+          "ready_for_picking",
+          "shipped",
+          "provided",
+          "reschedule_needed",
+          "completed",
+          "cancelled"
+        ],
+        "title": "ServiceRequestStatus"
+      },
+      "SiteKind": {
+        "type": "string",
+        "enum": [
+          "hub",
+          "campus"
+        ],
+        "title": "SiteKind"
+      },
+      "SiteOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/SiteKind"
+          },
+          "parentSiteId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentsiteid"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "title": "Sortorder"
+          },
+          "locations": {
+            "items": {
+              "$ref": "#/components/schemas/LocationRef"
+            },
+            "type": "array",
+            "title": "Locations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name",
+          "kind",
+          "parentSiteId",
+          "address",
+          "isActive",
+          "sortOrder",
+          "locations"
+        ],
+        "title": "SiteOut"
+      },
+      "SiteRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/SiteKind"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name",
+          "kind"
+        ],
+        "title": "SiteRef"
+      },
+      "SrRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number"
+        ],
+        "title": "SrRef"
+      },
+      "StockLocationOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "type": {
+            "$ref": "#/components/schemas/LocationType"
+          },
+          "siteId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Siteid"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "title": "Sortorder"
+          },
+          "site": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name",
+          "type",
+          "siteId",
+          "isActive",
+          "sortOrder",
+          "site"
+        ],
+        "title": "StockLocationOut"
+      },
+      "Tone": {
+        "type": "string",
+        "enum": [
+          "intake",
+          "outreach",
+          "booked",
+          "workshop",
+          "transit",
+          "done",
+          "caution",
+          "critical"
+        ],
+        "title": "Tone"
+      },
+      "TransitionDef": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "from": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "From"
+          },
+          "to": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "To"
+          },
+          "triggers": {
+            "items": {
+              "$ref": "#/components/schemas/Trigger"
+            },
+            "type": "array",
+            "title": "Triggers"
+          },
+          "permission": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Permission"
+          },
+          "bulk": {
+            "type": "boolean",
+            "title": "Bulk"
+          },
+          "requiresComment": {
+            "type": "boolean",
+            "title": "Requirescomment"
+          },
+          "destructive": {
+            "type": "boolean",
+            "title": "Destructive"
+          },
+          "owner": {
+            "type": "string",
+            "title": "Owner"
+          },
+          "internal": {
+            "type": "boolean",
+            "title": "Internal"
+          },
+          "viaEndpoint": {
+            "type": "boolean",
+            "title": "Viaendpoint"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action",
+          "label",
+          "from",
+          "to",
+          "triggers",
+          "permission",
+          "bulk",
+          "requiresComment",
+          "destructive",
+          "owner",
+          "internal",
+          "viaEndpoint"
+        ],
+        "title": "TransitionDef"
+      },
+      "TransitionsMeta": {
+        "properties": {
+          "serviceRequest": {
+            "items": {
+              "$ref": "#/components/schemas/TransitionDef"
+            },
+            "type": "array",
+            "title": "Servicerequest"
+          },
+          "leaseReturn": {
+            "items": {
+              "$ref": "#/components/schemas/TransitionDef"
+            },
+            "type": "array",
+            "title": "Leasereturn"
+          },
+          "asset": {
+            "items": {
+              "$ref": "#/components/schemas/TransitionDef"
+            },
+            "type": "array",
+            "title": "Asset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "serviceRequest",
+          "leaseReturn",
+          "asset"
+        ],
+        "title": "TransitionsMeta"
+      },
+      "Trigger": {
+        "type": "string",
+        "enum": [
+          "user",
+          "job",
+          "import",
+          "sync",
+          "system"
+        ],
+        "title": "Trigger"
+      },
+      "UserRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "displayName",
+          "email",
+          "role"
+        ],
+        "title": "UserRef"
+      },
+      "UserSummary": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "firstName": {
+            "type": "string",
+            "title": "Firstname"
+          },
+          "lastName": {
+            "type": "string",
+            "title": "Lastname"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "homeSite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive"
+          },
+          "lastLoginAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastloginat"
+          },
+          "isDemoPersona": {
+            "type": "boolean",
+            "title": "Isdemopersona"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "displayName",
+          "firstName",
+          "lastName",
+          "role",
+          "homeSite",
+          "isActive",
+          "lastLoginAt",
+          "isDemoPersona"
+        ],
+        "title": "UserSummary"
+      },
+      "GuardInfo": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "GuardInfo",
         "type": "object"
       },
-      "ValidationProblem": {
+      "Problem": {
         "additionalProperties": true,
+        "description": "RFC 9457 problem details (API.md ``Problem``).",
         "properties": {
           "type": {
-            "default": "about:blank",
-            "description": "URI identifying the problem type.",
             "title": "Type",
             "type": "string"
           },
@@ -482,58 +6482,91 @@
                 "type": "null"
               }
             ],
-            "default": null,
             "title": "Detail"
           },
           "instance": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Instance"
+            "title": "Instance",
+            "type": "string"
           },
-          "requestId": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Requestid"
+          "code": {
+            "title": "Code",
+            "type": "string"
           },
           "errors": {
-            "additionalProperties": {
-              "items": {
-                "type": "string"
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "type": "object"
               },
-              "type": "array"
-            },
-            "description": "Field path (camelCase, dot-separated) -> messages.",
-            "title": "Errors",
-            "type": "object"
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "422 only",
+            "title": "Errors"
+          },
+          "guard": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardInfo"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "409 guard_failed only"
+          },
+          "allowedActions": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Allowedactions"
+          },
+          "currentVersion": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Currentversion"
           }
         },
         "required": [
+          "type",
           "title",
           "status",
-          "errors"
+          "detail",
+          "instance",
+          "code"
         ],
-        "title": "ValidationProblem",
+        "title": "Problem",
         "type": "object"
       }
     },
     "securitySchemes": {
       "HTTPBearer": {
         "type": "http",
-        "description": "JWT access token from POST /auth/login.",
+        "description": "JWT from POST /auth/login.",
         "scheme": "bearer"
       }
     }

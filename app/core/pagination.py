@@ -1,23 +1,27 @@
-"""List endpoints: ``?page=&perPage=`` pagination, ``?sort=a,-b`` sorting, free-text search.
+"""List endpoints (API.md §1.2–1.3): paging, sorting, comma-separated filters, search.
 
 Response envelope::
 
     {"data": [...], "meta": {"page": 1, "perPage": 25, "total": 123, "totalPages": 5}}
 
-Typical router code::
+Typical router code (see CONVENTIONS.md §7)::
 
-    SORT = sort_param({"createdAt": Thing.created_at, "name": Thing.name}, default="-createdAt")
+    SORT = sort_param({"number": SR.number, "importedAt": SR.imported_at}, default="-importedAt",
+                      tiebreaker=SR.id)
 
     @router.get("", response_model=Page[ThingOut])
     async def list_things(session: SessionDep, paging: PageParamsDep,
-                          order: Annotated[list[OrderBy], Depends(SORT)]):
-        stmt = select(Thing).order_by(*order)
+                          order: Annotated[list[OrderBy], Depends(SORT)],
+                          status: Annotated[list[Status] | None, Depends(csv_enum("status", Status))]):
+        ...
         return await paginate(session, stmt, paging, ThingOut)
 """
 
 import math
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
+from datetime import date
+from enum import StrEnum
 from typing import Annotated, Any
 
 from fastapi import Depends, Query
@@ -27,7 +31,7 @@ from sqlalchemy import cast as sql_cast
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import InstrumentedAttribute
 
-from app.core.errors import DomainValidationError
+from app.core.errors import ValidationProblem
 from app.core.schemas import ApiModel
 
 DEFAULT_PER_PAGE = 25
@@ -76,7 +80,7 @@ def page_params(
     page: Annotated[int, Query(ge=1, description="1-based page number.")] = 1,
     per_page: Annotated[
         int,
-        Query(alias="perPage", ge=1, le=MAX_PER_PAGE, description="Items per page (max 200)."),
+        Query(alias="perPage", ge=1, le=MAX_PER_PAGE, description="Items per page (1–200)."),
     ] = DEFAULT_PER_PAGE,
 ) -> PageParams:
     return PageParams(page=page, per_page=per_page)
@@ -85,17 +89,30 @@ def page_params(
 PageParamsDep = Annotated[PageParams, Depends(page_params)]
 
 
+async def fetch_page(
+    session: AsyncSession, stmt: Select[Any], params: PageParams
+) -> tuple[list[Any], PageMeta]:
+    """Rows of one page + meta, for async builders (``Page[X](data=await build(rows), meta=meta)``)."""
+    count_stmt = select(func.count()).select_from(
+        stmt.order_by(None).limit(None).offset(None).subquery()
+    )
+    total = int((await session.execute(count_stmt)).scalar_one())
+    rows = (await session.scalars(stmt.limit(params.per_page).offset(params.offset))).unique().all()
+    return list(rows), params.meta(total)
+
+
 async def paginate[S: BaseModel](
     session: AsyncSession,
     stmt: Select[Any],
     params: PageParams,
-    schema: type[S],
+    schema: type[S] | None = None,
     *,
+    transform: Callable[[Any], Any] | None = None,
     scalars: bool = True,
 ) -> Page[S]:
-    """Count + fetch one page of ``stmt`` and convert rows with ``schema.model_validate``.
+    """Count + fetch one page of ``stmt``.
 
-    ``scalars=False`` validates ``row._mapping`` (for multi-column selects).
+    Rows are converted with ``transform(row)`` if given, else ``schema.model_validate``.
     Use ``selectinload`` (not ``joinedload``) for collections so the count stays correct.
     """
     count_stmt = select(func.count()).select_from(
@@ -104,21 +121,24 @@ async def paginate[S: BaseModel](
     total = int((await session.execute(count_stmt)).scalar_one())
     page_stmt = stmt.limit(params.per_page).offset(params.offset)
     if scalars:
-        rows: Sequence[Any] = (await session.scalars(page_stmt)).all()
+        rows: Sequence[Any] = (await session.scalars(page_stmt)).unique().all()
     else:
         rows = [row._mapping for row in (await session.execute(page_stmt)).all()]
-    page_model = Page[schema]
-    return page_model(data=[schema.model_validate(row) for row in rows], meta=params.meta(total))
+    if transform is not None:
+        data = [transform(row) for row in rows]
+    elif schema is not None:
+        data = [schema.model_validate(row) for row in rows]
+    else:
+        data = list(rows)
+    page_model = Page[schema] if schema is not None else Page[Any]
+    return page_model(data=data, meta=params.meta(total))
 
 
-# --- sorting -------------------------------------------------------------------------
+# --- sorting ----------------------------------------------------------------------------------
 
 
 def parse_sort(raw: str | None, allowed: Sequence[str]) -> list[tuple[str, bool]]:
-    """Parse ``"a,-b"`` into ``[("a", False), ("b", True)]`` (second item = descending).
-
-    Raises :class:`DomainValidationError` (422, field ``sort``) for unknown or repeated keys.
-    """
+    """``"a,-b"`` → ``[("a", False), ("b", True)]``; unknown keys → 422 ``errors.sort``."""
     if not raw:
         return []
     result: list[tuple[str, bool]] = []
@@ -138,7 +158,7 @@ def parse_sort(raw: str | None, allowed: Sequence[str]) -> list[tuple[str, bool]
         seen.add(key)
         result.append((key, descending))
     if problems:
-        raise DomainValidationError({"sort": problems})
+        raise ValidationProblem({"sort": problems})
     return result
 
 
@@ -148,11 +168,7 @@ def sort_param(
     default: str | None = None,
     tiebreaker: Sortable | None = None,
 ) -> Callable[..., list[OrderBy]]:
-    """Build a dependency turning ``?sort=`` into ``ORDER BY`` clauses.
-
-    ``allowed`` maps public camelCase keys to columns. ``tiebreaker`` (usually the primary
-    key) is appended so pagination is deterministic. NULLs always sort last.
-    """
+    """Dependency turning ``?sort=`` into ``ORDER BY`` clauses (NULLs last, ties by id)."""
     keys = list(allowed)
     description = (
         "Comma-separated sort keys, prefix '-' for descending. "
@@ -173,7 +189,85 @@ def sort_param(
     return dependency
 
 
-# --- filtering -----------------------------------------------------------------------
+# --- comma-separated filters ------------------------------------------------------------------
+
+
+def split_csv(raw: str | Sequence[str] | None) -> list[str]:
+    """Comma-separated values; repeated keys (``?a=x&a=y``) are accepted too (#39)."""
+    if raw is None:
+        return []
+    values = [raw] if isinstance(raw, str) else list(raw)
+    return [part.strip() for value in values for part in value.split(",") if part.strip()]
+
+
+def csv_enum[E: StrEnum](
+    name: str, enum_cls: type[E], *, description: str | None = None
+) -> Callable[..., list[E] | None]:
+    """Dependency for ``?<name>=a,b`` enum filters (unknown value → 422 ``errors.<name>``)."""
+
+    def dependency(
+        value: Annotated[
+            list[str] | None,
+            Query(
+                alias=name,
+                description=description
+                or f"Comma-separated: {', '.join(m.value for m in enum_cls)}.",
+            ),
+        ] = None,
+    ) -> list[E] | None:
+        parts = split_csv(value)
+        if not parts:
+            return None
+        allowed = {m.value: m for m in enum_cls}
+        bad = [p for p in parts if p not in allowed]
+        if bad:
+            raise ValidationProblem({name: [f"Unknown value '{b}'." for b in bad]})
+        return [allowed[p] for p in parts]
+
+    return dependency
+
+
+def csv_ints(
+    name: str, *, allow: Sequence[str] = (), max_items: int = 200
+) -> Callable[..., list[int | str] | None]:
+    """Dependency for ``?<name>=1,4`` id filters; ``allow`` admits keywords like ``none``/``me``."""
+
+    def dependency(
+        value: Annotated[
+            list[str] | None, Query(alias=name, description="Comma-separated ids.")
+        ] = None,
+    ) -> list[int | str] | None:
+        parts = split_csv(value)
+        if not parts:
+            return None
+        if len(parts) > max_items:
+            raise ValidationProblem({name: [f"At most {max_items} values."]})
+        result: list[int | str] = []
+        for part in parts:
+            if part in allow:
+                result.append(part)
+            elif part.isdigit():
+                result.append(int(part))
+            else:
+                raise ValidationProblem({name: [f"'{part}' is not a valid id."]})
+        return result
+
+    return dependency
+
+
+def date_range_clause(
+    column: Sortable, date_from: date | None, date_to: date | None
+) -> list[ColumnElement[bool]]:
+    """Inclusive date-range predicates for a ``date`` column."""
+    clauses: list[ColumnElement[bool]] = []
+    if date_from is not None:
+        clauses.append(column >= date_from)
+    if date_to is not None:
+        clauses.append(column <= date_to)
+    return clauses
+
+
+# --- search -----------------------------------------------------------------------------------
 
 
 def escape_like(term: str) -> str:

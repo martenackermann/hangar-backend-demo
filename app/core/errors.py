@@ -1,13 +1,13 @@
-"""RFC 9457 problem details (``application/problem+json``) for every error response.
+"""RFC 9457 problem details (API.md §1.4).
 
-Shape::
+Every error response is ``application/problem+json``::
 
-    {"type": "...", "title": "...", "status": 409, "detail": "...", "instance": "/api/v1/...",
-     "requestId": "...", ...extension members}
+    {"type": "https://hangar.example.com/problems/<code>", "title": "...", "status": 409,
+     "detail": "...", "instance": "/api/v1/...", "code": "<code>", ...extensions}
 
-Validation errors (422) add ``errors: {"field.path": ["message", ...]}`` where the field
-path uses the camelCase JSON names. Raise the exception classes below from services;
-never build error responses by hand.
+Extensions by code: ``errors`` (422), ``guard`` (409 guard_failed), ``allowedActions``
+(409 transition_not_allowed), ``currentVersion`` (409 version_conflict). Raise the
+exception classes below; never build error bodies by hand.
 """
 
 from __future__ import annotations
@@ -29,71 +29,81 @@ PROBLEM_BASE = "https://hangar.example.com/problems/"
 
 log = structlog.get_logger(__name__)
 
+_DEFAULT_CODES: dict[int, str] = {
+    400: "bad_request",
+    401: "unauthenticated",
+    403: "forbidden",
+    404: "not_found",
+    405: "method_not_allowed",
+    409: "conflict",
+    413: "too_large",
+    415: "unsupported_media_type",
+    422: "validation_error",
+    500: "internal_error",
+    502: "bad_gateway",
+    503: "unavailable",
+}
 
-def problem_type(slug: str) -> str:
-    return f"{PROBLEM_BASE}{slug}"
+
+def problem_type(code: str) -> str:
+    return f"{PROBLEM_BASE}{code}"
 
 
-# --- schemas (documented in OpenAPI) ---------------------------------------------------
+# --- OpenAPI schemas -----------------------------------------------------------------------
 
 
-class ProblemDetails(BaseModel):
-    """RFC 9457 problem details. Extension members may be present."""
+class GuardInfo(BaseModel):
+    code: str
+    message: str
 
-    model_config = ConfigDict(extra="allow")
 
-    type: str = Field(default="about:blank", description="URI identifying the problem type.")
+class Problem(BaseModel):
+    """RFC 9457 problem details (API.md ``Problem``)."""
+
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+    type: str
     title: str
     status: int
-    detail: str | None = None
-    instance: str | None = None
-    request_id: str | None = Field(default=None, alias="requestId")
+    detail: str | None
+    instance: str
+    code: str
+    errors: dict[str, list[str]] | None = Field(default=None, description="422 only")
+    guard: GuardInfo | None = Field(default=None, description="409 guard_failed only")
+    allowed_actions: list[str] | None = Field(default=None, alias="allowedActions")
+    current_version: int | None = Field(default=None, alias="currentVersion")
 
 
-class ValidationProblem(ProblemDetails):
-    errors: dict[str, list[str]] = Field(
-        description="Field path (camelCase, dot-separated) -> messages."
-    )
-
-
-# --- exceptions ------------------------------------------------------------------------
+# --- exceptions ----------------------------------------------------------------------------
 
 
 class ApiError(Exception):
-    """Base class for errors rendered as problem details.
-
-    Subclasses set ``status``/``slug``/``title``; any extra keyword arguments become
-    extension members of the problem body (keep them camelCase).
-    """
+    """Base class for problem responses. Extra kwargs become extension members (camelCase)."""
 
     status: int = 500
-    slug: str | None = None
+    code: str = "internal_error"
     title: str | None = None
 
     def __init__(
         self,
         detail: str | None = None,
         *,
+        code: str | None = None,
         status: int | None = None,
         title: str | None = None,
-        slug: str | None = None,
         headers: Mapping[str, str] | None = None,
         **extensions: Any,
     ) -> None:
-        super().__init__(detail or title or self.title or "")
+        super().__init__(detail or title or self.title or self.code)
         self.detail = detail
+        if code is not None:
+            self.code = code
         if status is not None:
             self.status = status
         if title is not None:
             self.title = title
-        if slug is not None:
-            self.slug = slug
         self.headers = dict(headers or {})
         self.extensions = extensions
-
-    @property
-    def type(self) -> str:
-        return problem_type(self.slug) if self.slug else "about:blank"
 
     @property
     def resolved_title(self) -> str:
@@ -101,51 +111,33 @@ class ApiError(Exception):
 
 
 class BadRequestError(ApiError):
-    status = 400
-    slug = "bad-request"
-    title = "Bad request"
+    status, code, title = 400, "bad_request", "Bad request"
 
 
 class AuthenticationError(ApiError):
-    status = 401
-    slug = "unauthenticated"
-    title = "Authentication required"
+    status, code, title = 401, "unauthenticated", "Authentication required"
 
     def __init__(self, detail: str | None = None, **kwargs: Any) -> None:
         kwargs.setdefault("headers", {"WWW-Authenticate": "Bearer"})
         super().__init__(detail, **kwargs)
 
 
-class PermissionDeniedError(ApiError):
-    status = 403
-    slug = "forbidden"
-    title = "Permission denied"
+class ForbiddenError(ApiError):
+    status, code, title = 403, "forbidden", "Permission denied"
 
 
 class NotFoundError(ApiError):
-    status = 404
-    slug = "not-found"
-    title = "Resource not found"
+    status, code, title = 404, "not_found", "Not found"
 
 
 class ConflictError(ApiError):
-    status = 409
-    slug = "conflict"
-    title = "Conflict"
+    status, code, title = 409, "conflict", "Conflict"
 
 
-class GoneError(ApiError):
-    status = 410
-    slug = "gone"
-    title = "Gone"
+class ValidationProblem(ApiError):
+    """422 ``validation_error`` raised by services (same shape as request validation)."""
 
-
-class DomainValidationError(ApiError):
-    """422 raised by services, same shape as request validation errors."""
-
-    status = 422
-    slug = "validation-error"
-    title = "Validation failed"
+    status, code, title = 422, "validation_error", "Validation failed"
 
     def __init__(
         self,
@@ -154,70 +146,88 @@ class DomainValidationError(ApiError):
         **kwargs: Any,
     ) -> None:
         normalized = {
-            field: [messages] if isinstance(messages, str) else list(messages)
-            for field, messages in errors.items()
+            key: [value] if isinstance(value, str) else list(value) for key, value in errors.items()
         }
         super().__init__(detail or "One or more fields are invalid.", errors=normalized, **kwargs)
 
 
-class TransitionError(ApiError):
-    """A workflow action is not allowed for the entity's current state (409)."""
+class TransitionNotAllowed(ApiError):
+    """409 ``transition_not_allowed`` (carries ``allowedActions``)."""
 
-    status = 409
-    slug = "transition-not-allowed"
-    title = "Transition not allowed"
+    status, code, title = 409, "transition_not_allowed", "Action not allowed"
 
     def __init__(
         self,
         detail: str,
         *,
         action: str,
-        current_state: str,
+        current_status: str | None,
         allowed_actions: Sequence[str] = (),
-        entity: str | None = None,
-        entity_id: Any = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(
-            detail,
-            action=action,
-            currentState=current_state,
-            allowedActions=list(allowed_actions),
-            entity=entity,
-            entityId=entity_id,
-            **kwargs,
-        )
+        super().__init__(detail, allowedActions=list(allowed_actions), **kwargs)
         self.action = action
-        self.current_state = current_state
+        self.current_status = current_status
         self.allowed_actions = list(allowed_actions)
 
 
-# --- rendering -------------------------------------------------------------------------
+class GuardFailed(ApiError):
+    """409 ``guard_failed`` (carries ``guard: {code, message}``)."""
+
+    status, code, title = 409, "guard_failed", "Precondition failed"
+
+    def __init__(self, guard_code: str, message: str, **kwargs: Any) -> None:
+        super().__init__(message, guard={"code": guard_code, "message": message}, **kwargs)
+        self.guard_code = guard_code
+        self.guard_message = message
 
 
-def _request_id(request: Request) -> str | None:
-    return getattr(request.state, "request_id", None)
+class VersionConflict(ApiError):
+    status, code, title = 409, "version_conflict", "Version conflict"
+
+    def __init__(self, current_version: int, **kwargs: Any) -> None:
+        super().__init__(
+            "The resource was changed by someone else. Reload and try again.",
+            currentVersion=current_version,
+            **kwargs,
+        )
+        self.current_version = current_version
+
+
+class GatewayError(ApiError):
+    """502 for gateway failures (``carrier_error`` / ``booking_error``); nothing changed."""
+
+    status, code, title = 502, "bad_gateway", "External system error"
+
+
+class UnavailableError(ApiError):
+    status, code, title = 503, "unavailable", "Service unavailable"
+
+
+# --- rendering -----------------------------------------------------------------------------
 
 
 def problem_response(
     request: Request,
     *,
     status: int,
+    code: str | None = None,
     title: str | None = None,
-    type_: str = "about:blank",
     detail: str | None = None,
     headers: Mapping[str, str] | None = None,
     **extensions: Any,
 ) -> JSONResponse:
+    resolved_code = code or _DEFAULT_CODES.get(status, "error")
     body: dict[str, Any] = {
-        "type": type_,
+        "type": problem_type(resolved_code),
         "title": title or HTTPStatus(status).phrase,
         "status": status,
+        "detail": detail,
+        "instance": request.url.path,
+        "code": resolved_code,
     }
-    if detail:
-        body["detail"] = detail
-    body["instance"] = request.url.path
-    if (request_id := _request_id(request)) is not None:
+    request_id = getattr(request.state, "request_id", None)
+    if request_id is not None:
         body["requestId"] = request_id
     body.update({k: v for k, v in extensions.items() if v is not None})
     return JSONResponse(
@@ -245,20 +255,24 @@ def _clean_message(message: str) -> str:
 def validation_errors_to_dict(errors: Sequence[Any]) -> dict[str, list[str]]:
     result: dict[str, list[str]] = {}
     for error in errors:
-        field = _field_path(error.get("loc", ()))
-        result.setdefault(field, []).append(_clean_message(str(error.get("msg", "Invalid value"))))
+        loc = error.get("loc", ())
+        if error.get("type") == "extra_forbidden":
+            message = "Unknown field."
+        else:
+            message = _clean_message(str(error.get("msg", "Invalid value")))
+        result.setdefault(_field_path(loc), []).append(message)
     return result
 
 
 async def _handle_api_error(request: Request, exc: Exception) -> JSONResponse:
     assert isinstance(exc, ApiError)
     if exc.status >= 500:
-        log.error("api_error", status=exc.status, detail=exc.detail)
+        log.error("api_error", status=exc.status, code=exc.code, detail=exc.detail)
     return problem_response(
         request,
         status=exc.status,
+        code=exc.code,
         title=exc.resolved_title,
-        type_=exc.type,
         detail=exc.detail,
         headers=exc.headers,
         **exc.extensions,
@@ -270,11 +284,7 @@ async def _handle_http_exception(request: Request, exc: Exception) -> JSONRespon
     phrase = HTTPStatus(exc.status_code).phrase
     detail = exc.detail if isinstance(exc.detail, str) and exc.detail != phrase else None
     return problem_response(
-        request,
-        status=exc.status_code,
-        title=phrase,
-        detail=detail,
-        headers=exc.headers,
+        request, status=exc.status_code, title=phrase, detail=detail, headers=exc.headers
     )
 
 
@@ -283,8 +293,8 @@ async def _handle_request_validation(request: Request, exc: Exception) -> JSONRe
     return problem_response(
         request,
         status=422,
+        code="validation_error",
         title="Validation failed",
-        type_=problem_type("validation-error"),
         detail="One or more fields are invalid.",
         errors=validation_errors_to_dict(exc.errors()),
     )
@@ -298,8 +308,8 @@ async def _handle_integrity_error(request: Request, exc: Exception) -> JSONRespo
     return problem_response(
         request,
         status=409,
+        code="conflict",
         title="Conflict",
-        type_=problem_type("conflict"),
         detail="The request conflicts with existing data.",
         constraint=constraint,
     )
@@ -308,10 +318,7 @@ async def _handle_integrity_error(request: Request, exc: Exception) -> JSONRespo
 async def _handle_unexpected(request: Request, exc: Exception) -> JSONResponse:
     log.exception("unhandled_exception", exc_type=type(exc).__name__)
     return problem_response(
-        request,
-        status=500,
-        title="Internal Server Error",
-        detail="An unexpected error occurred.",
+        request, status=500, code="internal_error", detail="An unexpected error occurred."
     )
 
 
@@ -324,21 +331,11 @@ def install_error_handlers(app: FastAPI) -> None:
 
 
 def problem_responses(*statuses: int) -> dict[int | str, dict[str, Any]]:
-    """OpenAPI ``responses=`` helper: ``responses=problem_responses(401, 404, 409)``.
-
-    The referenced component schemas are injected by ``app.core.openapi``.
-    """
+    """OpenAPI ``responses=`` helper: ``responses=problem_responses(401, 403, 404)``."""
     return {
         status: {
             "description": HTTPStatus(status).phrase,
-            "content": {
-                PROBLEM_JSON: {
-                    "schema": {
-                        "$ref": "#/components/schemas/"
-                        + ("ValidationProblem" if status == 422 else "ProblemDetails")
-                    }
-                }
-            },
+            "content": {PROBLEM_JSON: {"schema": {"$ref": "#/components/schemas/Problem"}}},
         }
         for status in statuses
     }

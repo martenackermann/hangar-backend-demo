@@ -12,14 +12,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from psycopg_pool import AsyncConnectionPool
 
 from app import __version__
-from app.api import files, health, jobs
+from app.core.api import actions, auth, meta, misc, reference, saved_views
 from app.core.config import Settings, get_settings
 from app.core.db import dispose_engine
-from app.core.discovery import discover, import_models, import_subscribers
 from app.core.errors import install_error_handlers
 from app.core.logging import configure_logging
 from app.core.middleware import REQUEST_ID_HEADER, RequestContextMiddleware
 from app.core.openapi import install_openapi, unique_operation_id
+from app.core.slices import slice_routers
 from app.jobs.app import job_app
 
 log = structlog.get_logger("hangar")
@@ -30,8 +30,8 @@ API_PREFIX = "/api/v1"
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
-    # Small pool used only to *defer* jobs from request handlers. Opened without
-    # waiting so the API starts (and reports via /health) even if the DB is down.
+    # Small pool used only to *defer* jobs; opened without waiting so the API starts
+    # (and reports via /readyz) even if the DB is down.
     pool = AsyncConnectionPool(
         settings.psycopg_conninfo,
         min_size=1,
@@ -51,13 +51,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 def build_api_router() -> APIRouter:
     api = APIRouter(prefix=API_PREFIX)
-    api.include_router(health.router)
-    api.include_router(jobs.router)
-    api.include_router(files.router)
-    for module, imported in discover("router"):
-        router = getattr(imported, "router", None)
-        if not isinstance(router, APIRouter):
-            raise TypeError(f"app.modules.{module}.router must export `router: APIRouter`")
+    for module in (auth, meta, reference, misc, saved_views, actions):
+        api.include_router(module.router)
+    for router in slice_routers():
         api.include_router(router)
     return api
 
@@ -65,9 +61,6 @@ def build_api_router() -> APIRouter:
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(settings.log_level, settings.log_format)
-    import_models()
-    import_subscribers()
-
     app = FastAPI(
         title="Hangar API",
         version=__version__,

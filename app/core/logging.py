@@ -40,7 +40,11 @@ def configure_logging(level: str = "INFO", fmt: str = "json") -> None:
     if fmt == "console":
         renderer = structlog.dev.ConsoleRenderer()
     else:
-        shared.append(structlog.processors.dict_tracebacks)
+        shared.append(
+            structlog.processors.ExceptionRenderer(
+                structlog.tracebacks.ExceptionDictTransformer(show_locals=False)
+            )
+        )
         renderer = structlog.processors.JSONRenderer(serializer=_orjson_dumps)
 
     structlog.configure(

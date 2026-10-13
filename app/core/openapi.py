@@ -1,8 +1,7 @@
 """OpenAPI post-processing so the published contract matches runtime behavior.
 
-- 422 responses reference ``ValidationProblem`` as ``application/problem+json`` instead of
-  FastAPI's default ``HTTPValidationError``.
-- ``ProblemDetails`` / ``ValidationProblem`` are always present in components.
+- every 422 response references ``Problem`` as ``application/problem+json``;
+- the ``Problem`` schema is always present (FastAPI's ``HTTPValidationError`` is removed);
 - operationIds are ``<tag>-<function_name>`` (see ``unique_operation_id``).
 """
 
@@ -14,7 +13,7 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from fastapi.routing import APIRoute
 
-from app.core.errors import PROBLEM_JSON, ProblemDetails, ValidationProblem
+from app.core.errors import PROBLEM_JSON, Problem
 
 _REF_TEMPLATE = "#/components/schemas/{model}"
 
@@ -24,12 +23,9 @@ def unique_operation_id(route: APIRoute) -> str:
 
 
 def _problem_schemas() -> dict[str, Any]:
-    schemas: dict[str, Any] = {}
-    for model in (ProblemDetails, ValidationProblem):
-        schema = model.model_json_schema(ref_template=_REF_TEMPLATE, by_alias=True)
-        schemas.update(schema.pop("$defs", {}))
-        schemas[model.__name__] = schema
-    return schemas
+    schema = Problem.model_json_schema(ref_template=_REF_TEMPLATE, by_alias=True)
+    defs = schema.pop("$defs", {})
+    return {**defs, "Problem": schema}
 
 
 def build_openapi(app: FastAPI) -> dict[str, Any]:
@@ -45,14 +41,14 @@ def build_openapi(app: FastAPI) -> dict[str, Any]:
     components = schema.setdefault("components", {})
     schemas: dict[str, Any] = components.setdefault("schemas", {})
     schemas.update(_problem_schemas())
-    validation_ref = {"$ref": _REF_TEMPLATE.format(model="ValidationProblem")}
+    problem_ref = {"$ref": _REF_TEMPLATE.format(model="Problem")}
     for path_item in schema.get("paths", {}).values():
         for operation in path_item.values():
             responses = operation.get("responses", {}) if isinstance(operation, dict) else {}
             if "422" in responses:
                 responses["422"] = {
                     "description": "Validation failed",
-                    "content": {PROBLEM_JSON: {"schema": validation_ref}},
+                    "content": {PROBLEM_JSON: {"schema": problem_ref}},
                 }
     for name in ("HTTPValidationError", "ValidationError"):
         schemas.pop(name, None)

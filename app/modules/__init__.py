@@ -1,1 +1,1 @@
-"""Feature modules. Each sub-package is auto-discovered; see ``app.core.discovery``."""
+"""Feature slices. Each package defines ``register(reg: SliceRegistry)`` (see CONVENTIONS.md)."""

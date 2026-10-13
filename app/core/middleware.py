@@ -12,7 +12,7 @@ from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 log = structlog.get_logger("hangar.access")
 
-REQUEST_ID_HEADER = "X-Request-ID"
+REQUEST_ID_HEADER = "X-Request-Id"
 _VALID_REQUEST_ID = re.compile(r"^[A-Za-z0-9._-]{1,64}$")
 
 
@@ -46,7 +46,7 @@ class RequestContextMiddleware:
                 await self.app(scope, receive, send_wrapper)
             finally:
                 # Successful health probes (Docker/k8s, every few seconds) are debug-level.
-                quiet = scope["path"].endswith("/health") and status_code < 400
+                quiet = scope["path"].endswith(("/healthz", "/readyz")) and status_code < 400
                 (log.debug if quiet else log.info)(
                     "request",
                     method=scope["method"],

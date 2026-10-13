@@ -1,5 +1,4 @@
-"""Worker entry point: ``uv run hangar-worker`` / ``uv run hangar worker`` /
-``python -m app.jobs.worker``."""
+"""Worker entry point: ``uv run hangar worker`` / ``uv run hangar-worker``."""
 
 from __future__ import annotations
 
@@ -11,7 +10,6 @@ from procrastinate.app import WorkerOptions
 
 from app.core.aio import run
 from app.core.config import get_settings
-from app.core.discovery import import_subscribers
 from app.core.logging import configure_logging
 
 log = structlog.get_logger("hangar.worker")
@@ -20,9 +18,10 @@ log = structlog.get_logger("hangar.worker")
 async def run_worker(
     *, queues: Sequence[str] | None = None, concurrency: int | None = None, wait: bool = True
 ) -> None:
+    from app.core.slices import load_slices
     from app.jobs.app import job_app
 
-    import_subscribers()
+    load_slices()
     settings = get_settings()
     log.info("worker_starting", queues=list(queues or []) or "all", tasks=sorted(job_app.tasks))
     options: WorkerOptions = {
@@ -39,16 +38,11 @@ async def run_worker(
 def main(argv: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="hangar-worker", description="Run the job worker.")
     parser.add_argument(
-        "-q",
-        "--queue",
-        action="append",
-        dest="queues",
-        help="Queue(s) to listen to (default: all).",
+        "-q", "--queue", action="append", dest="queues", help="Queue(s) (default: all)."
     )
     parser.add_argument("-c", "--concurrency", type=int, default=None)
     parser.add_argument("--once", action="store_true", help="Process available jobs, then exit.")
     args = parser.parse_args(argv)
-
     settings = get_settings()
     configure_logging(settings.log_level, settings.log_format)
     try:
