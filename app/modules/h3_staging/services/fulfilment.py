@@ -49,12 +49,14 @@ SR = ServiceRequestStatus
 DEFAULT_COUNTRY = "Freeland"
 
 #: SPEC §6.15 in SQL: every required entry (requested ∪ added) is in ``installed``.
-CHECKLIST_COMPLETE = text(
+_CHECKLIST_SQL = (
     "NOT EXISTS (SELECT 1 FROM unnest(service_requests.requested_software "
     "|| service_requests.added_software) AS req(v) WHERE btrim(req.v) <> '' "
     "AND lower(btrim(req.v)) NOT IN (SELECT lower(btrim(ins.v)) "
     "FROM unnest(service_requests.installed_software) AS ins(v)))"
 )
+CHECKLIST_COMPLETE = text(_CHECKLIST_SQL)
+CHECKLIST_INCOMPLETE = text(f"NOT ({_CHECKLIST_SQL})")
 
 
 def checklist_out(sr: ServiceRequest) -> SoftwareChecklistOut:
@@ -89,7 +91,7 @@ def order_closing_stmt(
     if checklist_complete is True:
         clauses.append(CHECKLIST_COMPLETE)  # type: ignore[arg-type]
     elif checklist_complete is False:
-        clauses.append(~CHECKLIST_COMPLETE)  # type: ignore[arg-type]
+        clauses.append(CHECKLIST_INCOMPLETE)  # type: ignore[arg-type]
     search = sr_search_clause(q)
     if search is not None:
         clauses.append(search)
