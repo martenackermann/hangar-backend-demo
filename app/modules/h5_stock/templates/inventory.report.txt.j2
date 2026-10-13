@@ -1,0 +1,18 @@
+Hello team,
+
+the inventory of {{ site_name }} (#{{ inventory_id }}) was closed by {{ closed_by }} with count date {{ count_date | date }}.
+
+Expected:        {{ expected }}
+Matched:         {{ matched }}
+Missing:         {{ missing }}
+Wrong location:  {{ wrong_location }}
+Unknown serials: {{ unknown }}
+
+{% if apply_corrections %}
+Corrections were applied: {{ corrected }} asset records updated.
+{% else %}
+Corrections were not applied; the asset records are unchanged.
+{% endif %}
+
+The missing, wrong-location and unknown lists are attached as CSV files.
+Details: {{ frontend_url }}/stock/inventory/{{ inventory_id }}

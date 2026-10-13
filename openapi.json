@@ -9649,6 +9649,3748 @@
           }
         }
       }
+    },
+    "/api/v1/stock/matrix": {
+      "get": {
+        "tags": [
+          "stock"
+        ],
+        "summary": "Stock matrix (article × hub)",
+        "operationId": "stock-get_matrix",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "onlyShortfall",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Onlyshortfall"
+            }
+          },
+          {
+            "name": "includeInactive",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Includeinactive"
+            }
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: laptop, desktop, tablet, docking_station, monitor, headset, keyboard, mouse, webcam, bag, accessory.",
+              "title": "Category"
+            },
+            "description": "Comma-separated: laptop, desktop, tablet, docking_station, monitor, headset, keyboard, mouse, webcam, bag, accessory."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMatrix"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stock/recalculate": {
+      "post": {
+        "tags": [
+          "stock"
+        ],
+        "summary": "Recalculate stock and demand now",
+        "operationId": "stock-recalculate_now",
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stock/buffers": {
+      "patch": {
+        "tags": [
+          "stock"
+        ],
+        "summary": "Edit buffers of one hub",
+        "operationId": "stock-patch_buffers",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuffersPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockCellList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stock/export": {
+      "post": {
+        "tags": [
+          "stock"
+        ],
+        "summary": "Export the stock matrix (CSV)",
+        "operationId": "stock-export_matrix",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "onlyShortfall",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Onlyshortfall"
+            }
+          },
+          {
+            "name": "includeInactive",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Includeinactive"
+            }
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: laptop, desktop, tablet, docking_station, monitor, headset, keyboard, mouse, webcam, bag, accessory.",
+              "title": "Category"
+            },
+            "description": "Comma-separated: laptop, desktop, tablet, docking_station, monitor, headset, keyboard, mouse, webcam, bag, accessory."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/calloff-orders": {
+      "get": {
+        "tags": [
+          "calloff-orders"
+        ],
+        "summary": "List call-off orders",
+        "operationId": "calloff-orders-list_orders",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: createdAt, deliveryDate. Default: -createdAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: createdAt, deliveryDate. Default: -createdAt."
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: draft, sent, cancelled.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: draft, sent, cancelled."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_CallOffOrderSummary_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "calloff-orders"
+        ],
+        "summary": "Create a draft call-off order from the stock matrix",
+        "operationId": "calloff-orders-create_order",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CallOffOrderCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallOffOrderOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/calloff-orders/{order_id}": {
+      "get": {
+        "tags": [
+          "calloff-orders"
+        ],
+        "summary": "Call-off order detail",
+        "operationId": "calloff-orders-get_order",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Order Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallOffOrderOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "calloff-orders"
+        ],
+        "summary": "Edit a draft order",
+        "operationId": "calloff-orders-patch_order",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Order Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CallOffOrderPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallOffOrderOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/calloff-orders/{order_id}/actions/send": {
+      "post": {
+        "tags": [
+          "calloff-orders"
+        ],
+        "summary": "Send the order to Initech Logistics",
+        "operationId": "calloff-orders-send_order",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Order Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/CallOffSendBody"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallOffOrderOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/calloff-orders/{order_id}/actions/cancel": {
+      "post": {
+        "tags": [
+          "calloff-orders"
+        ],
+        "summary": "Cancel a draft order",
+        "operationId": "calloff-orders-cancel_order",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Order Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/CallOffCancelBody"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallOffOrderOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/calloff-orders/{order_id}/document": {
+      "get": {
+        "tags": [
+          "calloff-orders"
+        ],
+        "summary": "Order document (XLSX or PDF)",
+        "operationId": "calloff-orders-order_document",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Order Id"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "xlsx",
+                "pdf"
+              ],
+              "type": "string",
+              "default": "pdf",
+              "title": "Format"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assets": {
+      "get": {
+        "tags": [
+          "assets"
+        ],
+        "summary": "List assets",
+        "operationId": "assets-list_assets",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: serialNumber, assetTag, status, checkedInAt, statusChangedAt. Default: -statusChangedAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: serialNumber, assetTag, status, checkedInAt, statusChangedAt. Default: -statusChangedAt."
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "serviceRequestId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Servicerequestid"
+            }
+          },
+          {
+            "name": "installationPlace",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 12
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Installationplace"
+            }
+          },
+          {
+            "name": "hasInstallationPlace",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hasinstallationplace"
+            }
+          },
+          {
+            "name": "checkedInFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Checkedinfrom"
+            }
+          },
+          {
+            "name": "checkedInTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Checkedinto"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: available, assigned, prepared, provided, in_use, collected, missing, deactivated_returned, deactivated_bought_out, deactivated_disposed.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: available, assigned, prepared, provided, in_use, collected, missing, deactivated_returned, deactivated_bought_out, deactivated_disposed."
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Locationid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "locationType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: goods_in, staging, goods_out, return, in_transit, in_use, off_fleet.",
+              "title": "Locationtype"
+            },
+            "description": "Comma-separated: goods_in, staging, goods_out, return, in_transit, in_use, off_fleet."
+          },
+          {
+            "name": "articleId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Articleid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: laptop, desktop, tablet, docking_station, monitor, headset, keyboard, mouse, webcam, bag, accessory.",
+              "title": "Category"
+            },
+            "description": "Comma-separated: laptop, desktop, tablet, docking_station, monitor, headset, keyboard, mouse, webcam, bag, accessory."
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: import_new, import_status_sync, technician_scan, manual, seed.",
+              "title": "Source"
+            },
+            "description": "Comma-separated: import_new, import_status_sync, technician_scan, manual, seed."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AssetListItem_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assets/export": {
+      "post": {
+        "tags": [
+          "assets"
+        ],
+        "summary": "Export assets (CSV, list filters apply)",
+        "operationId": "assets-export_assets",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: serialNumber, assetTag, status, checkedInAt, statusChangedAt. Default: -statusChangedAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: serialNumber, assetTag, status, checkedInAt, statusChangedAt. Default: -statusChangedAt."
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "serviceRequestId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Servicerequestid"
+            }
+          },
+          {
+            "name": "installationPlace",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 12
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Installationplace"
+            }
+          },
+          {
+            "name": "hasInstallationPlace",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hasinstallationplace"
+            }
+          },
+          {
+            "name": "checkedInFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Checkedinfrom"
+            }
+          },
+          {
+            "name": "checkedInTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Checkedinto"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: available, assigned, prepared, provided, in_use, collected, missing, deactivated_returned, deactivated_bought_out, deactivated_disposed.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: available, assigned, prepared, provided, in_use, collected, missing, deactivated_returned, deactivated_bought_out, deactivated_disposed."
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Locationid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "locationType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: goods_in, staging, goods_out, return, in_transit, in_use, off_fleet.",
+              "title": "Locationtype"
+            },
+            "description": "Comma-separated: goods_in, staging, goods_out, return, in_transit, in_use, off_fleet."
+          },
+          {
+            "name": "articleId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Articleid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: laptop, desktop, tablet, docking_station, monitor, headset, keyboard, mouse, webcam, bag, accessory.",
+              "title": "Category"
+            },
+            "description": "Comma-separated: laptop, desktop, tablet, docking_station, monitor, headset, keyboard, mouse, webcam, bag, accessory."
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: import_new, import_status_sync, technician_scan, manual, seed.",
+              "title": "Source"
+            },
+            "description": "Comma-separated: import_new, import_status_sync, technician_scan, manual, seed."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assets/by-serial/{serial}": {
+      "get": {
+        "tags": [
+          "assets"
+        ],
+        "summary": "Asset by serial number (or asset tag)",
+        "operationId": "assets-asset_by_serial",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "serial",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Serial"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assets/{asset_id}": {
+      "get": {
+        "tags": [
+          "assets"
+        ],
+        "summary": "Asset detail",
+        "operationId": "assets-get_asset",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "asset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Asset Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "assets"
+        ],
+        "summary": "Correct asset metadata (tag, MAC, ITSM ids)",
+        "operationId": "assets-patch_asset",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "asset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Asset Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assets/{asset_id}/movements": {
+      "get": {
+        "tags": [
+          "assets"
+        ],
+        "summary": "Movement ledger of an asset",
+        "operationId": "assets-list_movements",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "asset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Asset Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: occurredAt. Default: -occurredAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: occurredAt. Default: -occurredAt."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AssetMovementOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deactivations": {
+      "post": {
+        "tags": [
+          "deactivations"
+        ],
+        "summary": "Deactivate devices from a serial list (CSV/XLSX)",
+        "operationId": "deactivations-upload_deactivation",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_deactivations-upload_deactivation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeactivationResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Content Too Large",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported Media Type",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "deactivations"
+        ],
+        "summary": "Deactivation history",
+        "operationId": "deactivations-list_batches",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: createdAt. Default: -createdAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: createdAt. Default: -createdAt."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_DeactivationBatchOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deactivations/sample": {
+      "get": {
+        "tags": [
+          "deactivations"
+        ],
+        "summary": "Sample upload file (CSV)",
+        "operationId": "deactivations-sample",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/deactivations/{batch_id}": {
+      "get": {
+        "tags": [
+          "deactivations"
+        ],
+        "summary": "Result of one deactivation upload",
+        "operationId": "deactivations-get_batch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Batch Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeactivationResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventories": {
+      "get": {
+        "tags": [
+          "inventories"
+        ],
+        "summary": "List inventories",
+        "operationId": "inventories-list_inventories",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: openedAt. Default: -openedAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: openedAt. Default: -openedAt."
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: open, closed, cancelled.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: open, closed, cancelled."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_InventorySummary_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "inventories"
+        ],
+        "summary": "Open an inventory for a hub or the Campus",
+        "operationId": "inventories-open_inventory",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InventoryCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventories/{inventory_id}": {
+      "get": {
+        "tags": [
+          "inventories"
+        ],
+        "summary": "Inventory detail",
+        "operationId": "inventories-get_inventory",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "inventory_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Inventory Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventories/{inventory_id}/scans": {
+      "post": {
+        "tags": [
+          "inventories"
+        ],
+        "summary": "Scan a serial into an open inventory",
+        "operationId": "inventories-scan",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "inventory_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Inventory Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InventoryScanBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanResult_InventoryScanOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "inventories"
+        ],
+        "summary": "Scans of an inventory",
+        "operationId": "inventories-list_scans",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "inventory_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Inventory Id"
+            }
+          },
+          {
+            "name": "scannedById",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Scannedbyid"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: scannedAt. Default: -scannedAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: scannedAt. Default: -scannedAt."
+          },
+          {
+            "name": "result",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: matched, wrong_location, unknown.",
+              "title": "Result"
+            },
+            "description": "Comma-separated: matched, wrong_location, unknown."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_InventoryScanOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventories/{inventory_id}/scans/{scan_id}": {
+      "delete": {
+        "tags": [
+          "inventories"
+        ],
+        "summary": "Undo a scan (own scans, or inventory.manage)",
+        "operationId": "inventories-undo_scan",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "inventory_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Inventory Id"
+            }
+          },
+          {
+            "name": "scan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Scan Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventories/{inventory_id}/reconciliation": {
+      "get": {
+        "tags": [
+          "inventories"
+        ],
+        "summary": "Reconciliation: missing / wrong location / unknown / matched",
+        "operationId": "inventories-get_reconciliation",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "inventory_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Inventory Id"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ReconciliationCategory"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reconciliation"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventories/{inventory_id}/actions/close": {
+      "post": {
+        "tags": [
+          "inventories"
+        ],
+        "summary": "Close the inventory (optionally apply corrections)",
+        "operationId": "inventories-close_inventory",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "inventory_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Inventory Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InventoryCloseBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventories/{inventory_id}/actions/cancel": {
+      "post": {
+        "tags": [
+          "inventories"
+        ],
+        "summary": "Cancel the inventory (scans are kept)",
+        "operationId": "inventories-cancel_inventory",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "inventory_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Inventory Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/InventoryCancelBody"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventories/{inventory_id}/reports/{kind}": {
+      "get": {
+        "tags": [
+          "inventories"
+        ],
+        "summary": "Download a closed inventory's report (CSV)",
+        "operationId": "inventories-get_report",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "inventory_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Inventory Id"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "missing",
+                "wrong_location",
+                "unknown"
+              ],
+              "type": "string",
+              "title": "Kind"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dashboard/kpis": {
+      "get": {
+        "tags": [
+          "dashboard"
+        ],
+        "summary": "Dashboard KPIs, series and breakdowns",
+        "operationId": "dashboard-get_kpis",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Siteid"
+            }
+          },
+          {
+            "name": "regionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Regionid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardKpis"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -10819,6 +14561,143 @@
         ],
         "title": "AssetLeaseRef"
       },
+      "AssetListItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "serialNumber": {
+            "type": "string",
+            "title": "Serialnumber"
+          },
+          "assetTag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assettag"
+          },
+          "article": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArticleRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AssetStatus"
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationRef"
+          },
+          "installationPlace": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Installationplace"
+          },
+          "serviceRequest": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SrRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "site": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "assignedContact": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContactRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "checkedInAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checkedinat"
+          },
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "source": {
+            "$ref": "#/components/schemas/AssetSource"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "serialNumber",
+          "assetTag",
+          "article",
+          "model",
+          "status",
+          "location",
+          "installationPlace",
+          "serviceRequest",
+          "site",
+          "assignedContact",
+          "checkedInAt",
+          "statusChangedAt",
+          "source",
+          "availableActions"
+        ],
+        "title": "AssetListItem"
+      },
       "AssetMovementOut": {
         "properties": {
           "id": {
@@ -10950,6 +14829,72 @@
           "occurredAt"
         ],
         "title": "AssetMovementOut"
+      },
+      "AssetPatch": {
+        "properties": {
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          },
+          "assetTag": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assettag"
+          },
+          "macAddress": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 17
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Macaddress"
+          },
+          "externalAssetId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Externalassetid"
+          },
+          "ciName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ciname"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "AssetPatch"
       },
       "AssetSource": {
         "type": "string",
@@ -11238,6 +15183,25 @@
         ],
         "title": "BlockedAction"
       },
+      "Body_deactivations-upload_deactivation": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "description": "CSV or XLSX with a serial_number column"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/DeactivationReason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "reason"
+        ],
+        "title": "Body_deactivations-upload_deactivation"
+      },
       "Body_imports-detect_import": {
         "properties": {
           "file": {
@@ -11410,6 +15374,51 @@
         "type": "object",
         "title": "BookingCalendarPatch"
       },
+      "BufferEntry": {
+        "properties": {
+          "articleId": {
+            "type": "integer",
+            "title": "Articleid"
+          },
+          "bufferQty": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Bufferqty"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "articleId",
+          "bufferQty"
+        ],
+        "title": "BufferEntry"
+      },
+      "BuffersPatch": {
+        "properties": {
+          "siteId": {
+            "type": "integer",
+            "title": "Siteid"
+          },
+          "buffers": {
+            "items": {
+              "$ref": "#/components/schemas/BufferEntry"
+            },
+            "type": "array",
+            "maxItems": 500,
+            "minItems": 1,
+            "title": "Buffers"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "siteId",
+          "buffers"
+        ],
+        "title": "BuffersPatch"
+      },
       "BulkFailure": {
         "properties": {
           "id": {
@@ -11506,6 +15515,466 @@
           "region"
         ],
         "title": "CalendarWithRegion"
+      },
+      "CallOffCancelBody": {
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CallOffCancelBody"
+      },
+      "CallOffLine": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "article": {
+            "$ref": "#/components/schemas/ArticleRef"
+          },
+          "demandQty": {
+            "type": "integer",
+            "title": "Demandqty"
+          },
+          "stockQty": {
+            "type": "integer",
+            "title": "Stockqty"
+          },
+          "bufferQty": {
+            "type": "integer",
+            "title": "Bufferqty"
+          },
+          "suggestedQty": {
+            "type": "integer",
+            "title": "Suggestedqty"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "minQty": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minqty"
+          },
+          "maxQty": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxqty"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/LineWarning"
+            },
+            "type": "array",
+            "title": "Warnings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "article",
+          "demandQty",
+          "stockQty",
+          "bufferQty",
+          "suggestedQty",
+          "quantity",
+          "minQty",
+          "maxQty",
+          "warnings"
+        ],
+        "title": "CallOffLine"
+      },
+      "CallOffLinePatch": {
+        "properties": {
+          "articleId": {
+            "type": "integer",
+            "title": "Articleid"
+          },
+          "quantity": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Quantity"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "articleId",
+          "quantity"
+        ],
+        "title": "CallOffLinePatch"
+      },
+      "CallOffOrderCreate": {
+        "properties": {
+          "siteId": {
+            "type": "integer",
+            "title": "Siteid"
+          },
+          "deliveryDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Deliverydate"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "siteId",
+          "deliveryDate"
+        ],
+        "title": "CallOffOrderCreate"
+      },
+      "CallOffOrderOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "site": {
+            "$ref": "#/components/schemas/SiteRef"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CallOffOrderStatus"
+          },
+          "deliveryDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Deliverydate"
+          },
+          "lineCount": {
+            "type": "integer",
+            "title": "Linecount"
+          },
+          "totalQuantity": {
+            "type": "integer",
+            "title": "Totalquantity"
+          },
+          "recipientEmail": {
+            "type": "string",
+            "title": "Recipientemail"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "sentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentat"
+          },
+          "sentBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/CallOffLine"
+            },
+            "type": "array",
+            "title": "Lines"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "mailLogEntityRef": {
+            "$ref": "#/components/schemas/EntityRef"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "site",
+          "status",
+          "deliveryDate",
+          "lineCount",
+          "totalQuantity",
+          "recipientEmail",
+          "createdBy",
+          "createdAt",
+          "sentAt",
+          "sentBy",
+          "note",
+          "lines",
+          "warnings",
+          "availableActions",
+          "version",
+          "mailLogEntityRef"
+        ],
+        "title": "CallOffOrderOut"
+      },
+      "CallOffOrderPatch": {
+        "properties": {
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          },
+          "deliveryDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deliverydate"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "recipientEmail": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recipientemail"
+          },
+          "lines": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/CallOffLinePatch"
+                },
+                "type": "array",
+                "maxItems": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lines"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CallOffOrderPatch"
+      },
+      "CallOffOrderStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "sent",
+          "cancelled"
+        ],
+        "title": "CallOffOrderStatus"
+      },
+      "CallOffOrderSummary": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "site": {
+            "$ref": "#/components/schemas/SiteRef"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CallOffOrderStatus"
+          },
+          "deliveryDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Deliverydate"
+          },
+          "lineCount": {
+            "type": "integer",
+            "title": "Linecount"
+          },
+          "totalQuantity": {
+            "type": "integer",
+            "title": "Totalquantity"
+          },
+          "recipientEmail": {
+            "type": "string",
+            "title": "Recipientemail"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "sentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentat"
+          },
+          "sentBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "site",
+          "status",
+          "deliveryDate",
+          "lineCount",
+          "totalQuantity",
+          "recipientEmail",
+          "createdBy",
+          "createdAt",
+          "sentAt",
+          "sentBy"
+        ],
+        "title": "CallOffOrderSummary"
+      },
+      "CallOffSendBody": {
+        "properties": {
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CallOffSendBody"
       },
       "CodeMessage": {
         "properties": {
@@ -11851,6 +16320,475 @@
           "title"
         ],
         "title": "ContactVip"
+      },
+      "DashboardFilters": {
+        "properties": {
+          "siteId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Siteid"
+          },
+          "regionId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Regionid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "siteId",
+          "regionId"
+        ],
+        "title": "DashboardFilters"
+      },
+      "DashboardKpis": {
+        "properties": {
+          "asOf": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Asof"
+          },
+          "today": {
+            "type": "string",
+            "format": "date",
+            "title": "Today"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/DashboardFilters"
+          },
+          "tiles": {
+            "$ref": "#/components/schemas/DashboardTiles"
+          },
+          "stageCounts": {
+            "items": {
+              "$ref": "#/components/schemas/StageCount"
+            },
+            "type": "array",
+            "title": "Stagecounts"
+          },
+          "series": {
+            "$ref": "#/components/schemas/DashboardSeries"
+          },
+          "regionLoad": {
+            "items": {
+              "$ref": "#/components/schemas/RegionLoad"
+            },
+            "type": "array",
+            "title": "Regionload"
+          },
+          "stockAlerts": {
+            "items": {
+              "$ref": "#/components/schemas/StockAlert"
+            },
+            "type": "array",
+            "title": "Stockalerts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "asOf",
+          "today",
+          "filters",
+          "tiles",
+          "stageCounts",
+          "series",
+          "regionLoad",
+          "stockAlerts"
+        ],
+        "title": "DashboardKpis"
+      },
+      "DashboardSeries": {
+        "properties": {
+          "completionsPerDay": {
+            "items": {
+              "$ref": "#/components/schemas/DayCount"
+            },
+            "type": "array",
+            "title": "Completionsperday"
+          },
+          "appointmentsPerDay": {
+            "items": {
+              "$ref": "#/components/schemas/DayCount"
+            },
+            "type": "array",
+            "title": "Appointmentsperday"
+          },
+          "importedPerDay": {
+            "items": {
+              "$ref": "#/components/schemas/DayCount"
+            },
+            "type": "array",
+            "title": "Importedperday"
+          }
+        },
+        "type": "object",
+        "required": [
+          "completionsPerDay",
+          "appointmentsPerDay",
+          "importedPerDay"
+        ],
+        "title": "DashboardSeries"
+      },
+      "DashboardTiles": {
+        "properties": {
+          "openServiceRequests": {
+            "type": "integer",
+            "title": "Openservicerequests"
+          },
+          "needsAttention": {
+            "type": "integer",
+            "title": "Needsattention"
+          },
+          "appointmentsToday": {
+            "type": "integer",
+            "title": "Appointmentstoday"
+          },
+          "appointmentsThisWeek": {
+            "type": "integer",
+            "title": "Appointmentsthisweek"
+          },
+          "completedThisWeek": {
+            "type": "integer",
+            "title": "Completedthisweek"
+          },
+          "completedLastWeek": {
+            "type": "integer",
+            "title": "Completedlastweek"
+          },
+          "escalatedServiceRequests": {
+            "type": "integer",
+            "title": "Escalatedservicerequests"
+          },
+          "escalatedLeaseReturns": {
+            "type": "integer",
+            "title": "Escalatedleasereturns"
+          },
+          "hardwareUnavailable": {
+            "type": "integer",
+            "title": "Hardwareunavailable"
+          },
+          "rescheduleNeeded": {
+            "type": "integer",
+            "title": "Rescheduleneeded"
+          },
+          "leaseReturnsDueNext30Days": {
+            "type": "integer",
+            "title": "Leasereturnsduenext30Days"
+          },
+          "leaseReturnsOverdue": {
+            "type": "integer",
+            "title": "Leasereturnsoverdue"
+          },
+          "stockShortfallArticles": {
+            "type": "integer",
+            "title": "Stockshortfallarticles"
+          },
+          "openInventories": {
+            "type": "integer",
+            "title": "Openinventories"
+          },
+          "chainMailsSentToday": {
+            "type": "integer",
+            "title": "Chainmailssenttoday"
+          },
+          "avgDaysImportToCompletion30d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avgdaysimporttocompletion30D"
+          },
+          "lastImportAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastimportat"
+          },
+          "lastAppointmentSyncAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastappointmentsyncat"
+          },
+          "lastStockCalculationAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Laststockcalculationat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "openServiceRequests",
+          "needsAttention",
+          "appointmentsToday",
+          "appointmentsThisWeek",
+          "completedThisWeek",
+          "completedLastWeek",
+          "escalatedServiceRequests",
+          "escalatedLeaseReturns",
+          "hardwareUnavailable",
+          "rescheduleNeeded",
+          "leaseReturnsDueNext30Days",
+          "leaseReturnsOverdue",
+          "stockShortfallArticles",
+          "openInventories",
+          "chainMailsSentToday",
+          "avgDaysImportToCompletion30d",
+          "lastImportAt",
+          "lastAppointmentSyncAt",
+          "lastStockCalculationAt"
+        ],
+        "title": "DashboardTiles"
+      },
+      "DayCount": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "count"
+        ],
+        "title": "DayCount"
+      },
+      "DeactivationBatchOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/DeactivationReason"
+          },
+          "originalFilename": {
+            "type": "string",
+            "title": "Originalfilename"
+          },
+          "totalRows": {
+            "type": "integer",
+            "title": "Totalrows"
+          },
+          "deactivatedCount": {
+            "type": "integer",
+            "title": "Deactivatedcount"
+          },
+          "alreadyDeactivatedCount": {
+            "type": "integer",
+            "title": "Alreadydeactivatedcount"
+          },
+          "rejectedCount": {
+            "type": "integer",
+            "title": "Rejectedcount"
+          },
+          "notFoundCount": {
+            "type": "integer",
+            "title": "Notfoundcount"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "reason",
+          "originalFilename",
+          "totalRows",
+          "deactivatedCount",
+          "alreadyDeactivatedCount",
+          "rejectedCount",
+          "notFoundCount",
+          "createdBy",
+          "createdAt"
+        ],
+        "title": "DeactivationBatchOut"
+      },
+      "DeactivationOutcome": {
+        "type": "string",
+        "enum": [
+          "deactivated",
+          "already_deactivated",
+          "rejected",
+          "not_found"
+        ]
+      },
+      "DeactivationReason": {
+        "type": "string",
+        "enum": [
+          "returned_to_lessor",
+          "bought_out",
+          "disposed"
+        ],
+        "title": "DeactivationReason"
+      },
+      "DeactivationResult": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/DeactivationReason"
+          },
+          "originalFilename": {
+            "type": "string",
+            "title": "Originalfilename"
+          },
+          "totalRows": {
+            "type": "integer",
+            "title": "Totalrows"
+          },
+          "deactivatedCount": {
+            "type": "integer",
+            "title": "Deactivatedcount"
+          },
+          "alreadyDeactivatedCount": {
+            "type": "integer",
+            "title": "Alreadydeactivatedcount"
+          },
+          "rejectedCount": {
+            "type": "integer",
+            "title": "Rejectedcount"
+          },
+          "notFoundCount": {
+            "type": "integer",
+            "title": "Notfoundcount"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "notFoundReport": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DownloadLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rejectedReport": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DownloadLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "closedLeaseReturns": {
+            "type": "integer",
+            "title": "Closedleasereturns"
+          },
+          "sample": {
+            "items": {
+              "$ref": "#/components/schemas/DeactivationSampleRow"
+            },
+            "type": "array",
+            "title": "Sample"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "reason",
+          "originalFilename",
+          "totalRows",
+          "deactivatedCount",
+          "alreadyDeactivatedCount",
+          "rejectedCount",
+          "notFoundCount",
+          "createdBy",
+          "createdAt",
+          "notFoundReport",
+          "rejectedReport",
+          "closedLeaseReturns",
+          "sample"
+        ],
+        "title": "DeactivationResult"
+      },
+      "DeactivationSampleRow": {
+        "properties": {
+          "serialNumber": {
+            "type": "string",
+            "title": "Serialnumber"
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/DeactivationOutcome"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "serialNumber",
+          "outcome",
+          "detail"
+        ],
+        "title": "DeactivationSampleRow"
       },
       "DeliveryAddress": {
         "properties": {
@@ -13266,6 +18204,472 @@
         ],
         "title": "InstallationPlaceUndoIn"
       },
+      "InventoryCancelBody": {
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "InventoryCancelBody"
+      },
+      "InventoryCloseBody": {
+        "properties": {
+          "countDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Countdate"
+          },
+          "applyCorrections": {
+            "type": "boolean",
+            "title": "Applycorrections"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "countDate",
+          "applyCorrections"
+        ],
+        "title": "InventoryCloseBody"
+      },
+      "InventoryCounts": {
+        "properties": {
+          "expected": {
+            "type": "integer",
+            "title": "Expected"
+          },
+          "matched": {
+            "type": "integer",
+            "title": "Matched"
+          },
+          "missing": {
+            "type": "integer",
+            "title": "Missing"
+          },
+          "wrongLocation": {
+            "type": "integer",
+            "title": "Wronglocation"
+          },
+          "unknown": {
+            "type": "integer",
+            "title": "Unknown"
+          },
+          "corrected": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Corrected"
+          }
+        },
+        "type": "object",
+        "required": [
+          "expected",
+          "matched",
+          "missing",
+          "wrongLocation",
+          "unknown",
+          "corrected"
+        ],
+        "title": "InventoryCounts"
+      },
+      "InventoryCreate": {
+        "properties": {
+          "siteId": {
+            "type": "integer",
+            "title": "Siteid"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "siteId"
+        ],
+        "title": "InventoryCreate"
+      },
+      "InventoryDetail": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "site": {
+            "$ref": "#/components/schemas/SiteRef"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InventoryStatus"
+          },
+          "openedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Openedat"
+          },
+          "openedBy": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "closedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closedat"
+          },
+          "closedBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "countDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Countdate"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/InventoryCounts"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "applyCorrections": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Applycorrections"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/InventoryProgress"
+          },
+          "zones": {
+            "items": {
+              "$ref": "#/components/schemas/LocationRef"
+            },
+            "type": "array",
+            "title": "Zones"
+          },
+          "recentScans": {
+            "items": {
+              "$ref": "#/components/schemas/InventoryScanOut"
+            },
+            "type": "array",
+            "title": "Recentscans"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "site",
+          "status",
+          "openedAt",
+          "openedBy",
+          "closedAt",
+          "closedBy",
+          "countDate",
+          "summary",
+          "note",
+          "applyCorrections",
+          "version",
+          "progress",
+          "zones",
+          "recentScans",
+          "availableActions"
+        ],
+        "title": "InventoryDetail"
+      },
+      "InventoryProgress": {
+        "properties": {
+          "scanned": {
+            "type": "integer",
+            "title": "Scanned"
+          },
+          "expected": {
+            "type": "integer",
+            "title": "Expected"
+          },
+          "percent": {
+            "type": "integer",
+            "title": "Percent"
+          }
+        },
+        "type": "object",
+        "required": [
+          "scanned",
+          "expected",
+          "percent"
+        ],
+        "title": "InventoryProgress"
+      },
+      "InventoryScanBody": {
+        "properties": {
+          "serial": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Serial"
+          },
+          "stockLocationId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stocklocationid"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "serial"
+        ],
+        "title": "InventoryScanBody"
+      },
+      "InventoryScanOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "serialNumber": {
+            "type": "string",
+            "title": "Serialnumber"
+          },
+          "result": {
+            "$ref": "#/components/schemas/InventoryScanResult"
+          },
+          "asset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scannedLocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LocationRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "recordedLocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LocationRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scannedBy": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "scannedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scannedat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "serialNumber",
+          "result",
+          "asset",
+          "scannedLocation",
+          "recordedLocation",
+          "scannedBy",
+          "scannedAt"
+        ],
+        "title": "InventoryScanOut"
+      },
+      "InventoryScanResult": {
+        "type": "string",
+        "enum": [
+          "matched",
+          "wrong_location",
+          "unknown"
+        ],
+        "title": "InventoryScanResult"
+      },
+      "InventoryStatus": {
+        "type": "string",
+        "enum": [
+          "open",
+          "closed",
+          "cancelled"
+        ],
+        "title": "InventoryStatus"
+      },
+      "InventorySummary": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "site": {
+            "$ref": "#/components/schemas/SiteRef"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InventoryStatus"
+          },
+          "openedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Openedat"
+          },
+          "openedBy": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "closedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closedat"
+          },
+          "closedBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "countDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Countdate"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/InventoryCounts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "site",
+          "status",
+          "openedAt",
+          "openedBy",
+          "closedAt",
+          "closedBy",
+          "countDate",
+          "summary"
+        ],
+        "title": "InventorySummary"
+      },
       "ItemSlot": {
         "type": "string",
         "enum": [
@@ -13811,6 +19215,13 @@
           "perPageMax"
         ],
         "title": "Limits"
+      },
+      "LineWarning": {
+        "type": "string",
+        "enum": [
+          "below_min",
+          "above_max"
+        ]
       },
       "LinkedLeaseReturn": {
         "properties": {
@@ -14823,6 +20234,86 @@
         ],
         "title": "ArticleOutPage"
       },
+      "Page_AssetListItem_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/AssetListItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "AssetListItemPage"
+      },
+      "Page_AssetMovementOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/AssetMovementOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "AssetMovementOutPage"
+      },
+      "Page_CallOffOrderSummary_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CallOffOrderSummary"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "CallOffOrderSummaryPage"
+      },
+      "Page_DeactivationBatchOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/DeactivationBatchOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "DeactivationBatchOutPage"
+      },
       "Page_ImportJobSummary_": {
         "properties": {
           "data": {
@@ -14862,6 +20353,46 @@
           "meta"
         ],
         "title": "ImportRowIssuePage"
+      },
+      "Page_InventoryScanOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/InventoryScanOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "InventoryScanOutPage"
+      },
+      "Page_InventorySummary_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/InventorySummary"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "InventorySummaryPage"
       },
       "Page_OrderClosingQueueItem_": {
         "properties": {
@@ -15856,6 +21387,118 @@
         ],
         "title": "Readyz"
       },
+      "Reconciliation": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ReconciliationItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/InventoryCounts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta",
+          "summary"
+        ],
+        "title": "Reconciliation"
+      },
+      "ReconciliationCategory": {
+        "type": "string",
+        "enum": [
+          "matched",
+          "missing",
+          "wrong_location",
+          "unknown"
+        ]
+      },
+      "ReconciliationItem": {
+        "properties": {
+          "serialNumber": {
+            "type": "string",
+            "title": "Serialnumber"
+          },
+          "asset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "category": {
+            "$ref": "#/components/schemas/ReconciliationCategory"
+          },
+          "recordedLocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LocationRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scannedLocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LocationRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scannedBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scannedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scannedat"
+          },
+          "correctable": {
+            "type": "boolean",
+            "title": "Correctable"
+          }
+        },
+        "type": "object",
+        "required": [
+          "serialNumber",
+          "asset",
+          "category",
+          "recordedLocation",
+          "scannedLocation",
+          "scannedBy",
+          "scannedAt",
+          "correctable"
+        ],
+        "title": "ReconciliationItem"
+      },
       "RegionDetail": {
         "properties": {
           "id": {
@@ -15961,6 +21604,38 @@
           "bookingLinkExample"
         ],
         "title": "RegionDetail"
+      },
+      "RegionLoad": {
+        "properties": {
+          "region": {
+            "$ref": "#/components/schemas/RegionRef"
+          },
+          "open": {
+            "type": "integer",
+            "title": "Open"
+          },
+          "booked": {
+            "type": "integer",
+            "title": "Booked"
+          },
+          "completedThisWeek": {
+            "type": "integer",
+            "title": "Completedthisweek"
+          },
+          "escalated": {
+            "type": "integer",
+            "title": "Escalated"
+          }
+        },
+        "type": "object",
+        "required": [
+          "region",
+          "open",
+          "booked",
+          "completedThisWeek",
+          "escalated"
+        ],
+        "title": "RegionLoad"
       },
       "RegionOut": {
         "properties": {
@@ -16963,6 +22638,80 @@
           "applied"
         ],
         "title": "ScanResult[AssetSummary]"
+      },
+      "ScanResult_InventoryScanOut_": {
+        "properties": {
+          "verdict": {
+            "$ref": "#/components/schemas/ScanVerdict"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "scannedValue": {
+            "type": "string",
+            "title": "Scannedvalue"
+          },
+          "applied": {
+            "type": "boolean",
+            "title": "Applied"
+          },
+          "entity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InventoryScanOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "undo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UndoLink"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "progress": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScanProgress"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "canRegister": {
+            "type": "boolean",
+            "title": "Canregister",
+            "default": false
+          },
+          "suggestedSlots": {
+            "items": {
+              "$ref": "#/components/schemas/ItemSlot"
+            },
+            "type": "array",
+            "title": "Suggestedslots"
+          }
+        },
+        "type": "object",
+        "required": [
+          "verdict",
+          "code",
+          "message",
+          "scannedValue",
+          "applied"
+        ],
+        "title": "ScanResult[InventoryScanOut]"
       },
       "ScanResult_ServiceRequestItemOut_": {
         "properties": {
@@ -18556,6 +24305,23 @@
         ],
         "title": "SrRef"
       },
+      "StageCount": {
+        "properties": {
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStage"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "stage",
+          "count"
+        ],
+        "title": "StageCount"
+      },
       "StagingPatch": {
         "properties": {
           "osReinstall": {
@@ -18599,6 +24365,319 @@
         "type": "object",
         "title": "StagingPatch",
         "description": "``PATCH /service-requests/{id}/staging``.\n\nAPI.md defines ``osReinstall`` (+ ``version``); ``addedSoftware`` is accepted as a\nconvenience so the work panel can save both options in one call (same rules as\n``PUT …/software-checklist``). Omitted fields stay unchanged."
+      },
+      "StockAlert": {
+        "properties": {
+          "article": {
+            "$ref": "#/components/schemas/ArticleRef"
+          },
+          "site": {
+            "$ref": "#/components/schemas/SiteRef"
+          },
+          "stock": {
+            "type": "integer",
+            "title": "Stock"
+          },
+          "demand": {
+            "type": "integer",
+            "title": "Demand"
+          },
+          "buffer": {
+            "type": "integer",
+            "title": "Buffer"
+          },
+          "orderQty": {
+            "type": "integer",
+            "title": "Orderqty"
+          }
+        },
+        "type": "object",
+        "required": [
+          "article",
+          "site",
+          "stock",
+          "demand",
+          "buffer",
+          "orderQty"
+        ],
+        "title": "StockAlert"
+      },
+      "StockArticleRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "modelNumber": {
+            "type": "string",
+            "title": "Modelnumber"
+          },
+          "internalDescription": {
+            "type": "string",
+            "title": "Internaldescription"
+          },
+          "category": {
+            "$ref": "#/components/schemas/ArticleCategory"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "name",
+          "modelNumber",
+          "internalDescription",
+          "category",
+          "isActive"
+        ],
+        "title": "StockArticleRef"
+      },
+      "StockCell": {
+        "properties": {
+          "siteId": {
+            "type": "integer",
+            "title": "Siteid"
+          },
+          "goodsIn": {
+            "type": "integer",
+            "title": "Goodsin"
+          },
+          "staging": {
+            "type": "integer",
+            "title": "Staging"
+          },
+          "goodsOut": {
+            "type": "integer",
+            "title": "Goodsout"
+          },
+          "stock": {
+            "type": "integer",
+            "title": "Stock"
+          },
+          "demand": {
+            "type": "integer",
+            "title": "Demand"
+          },
+          "buffer": {
+            "type": "integer",
+            "title": "Buffer"
+          },
+          "orderQty": {
+            "type": "integer",
+            "title": "Orderqty"
+          },
+          "minQty": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minqty"
+          },
+          "maxQty": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxqty"
+          },
+          "belowMin": {
+            "type": "boolean",
+            "title": "Belowmin"
+          },
+          "aboveMax": {
+            "type": "boolean",
+            "title": "Abovemax"
+          },
+          "lastOrderDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastorderdate"
+          },
+          "lastOrderedQty": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastorderedqty"
+          }
+        },
+        "type": "object",
+        "required": [
+          "siteId",
+          "goodsIn",
+          "staging",
+          "goodsOut",
+          "stock",
+          "demand",
+          "buffer",
+          "orderQty",
+          "minQty",
+          "maxQty",
+          "belowMin",
+          "aboveMax",
+          "lastOrderDate",
+          "lastOrderedQty"
+        ],
+        "title": "StockCell"
+      },
+      "StockCellList": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/StockCellWithArticle"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "StockCellList"
+      },
+      "StockCellWithArticle": {
+        "properties": {
+          "siteId": {
+            "type": "integer",
+            "title": "Siteid"
+          },
+          "goodsIn": {
+            "type": "integer",
+            "title": "Goodsin"
+          },
+          "staging": {
+            "type": "integer",
+            "title": "Staging"
+          },
+          "goodsOut": {
+            "type": "integer",
+            "title": "Goodsout"
+          },
+          "stock": {
+            "type": "integer",
+            "title": "Stock"
+          },
+          "demand": {
+            "type": "integer",
+            "title": "Demand"
+          },
+          "buffer": {
+            "type": "integer",
+            "title": "Buffer"
+          },
+          "orderQty": {
+            "type": "integer",
+            "title": "Orderqty"
+          },
+          "minQty": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minqty"
+          },
+          "maxQty": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxqty"
+          },
+          "belowMin": {
+            "type": "boolean",
+            "title": "Belowmin"
+          },
+          "aboveMax": {
+            "type": "boolean",
+            "title": "Abovemax"
+          },
+          "lastOrderDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastorderdate"
+          },
+          "lastOrderedQty": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastorderedqty"
+          },
+          "articleId": {
+            "type": "integer",
+            "title": "Articleid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "siteId",
+          "goodsIn",
+          "staging",
+          "goodsOut",
+          "stock",
+          "demand",
+          "buffer",
+          "orderQty",
+          "minQty",
+          "maxQty",
+          "belowMin",
+          "aboveMax",
+          "lastOrderDate",
+          "lastOrderedQty",
+          "articleId"
+        ],
+        "title": "StockCellWithArticle"
       },
       "StockHint": {
         "properties": {
@@ -18698,6 +24777,120 @@
           "site"
         ],
         "title": "StockLocationOut"
+      },
+      "StockMatrix": {
+        "properties": {
+          "calculatedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calculatedat"
+          },
+          "sites": {
+            "items": {
+              "$ref": "#/components/schemas/SiteRef"
+            },
+            "type": "array",
+            "title": "Sites"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/StockRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/StockMatrixMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "calculatedAt",
+          "sites",
+          "rows",
+          "meta"
+        ],
+        "title": "StockMatrix"
+      },
+      "StockMatrixMeta": {
+        "properties": {
+          "unmatchedDemand": {
+            "items": {
+              "$ref": "#/components/schemas/UnmatchedDemand"
+            },
+            "type": "array",
+            "title": "Unmatcheddemand"
+          },
+          "unresolvedDemand": {
+            "type": "integer",
+            "title": "Unresolveddemand"
+          },
+          "recalculating": {
+            "type": "boolean",
+            "title": "Recalculating"
+          }
+        },
+        "type": "object",
+        "required": [
+          "unmatchedDemand",
+          "unresolvedDemand",
+          "recalculating"
+        ],
+        "title": "StockMatrixMeta"
+      },
+      "StockRow": {
+        "properties": {
+          "article": {
+            "$ref": "#/components/schemas/StockArticleRef"
+          },
+          "cells": {
+            "items": {
+              "$ref": "#/components/schemas/StockCell"
+            },
+            "type": "array",
+            "title": "Cells"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/StockRowTotals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "article",
+          "cells",
+          "totals"
+        ],
+        "title": "StockRow"
+      },
+      "StockRowTotals": {
+        "properties": {
+          "stock": {
+            "type": "integer",
+            "title": "Stock"
+          },
+          "demand": {
+            "type": "integer",
+            "title": "Demand"
+          },
+          "orderQty": {
+            "type": "integer",
+            "title": "Orderqty"
+          }
+        },
+        "type": "object",
+        "required": [
+          "stock",
+          "demand",
+          "orderQty"
+        ],
+        "title": "StockRowTotals"
       },
       "StopContact": {
         "properties": {
@@ -20270,6 +26463,36 @@
           "href"
         ],
         "title": "UndoLink"
+      },
+      "UnmatchedDemand": {
+        "properties": {
+          "requestedType": {
+            "type": "string",
+            "title": "Requestedtype"
+          },
+          "siteId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Siteid"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "requestedType",
+          "siteId",
+          "count"
+        ],
+        "title": "UnmatchedDemand"
       },
       "UserCreate": {
         "properties": {
