@@ -7,7 +7,7 @@ from typing import Any
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import noload
+from sqlalchemy.orm import raiseload
 
 from app.core.models import Asset, AssetMovement, LeaseReturnComment, StatusTransition, User
 from app.core.read_models import location_ref, user_ref
@@ -48,7 +48,7 @@ async def _transitions(
                     StatusTransition.entity_type == entity_type,
                     StatusTransition.entity_id == entity_id,
                 )
-                .options(noload(StatusTransition.actor))
+                .options(raiseload(StatusTransition.actor))
             )
         ).all()
     )
@@ -60,7 +60,7 @@ async def _mails(session: AsyncSession, entity_type: str, entity_id: int) -> lis
             await session.scalars(
                 select(MailLog)
                 .where(MailLog.entity_type == entity_type, MailLog.entity_id == entity_id)
-                .options(noload(MailLog.triggerer))
+                .options(raiseload(MailLog.triggerer))
             )
         ).all()
     )
@@ -116,9 +116,9 @@ async def sr_history(session: AsyncSession, sr_id: int) -> list[Any]:
                 select(AssetMovement)
                 .where(AssetMovement.service_request_id == sr_id)
                 .options(
-                    noload(AssetMovement.asset),
-                    noload(AssetMovement.service_request),
-                    noload(AssetMovement.actor),
+                    raiseload(AssetMovement.asset),
+                    raiseload(AssetMovement.service_request),
+                    raiseload(AssetMovement.actor),
                 )
             )
         ).all()
@@ -173,7 +173,7 @@ async def lease_history(session: AsyncSession, lease_id: int) -> list[Any]:
             await session.scalars(
                 select(LeaseReturnComment)
                 .where(LeaseReturnComment.lease_return_id == lease_id)
-                .options(noload(LeaseReturnComment.lease_return))
+                .options(raiseload(LeaseReturnComment.lease_return))
             )
         ).all()
     )

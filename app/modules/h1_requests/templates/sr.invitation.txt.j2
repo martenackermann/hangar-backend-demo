@@ -7,7 +7,9 @@ your hardware order {{ sr_number }} has arrived with us. It contains:
 
 Please book a time for the handover. A technician brings your new devices, sets them up at your desk{% if old_items %} and takes back your old device ({{ old_items | join(", ") }}){% endif %}.
 
-{% if booking_link %}Book your appointment: {{ booking_link }}
+{% if booking_link %}
+Book your appointment: {{ booking_link }}
+
 {% endif %}
 What happens next
 1. You book an appointment with the link above.

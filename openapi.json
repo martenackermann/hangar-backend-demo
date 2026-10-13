@@ -2088,6 +2088,3761 @@
           }
         }
       }
+    },
+    "/api/v1/service-requests": {
+      "get": {
+        "tags": [
+          "service-requests"
+        ],
+        "summary": "List service requests",
+        "operationId": "service-requests-list_service_requests",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: number, status, importedAt, statusChangedAt, appointmentStartAt, communicationDate, region. Default: -importedAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: number, status, importedAt, statusChangedAt, appointmentStartAt, communicationDate, region. Default: -importedAt."
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "SR/task number, contact name, email or user id.",
+              "title": "Q"
+            },
+            "description": "SR/task number, contact name, email or user id."
+          },
+          {
+            "name": "vip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/VipMode",
+              "description": "exclude (default) hides every VIP record; include shows all; only VIPs.",
+              "default": "exclude"
+            },
+            "description": "exclude (default) hides every VIP record; include shows all; only VIPs."
+          },
+          {
+            "name": "campus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Campus"
+            }
+          },
+          {
+            "name": "editorId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "me | none | user id",
+              "title": "Editorid"
+            },
+            "description": "me | none | user id"
+          },
+          {
+            "name": "contactId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contactid"
+            }
+          },
+          {
+            "name": "appointmentFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Appointmentfrom"
+            }
+          },
+          {
+            "name": "appointmentTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Appointmentto"
+            }
+          },
+          {
+            "name": "hasAppointment",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hasappointment"
+            }
+          },
+          {
+            "name": "communicationFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Communicationfrom"
+            }
+          },
+          {
+            "name": "communicationTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Communicationto"
+            }
+          },
+          {
+            "name": "importedFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Importedfrom"
+            }
+          },
+          {
+            "name": "importedTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Importedto"
+            }
+          },
+          {
+            "name": "closedFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Closedfrom"
+            }
+          },
+          {
+            "name": "closedTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Closedto"
+            }
+          },
+          {
+            "name": "paused",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paused"
+            }
+          },
+          {
+            "name": "needsAttention",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Needsattention"
+            }
+          },
+          {
+            "name": "includeClosed",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Includeclosed"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: imported, imported_vip, hardware_unavailable, invited, campus_info_sent, reminder_1_sent, reminder_2_sent, escalated, appointment_booked, personalization_in_progress, personalization_done, ready_for_picking, shipped, provided, reschedule_needed, completed, cancelled.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: imported, imported_vip, hardware_unavailable, invited, campus_info_sent, reminder_1_sent, reminder_2_sent, escalated, appointment_booked, personalization_in_progress, personalization_done, ready_for_picking, shipped, provided, reschedule_needed, completed, cancelled."
+          },
+          {
+            "name": "stage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: imported, invited, booked, personalizing, ready, delivery, deployed, closed.",
+              "title": "Stage"
+            },
+            "description": "Comma-separated: imported, invited, booked, personalizing, ready, delivery, deployed, closed."
+          },
+          {
+            "name": "regionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Regionid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "deliveryType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: technician, parcel_to_user, parcel_to_pickup_point.",
+              "title": "Deliverytype"
+            },
+            "description": "Comma-separated: technician, parcel_to_user, parcel_to_pickup_point."
+          },
+          {
+            "name": "procurementType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: replacement, new_hire, additional_device, removal.",
+              "title": "Procurementtype"
+            },
+            "description": "Comma-separated: replacement, new_hire, additional_device, removal."
+          },
+          {
+            "name": "attention",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: region_unresolved, contact_email_missing, unknown_article, appointment_soon_not_ready, appointment_overdue, escalated_stale, itsm_closed, hold_group_left, retirement_passed, not_collected.",
+              "title": "Attention"
+            },
+            "description": "Comma-separated: region_unresolved, contact_email_missing, unknown_article, appointment_soon_not_ready, appointment_overdue, escalated_stale, itsm_closed, hold_group_left, retirement_passed, not_collected."
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Ids"
+            },
+            "description": "Comma-separated ids."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ServiceRequestListItem_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/export": {
+      "post": {
+        "tags": [
+          "service-requests"
+        ],
+        "summary": "Export service requests (xlsx, list filters)",
+        "operationId": "service-requests-export_service_requests",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: number, status, importedAt, statusChangedAt, appointmentStartAt, communicationDate, region. Default: -importedAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: number, status, importedAt, statusChangedAt, appointmentStartAt, communicationDate, region. Default: -importedAt."
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "SR/task number, contact name, email or user id.",
+              "title": "Q"
+            },
+            "description": "SR/task number, contact name, email or user id."
+          },
+          {
+            "name": "vip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/VipMode",
+              "description": "exclude (default) hides every VIP record; include shows all; only VIPs.",
+              "default": "exclude"
+            },
+            "description": "exclude (default) hides every VIP record; include shows all; only VIPs."
+          },
+          {
+            "name": "campus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Campus"
+            }
+          },
+          {
+            "name": "editorId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "me | none | user id",
+              "title": "Editorid"
+            },
+            "description": "me | none | user id"
+          },
+          {
+            "name": "contactId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contactid"
+            }
+          },
+          {
+            "name": "appointmentFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Appointmentfrom"
+            }
+          },
+          {
+            "name": "appointmentTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Appointmentto"
+            }
+          },
+          {
+            "name": "hasAppointment",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hasappointment"
+            }
+          },
+          {
+            "name": "communicationFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Communicationfrom"
+            }
+          },
+          {
+            "name": "communicationTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Communicationto"
+            }
+          },
+          {
+            "name": "importedFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Importedfrom"
+            }
+          },
+          {
+            "name": "importedTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Importedto"
+            }
+          },
+          {
+            "name": "closedFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Closedfrom"
+            }
+          },
+          {
+            "name": "closedTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Closedto"
+            }
+          },
+          {
+            "name": "paused",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paused"
+            }
+          },
+          {
+            "name": "needsAttention",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Needsattention"
+            }
+          },
+          {
+            "name": "includeClosed",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Includeclosed"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: imported, imported_vip, hardware_unavailable, invited, campus_info_sent, reminder_1_sent, reminder_2_sent, escalated, appointment_booked, personalization_in_progress, personalization_done, ready_for_picking, shipped, provided, reschedule_needed, completed, cancelled.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: imported, imported_vip, hardware_unavailable, invited, campus_info_sent, reminder_1_sent, reminder_2_sent, escalated, appointment_booked, personalization_in_progress, personalization_done, ready_for_picking, shipped, provided, reschedule_needed, completed, cancelled."
+          },
+          {
+            "name": "stage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: imported, invited, booked, personalizing, ready, delivery, deployed, closed.",
+              "title": "Stage"
+            },
+            "description": "Comma-separated: imported, invited, booked, personalizing, ready, delivery, deployed, closed."
+          },
+          {
+            "name": "regionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Regionid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "deliveryType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: technician, parcel_to_user, parcel_to_pickup_point.",
+              "title": "Deliverytype"
+            },
+            "description": "Comma-separated: technician, parcel_to_user, parcel_to_pickup_point."
+          },
+          {
+            "name": "procurementType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: replacement, new_hire, additional_device, removal.",
+              "title": "Procurementtype"
+            },
+            "description": "Comma-separated: replacement, new_hire, additional_device, removal."
+          },
+          {
+            "name": "attention",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: region_unresolved, contact_email_missing, unknown_article, appointment_soon_not_ready, appointment_overdue, escalated_stale, itsm_closed, hold_group_left, retirement_passed, not_collected.",
+              "title": "Attention"
+            },
+            "description": "Comma-separated: region_unresolved, contact_email_missing, unknown_article, appointment_soon_not_ready, appointment_overdue, escalated_stale, itsm_closed, hold_group_left, retirement_passed, not_collected."
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Ids"
+            },
+            "description": "Comma-separated ids."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/by-number/{number}": {
+      "get": {
+        "tags": [
+          "service-requests"
+        ],
+        "summary": "Service request by number",
+        "operationId": "service-requests-get_service_request_by_number",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRequestDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}": {
+      "get": {
+        "tags": [
+          "service-requests"
+        ],
+        "summary": "Service request detail",
+        "operationId": "service-requests-get_service_request",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRequestDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "service-requests"
+        ],
+        "summary": "Edit service request fields",
+        "operationId": "service-requests-patch_service_request_endpoint",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceRequestPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRequestDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/service-requests/{sr_id}/history": {
+      "get": {
+        "tags": [
+          "service-requests"
+        ],
+        "summary": "Service request timeline",
+        "operationId": "service-requests-service_request_history",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sr_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sr Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lease-returns": {
+      "get": {
+        "tags": [
+          "lease-returns"
+        ],
+        "summary": "List lease returns",
+        "operationId": "lease-returns-list_lease_returns",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: retirementDate, assetTag, status, statusChangedAt, communicationDate. Default: retirementDate.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: retirementDate, assetTag, status, statusChangedAt, communicationDate. Default: retirementDate."
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Asset tag, serial, user id, name or email.",
+              "title": "Q"
+            },
+            "description": "Asset tag, serial, user id, name or email."
+          },
+          {
+            "name": "vip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/VipMode",
+              "description": "exclude (default) hides every VIP record; include shows all; only VIPs.",
+              "default": "exclude"
+            },
+            "description": "exclude (default) hides every VIP record; include shows all; only VIPs."
+          },
+          {
+            "name": "campus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Campus"
+            }
+          },
+          {
+            "name": "retirementFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Retirementfrom"
+            }
+          },
+          {
+            "name": "retirementTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Retirementto"
+            }
+          },
+          {
+            "name": "communicationFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Communicationfrom"
+            }
+          },
+          {
+            "name": "communicationTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Communicationto"
+            }
+          },
+          {
+            "name": "linked",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Linked"
+            }
+          },
+          {
+            "name": "paused",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paused"
+            }
+          },
+          {
+            "name": "needsAttention",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Needsattention"
+            }
+          },
+          {
+            "name": "includeClosed",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Includeclosed"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: imported, imported_vip, info_sent, reminder_1_sent, reminder_2_sent, escalated, replacement_ordered, probably_closed, closed.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: imported, imported_vip, info_sent, reminder_1_sent, reminder_2_sent, escalated, replacement_ordered, probably_closed, closed."
+          },
+          {
+            "name": "attention",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: region_unresolved, contact_email_missing, unknown_article, appointment_soon_not_ready, appointment_overdue, escalated_stale, itsm_closed, hold_group_left, retirement_passed, not_collected.",
+              "title": "Attention"
+            },
+            "description": "Comma-separated: region_unresolved, contact_email_missing, unknown_article, appointment_soon_not_ready, appointment_overdue, escalated_stale, itsm_closed, hold_group_left, retirement_passed, not_collected."
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Ids"
+            },
+            "description": "Comma-separated ids."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_LeaseReturnListItem_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lease-returns/export": {
+      "post": {
+        "tags": [
+          "lease-returns"
+        ],
+        "summary": "Export lease returns (xlsx, list filters)",
+        "operationId": "lease-returns-export_lease_returns",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: retirementDate, assetTag, status, statusChangedAt, communicationDate. Default: retirementDate.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: retirementDate, assetTag, status, statusChangedAt, communicationDate. Default: retirementDate."
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Asset tag, serial, user id, name or email.",
+              "title": "Q"
+            },
+            "description": "Asset tag, serial, user id, name or email."
+          },
+          {
+            "name": "vip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/VipMode",
+              "description": "exclude (default) hides every VIP record; include shows all; only VIPs.",
+              "default": "exclude"
+            },
+            "description": "exclude (default) hides every VIP record; include shows all; only VIPs."
+          },
+          {
+            "name": "campus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Campus"
+            }
+          },
+          {
+            "name": "retirementFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Retirementfrom"
+            }
+          },
+          {
+            "name": "retirementTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Retirementto"
+            }
+          },
+          {
+            "name": "communicationFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Communicationfrom"
+            }
+          },
+          {
+            "name": "communicationTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Communicationto"
+            }
+          },
+          {
+            "name": "linked",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Linked"
+            }
+          },
+          {
+            "name": "paused",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paused"
+            }
+          },
+          {
+            "name": "needsAttention",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Needsattention"
+            }
+          },
+          {
+            "name": "includeClosed",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Includeclosed"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: imported, imported_vip, info_sent, reminder_1_sent, reminder_2_sent, escalated, replacement_ordered, probably_closed, closed.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: imported, imported_vip, info_sent, reminder_1_sent, reminder_2_sent, escalated, replacement_ordered, probably_closed, closed."
+          },
+          {
+            "name": "attention",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: region_unresolved, contact_email_missing, unknown_article, appointment_soon_not_ready, appointment_overdue, escalated_stale, itsm_closed, hold_group_left, retirement_passed, not_collected.",
+              "title": "Attention"
+            },
+            "description": "Comma-separated: region_unresolved, contact_email_missing, unknown_article, appointment_soon_not_ready, appointment_overdue, escalated_stale, itsm_closed, hold_group_left, retirement_passed, not_collected."
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Ids"
+            },
+            "description": "Comma-separated ids."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lease-returns/{lease_id}": {
+      "get": {
+        "tags": [
+          "lease-returns"
+        ],
+        "summary": "Lease return detail",
+        "operationId": "lease-returns-get_lease_return",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lease_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Lease Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaseReturnDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "lease-returns"
+        ],
+        "summary": "Edit lease return fields",
+        "operationId": "lease-returns-patch_lease_return",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lease_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Lease Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeaseReturnPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaseReturnDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lease-returns/{lease_id}/comments": {
+      "get": {
+        "tags": [
+          "lease-returns"
+        ],
+        "summary": "Lease return comments (newest first)",
+        "operationId": "lease-returns-list_comments",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lease_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Lease Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "lease-returns"
+        ],
+        "summary": "Add a lease return comment",
+        "operationId": "lease-returns-create_comment",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lease_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Lease Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaseReturnCommentOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lease-returns/{lease_id}/history": {
+      "get": {
+        "tags": [
+          "lease-returns"
+        ],
+        "summary": "Lease return timeline",
+        "operationId": "lease-returns-lease_return_history",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lease_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Lease Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contacts": {
+      "get": {
+        "tags": [
+          "contacts"
+        ],
+        "summary": "List contacts",
+        "operationId": "contacts-list_contacts",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Name, email or user id.",
+              "title": "Q"
+            },
+            "description": "Name, email or user id."
+          },
+          {
+            "name": "vip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "exclude",
+                "include",
+                "only"
+              ],
+              "type": "string",
+              "description": "include (default) | exclude | only",
+              "default": "include",
+              "title": "Vip"
+            },
+            "description": "include (default) | exclude | only"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: lastName, userId. Default: lastName.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: lastName, userId. Default: lastName."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ContactListItem_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contacts/{contact_id}": {
+      "get": {
+        "tags": [
+          "contacts"
+        ],
+        "summary": "Contact detail",
+        "operationId": "contacts-get_contact",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Contact Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "contacts"
+        ],
+        "summary": "Edit contact",
+        "operationId": "contacts-patch_contact_endpoint",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Contact Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pipeline/summary": {
+      "get": {
+        "tags": [
+          "pipeline"
+        ],
+        "summary": "Pipeline board summary",
+        "operationId": "pipeline-get_pipeline_summary",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/VipMode",
+              "description": "exclude (default) hides every VIP record; include shows all; only VIPs.",
+              "default": "exclude"
+            },
+            "description": "exclude (default) hides every VIP record; include shows all; only VIPs."
+          },
+          {
+            "name": "campus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Campus"
+            }
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Siteid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "regionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated ids.",
+              "title": "Regionid"
+            },
+            "description": "Comma-separated ids."
+          },
+          {
+            "name": "deliveryType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: technician, parcel_to_user, parcel_to_pickup_point.",
+              "title": "Deliverytype"
+            },
+            "description": "Comma-separated: technician, parcel_to_user, parcel_to_pickup_point."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mail-log": {
+      "get": {
+        "tags": [
+          "communications"
+        ],
+        "summary": "Mail log",
+        "operationId": "communications-list_mail_log",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Recipient, subject or entity label.",
+              "title": "Q"
+            },
+            "description": "Recipient, subject or entity label."
+          },
+          {
+            "name": "templateId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Templateid"
+            }
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entitytype"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entityid"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: queuedAt, sentAt. Default: -queuedAt.",
+              "title": "Sort"
+            },
+            "description": "Comma-separated sort keys, prefix '-' for descending. Allowed: queuedAt, sentAt. Default: -queuedAt."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: queued, sent, failed.",
+              "title": "Status"
+            },
+            "description": "Comma-separated: queued, sent, failed."
+          },
+          {
+            "name": "trigger",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated: user, job, import, sync, system.",
+              "title": "Trigger"
+            },
+            "description": "Comma-separated: user, job, import, sync, system."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_MailLogEntry_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mail-log/{mail_id}": {
+      "get": {
+        "tags": [
+          "communications"
+        ],
+        "summary": "Mail log entry with rendered body",
+        "operationId": "communications-get_mail_log",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "mail_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Mail Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailLogDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dispatch-settings": {
+      "get": {
+        "tags": [
+          "communications"
+        ],
+        "summary": "Dispatch settings",
+        "operationId": "communications-get_dispatch_settings",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchSettingsOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "communications"
+        ],
+        "summary": "Update dispatch settings",
+        "operationId": "communications-put_dispatch_settings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DispatchSettingsInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchSettingsOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/comms/dispatch-runs": {
+      "get": {
+        "tags": [
+          "communications"
+        ],
+        "summary": "Dispatch runs (newest first)",
+        "operationId": "communications-list_dispatch_runs",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dryRun",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter; omit for all runs.",
+              "title": "Dryrun"
+            },
+            "description": "Filter; omit for all runs."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "1-based page number.",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "1-based page number."
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Items per page (1–200).",
+              "default": 25,
+              "title": "Perpage"
+            },
+            "description": "Items per page (1–200)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_DispatchRunOut_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "communications"
+        ],
+        "summary": "Run the dispatch now (202) or as a dry run (200)",
+        "operationId": "communications-create_dispatch_run",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DispatchRunCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/DispatchRunOut"
+                    },
+                    {
+                      "$ref": "#/components/schemas/JobAccepted"
+                    }
+                  ],
+                  "title": "Response Communications-Create Dispatch Run"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Run queued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/comms/dispatch-runs/{run_id}": {
+      "get": {
+        "tags": [
+          "communications"
+        ],
+        "summary": "Dispatch run",
+        "operationId": "communications-get_dispatch_run",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchRunOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notification-templates": {
+      "get": {
+        "tags": [
+          "communications"
+        ],
+        "summary": "Notification templates",
+        "operationId": "communications-list_templates",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationTemplateList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/notification-templates/{template_id}/preview": {
+      "get": {
+        "tags": [
+          "communications"
+        ],
+        "summary": "Render a template (never sends)",
+        "operationId": "communications-preview_template",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "template_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Template Id"
+            }
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entitytype"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entityid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplatePreview"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2522,6 +6277,101 @@
         ],
         "title": "AssetLeaseRef"
       },
+      "AssetMovementEntry": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Occurredat"
+          },
+          "actor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trigger": {
+            "$ref": "#/components/schemas/Trigger"
+          },
+          "kind": {
+            "type": "string",
+            "const": "asset_movement",
+            "title": "Kind",
+            "default": "asset_movement"
+          },
+          "movementId": {
+            "type": "integer",
+            "title": "Movementid"
+          },
+          "asset": {
+            "$ref": "#/components/schemas/AssetRefLite"
+          },
+          "action": {
+            "$ref": "#/components/schemas/AssetAction"
+          },
+          "fromStatus": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "toStatus": {
+            "$ref": "#/components/schemas/AssetStatus"
+          },
+          "fromLocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LocationRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "toLocation": {
+            "$ref": "#/components/schemas/LocationRef"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "occurredAt",
+          "actor",
+          "trigger",
+          "movementId",
+          "asset",
+          "action",
+          "fromStatus",
+          "toStatus",
+          "fromLocation",
+          "toLocation",
+          "reason"
+        ],
+        "title": "AssetMovementEntry"
+      },
       "AssetMovementOut": {
         "properties": {
           "id": {
@@ -2653,6 +6503,36 @@
           "occurredAt"
         ],
         "title": "AssetMovementOut"
+      },
+      "AssetRefLite": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "serialNumber": {
+            "type": "string",
+            "title": "Serialnumber"
+          },
+          "assetTag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assettag"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "serialNumber",
+          "assetTag"
+        ],
+        "title": "AssetRefLite"
       },
       "AssetSource": {
         "type": "string",
@@ -2975,6 +6855,527 @@
         ],
         "title": "BulkResult"
       },
+      "CommentCreate": {
+        "properties": {
+          "body": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Body"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "body"
+        ],
+        "title": "CommentCreate"
+      },
+      "CommentEntry": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Occurredat"
+          },
+          "actor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trigger": {
+            "$ref": "#/components/schemas/Trigger"
+          },
+          "kind": {
+            "type": "string",
+            "const": "comment",
+            "title": "Kind",
+            "default": "comment"
+          },
+          "body": {
+            "type": "string",
+            "title": "Body"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "occurredAt",
+          "actor",
+          "trigger",
+          "body"
+        ],
+        "title": "CommentEntry"
+      },
+      "CommentList": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/LeaseReturnCommentOut"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "CommentList"
+      },
+      "ContactAddress": {
+        "properties": {
+          "street": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Street"
+          },
+          "zip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zip"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "building": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Building"
+          },
+          "room": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Room"
+          }
+        },
+        "type": "object",
+        "required": [
+          "street",
+          "zip",
+          "city",
+          "building",
+          "room"
+        ],
+        "title": "ContactAddress"
+      },
+      "ContactDetail": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid"
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "department": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "openServiceRequests": {
+            "type": "integer",
+            "title": "Openservicerequests"
+          },
+          "openLeaseReturns": {
+            "type": "integer",
+            "title": "Openleasereturns"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "firstName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Firstname"
+          },
+          "lastName": {
+            "type": "string",
+            "title": "Lastname"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "mobile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mobile"
+          },
+          "address": {
+            "$ref": "#/components/schemas/ContactAddress"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive"
+          },
+          "vip": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContactVip"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "serviceRequests": {
+            "items": {
+              "$ref": "#/components/schemas/ContactSrRef"
+            },
+            "type": "array",
+            "title": "Servicerequests"
+          },
+          "leaseReturns": {
+            "items": {
+              "$ref": "#/components/schemas/ContactLeaseRef"
+            },
+            "type": "array",
+            "title": "Leasereturns"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "displayName",
+          "email",
+          "department",
+          "city",
+          "isVip",
+          "openServiceRequests",
+          "openLeaseReturns",
+          "gender",
+          "firstName",
+          "lastName",
+          "phone",
+          "mobile",
+          "address",
+          "isActive",
+          "vip",
+          "serviceRequests",
+          "leaseReturns"
+        ],
+        "title": "ContactDetail"
+      },
+      "ContactLeaseRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "assetTag": {
+            "type": "string",
+            "title": "Assettag"
+          },
+          "status": {
+            "$ref": "#/components/schemas/LeaseReturnStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "assetTag",
+          "status"
+        ],
+        "title": "ContactLeaseRef"
+      },
+      "ContactListItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid"
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "department": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "openServiceRequests": {
+            "type": "integer",
+            "title": "Openservicerequests"
+          },
+          "openLeaseReturns": {
+            "type": "integer",
+            "title": "Openleasereturns"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "displayName",
+          "email",
+          "department",
+          "city",
+          "isVip",
+          "openServiceRequests",
+          "openLeaseReturns"
+        ],
+        "title": "ContactListItem"
+      },
+      "ContactPatch": {
+        "properties": {
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "mobile": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mobile"
+          },
+          "department": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department"
+          },
+          "gender": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Gender"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "street": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Street"
+          },
+          "zip": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zip"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "building": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Building"
+          },
+          "room": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Room"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ContactPatch"
+      },
       "ContactRef": {
         "properties": {
           "id": {
@@ -3009,6 +7410,53 @@
           "email"
         ],
         "title": "ContactRef"
+      },
+      "ContactSrRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status"
+        ],
+        "title": "ContactSrRef"
+      },
+      "ContactVip": {
+        "properties": {
+          "vipType": {
+            "type": "string",
+            "title": "Viptype"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vipType",
+          "title"
+        ],
+        "title": "ContactVip"
       },
       "DeliveryAddress": {
         "properties": {
@@ -3081,6 +7529,85 @@
         },
         "type": "object",
         "title": "DeliveryAddress"
+      },
+      "DeliveryAddressPatch": {
+        "properties": {
+          "street": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Street"
+          },
+          "zip": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zip"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country"
+          },
+          "room": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Room"
+          },
+          "building": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Building"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DeliveryAddressPatch"
       },
       "DeliveryType": {
         "type": "string",
@@ -3220,6 +7747,425 @@
           "cancel"
         ],
         "title": "DeviationOutcome"
+      },
+      "DispatchPlannedMail": {
+        "properties": {
+          "entityType": {
+            "type": "string",
+            "enum": [
+              "service_request",
+              "lease_return"
+            ],
+            "title": "Entitytype"
+          },
+          "entityId": {
+            "type": "integer",
+            "title": "Entityid"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "templateId": {
+            "type": "string",
+            "title": "Templateid"
+          },
+          "to": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "To"
+          }
+        },
+        "type": "object",
+        "required": [
+          "entityType",
+          "entityId",
+          "label",
+          "action",
+          "templateId",
+          "to"
+        ],
+        "title": "DispatchPlannedMail"
+      },
+      "DispatchRunCreate": {
+        "properties": {
+          "dryRun": {
+            "type": "boolean",
+            "title": "Dryrun",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DispatchRunCreate"
+      },
+      "DispatchRunError": {
+        "properties": {
+          "entityType": {
+            "type": "string",
+            "title": "Entitytype"
+          },
+          "entityId": {
+            "type": "integer",
+            "title": "Entityid"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "entityType",
+          "entityId",
+          "label",
+          "action",
+          "message"
+        ],
+        "title": "DispatchRunError"
+      },
+      "DispatchRunOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "trigger": {
+            "$ref": "#/components/schemas/Trigger"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "title": "Dryrun"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Startedat"
+          },
+          "finishedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finishedat"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Counts"
+          },
+          "skipped": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Skipped"
+          },
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/DispatchRunError"
+            },
+            "type": "array",
+            "title": "Errors"
+          },
+          "planned": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DispatchPlannedMail"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planned"
+          },
+          "triggeredBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "jobId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jobid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "trigger",
+          "dryRun",
+          "status",
+          "startedAt",
+          "finishedAt",
+          "counts",
+          "skipped",
+          "errors",
+          "planned",
+          "triggeredBy",
+          "jobId"
+        ],
+        "title": "DispatchRunOut"
+      },
+      "DispatchSettingsInput": {
+        "properties": {
+          "leaseMailsEnabled": {
+            "type": "boolean",
+            "title": "Leasemailsenabled"
+          },
+          "leaseInfoDaysBeforeRetirement": {
+            "type": "integer",
+            "maximum": 365.0,
+            "minimum": 1.0,
+            "title": "Leaseinfodaysbeforeretirement"
+          },
+          "leaseReminder1AfterDays": {
+            "type": "integer",
+            "maximum": 60.0,
+            "minimum": 1.0,
+            "title": "Leasereminder1Afterdays"
+          },
+          "leaseReminder2AfterDays": {
+            "type": "integer",
+            "maximum": 60.0,
+            "minimum": 1.0,
+            "title": "Leasereminder2Afterdays"
+          },
+          "leaseEscalationAfterDays": {
+            "type": "integer",
+            "maximum": 60.0,
+            "minimum": 1.0,
+            "title": "Leaseescalationafterdays"
+          },
+          "srMailsEnabled": {
+            "type": "boolean",
+            "title": "Srmailsenabled"
+          },
+          "srInviteAfterImportDays": {
+            "type": "integer",
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Srinviteafterimportdays"
+          },
+          "srReminder1AfterDays": {
+            "type": "integer",
+            "maximum": 60.0,
+            "minimum": 1.0,
+            "title": "Srreminder1Afterdays"
+          },
+          "srReminder2AfterDays": {
+            "type": "integer",
+            "maximum": 60.0,
+            "minimum": 1.0,
+            "title": "Srreminder2Afterdays"
+          },
+          "srEscalationAfterDays": {
+            "type": "integer",
+            "maximum": 60.0,
+            "minimum": 1.0,
+            "title": "Srescalationafterdays"
+          },
+          "hardwareUnavailableMailEnabled": {
+            "type": "boolean",
+            "title": "Hardwareunavailablemailenabled"
+          },
+          "rescheduleMailEnabled": {
+            "type": "boolean",
+            "title": "Reschedulemailenabled"
+          },
+          "maxMailsPerRun": {
+            "type": "integer",
+            "maximum": 5000.0,
+            "minimum": 1.0,
+            "title": "Maxmailsperrun"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "leaseMailsEnabled",
+          "leaseInfoDaysBeforeRetirement",
+          "leaseReminder1AfterDays",
+          "leaseReminder2AfterDays",
+          "leaseEscalationAfterDays",
+          "srMailsEnabled",
+          "srInviteAfterImportDays",
+          "srReminder1AfterDays",
+          "srReminder2AfterDays",
+          "srEscalationAfterDays",
+          "hardwareUnavailableMailEnabled",
+          "rescheduleMailEnabled",
+          "maxMailsPerRun"
+        ],
+        "title": "DispatchSettingsInput"
+      },
+      "DispatchSettingsOut": {
+        "properties": {
+          "leaseMailsEnabled": {
+            "type": "boolean",
+            "title": "Leasemailsenabled"
+          },
+          "leaseInfoDaysBeforeRetirement": {
+            "type": "integer",
+            "title": "Leaseinfodaysbeforeretirement"
+          },
+          "leaseReminder1AfterDays": {
+            "type": "integer",
+            "title": "Leasereminder1Afterdays"
+          },
+          "leaseReminder2AfterDays": {
+            "type": "integer",
+            "title": "Leasereminder2Afterdays"
+          },
+          "leaseEscalationAfterDays": {
+            "type": "integer",
+            "title": "Leaseescalationafterdays"
+          },
+          "srMailsEnabled": {
+            "type": "boolean",
+            "title": "Srmailsenabled"
+          },
+          "srInviteAfterImportDays": {
+            "type": "integer",
+            "title": "Srinviteafterimportdays"
+          },
+          "srReminder1AfterDays": {
+            "type": "integer",
+            "title": "Srreminder1Afterdays"
+          },
+          "srReminder2AfterDays": {
+            "type": "integer",
+            "title": "Srreminder2Afterdays"
+          },
+          "srEscalationAfterDays": {
+            "type": "integer",
+            "title": "Srescalationafterdays"
+          },
+          "hardwareUnavailableMailEnabled": {
+            "type": "boolean",
+            "title": "Hardwareunavailablemailenabled"
+          },
+          "rescheduleMailEnabled": {
+            "type": "boolean",
+            "title": "Reschedulemailenabled"
+          },
+          "maxMailsPerRun": {
+            "type": "integer",
+            "title": "Maxmailsperrun"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updatedat"
+          },
+          "updatedBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nextScheduledRunAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Nextscheduledrunat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "leaseMailsEnabled",
+          "leaseInfoDaysBeforeRetirement",
+          "leaseReminder1AfterDays",
+          "leaseReminder2AfterDays",
+          "leaseEscalationAfterDays",
+          "srMailsEnabled",
+          "srInviteAfterImportDays",
+          "srReminder1AfterDays",
+          "srReminder2AfterDays",
+          "srEscalationAfterDays",
+          "hardwareUnavailableMailEnabled",
+          "rescheduleMailEnabled",
+          "maxMailsPerRun",
+          "updatedAt",
+          "updatedBy",
+          "nextScheduledRunAt"
+        ],
+        "title": "DispatchSettingsOut"
+      },
+      "DownloadLink": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "contentType": {
+            "type": "string",
+            "title": "Contenttype"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "title": "Sizebytes"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expiresat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "filename",
+          "contentType",
+          "sizeBytes",
+          "expiresAt"
+        ],
+        "title": "DownloadLink"
       },
       "EntityRef": {
         "properties": {
@@ -3596,6 +8542,16 @@
         ],
         "title": "GatewayBindings"
       },
+      "Gender": {
+        "type": "string",
+        "enum": [
+          "female",
+          "male",
+          "diverse",
+          "unspecified"
+        ],
+        "title": "Gender"
+      },
       "Healthz": {
         "properties": {
           "status": {
@@ -3607,6 +8563,44 @@
         },
         "type": "object",
         "title": "Healthz"
+      },
+      "HistoryList": {
+        "properties": {
+          "data": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/TransitionEntry"
+                },
+                {
+                  "$ref": "#/components/schemas/MailEntry"
+                },
+                {
+                  "$ref": "#/components/schemas/AssetMovementEntry"
+                },
+                {
+                  "$ref": "#/components/schemas/CommentEntry"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "kind",
+                "mapping": {
+                  "asset_movement": "#/components/schemas/AssetMovementEntry",
+                  "comment": "#/components/schemas/CommentEntry",
+                  "mail": "#/components/schemas/MailEntry",
+                  "transition": "#/components/schemas/TransitionEntry"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "HistoryList"
       },
       "HoldSource": {
         "type": "string",
@@ -3729,6 +8723,34 @@
           "cancelled"
         ],
         "title": "JobStatus"
+      },
+      "LeaseReturnCommentOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "body": {
+            "type": "string",
+            "title": "Body"
+          },
+          "author": {
+            "$ref": "#/components/schemas/UserRef"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "body",
+          "author",
+          "createdAt"
+        ],
+        "title": "LeaseReturnCommentOut"
       },
       "LeaseReturnDetail": {
         "properties": {
@@ -4093,6 +9115,200 @@
         ],
         "title": "LeaseReturnDetail"
       },
+      "LeaseReturnListItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "assetTag": {
+            "type": "string",
+            "title": "Assettag"
+          },
+          "serialNumber": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Serialnumber"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "modelCategory": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Modelcategory"
+          },
+          "retirementDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Retirementdate"
+          },
+          "daysUntilRetirement": {
+            "type": "integer",
+            "title": "Daysuntilretirement"
+          },
+          "contact": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContactRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid"
+          },
+          "status": {
+            "$ref": "#/components/schemas/LeaseReturnStatus"
+          },
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          },
+          "communicationDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationdate"
+          },
+          "communicationPaused": {
+            "type": "boolean",
+            "title": "Communicationpaused"
+          },
+          "communicationResumeDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationresumedate"
+          },
+          "serviceRequest": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LeaseSrRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "commentCount": {
+            "type": "integer",
+            "title": "Commentcount"
+          },
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/AttentionFlag"
+            },
+            "type": "array",
+            "title": "Attention"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "assetTag",
+          "serialNumber",
+          "model",
+          "modelCategory",
+          "retirementDate",
+          "daysUntilRetirement",
+          "contact",
+          "userId",
+          "status",
+          "statusChangedAt",
+          "isVip",
+          "isCampus",
+          "communicationDate",
+          "communicationPaused",
+          "communicationResumeDate",
+          "serviceRequest",
+          "commentCount",
+          "attention",
+          "availableActions"
+        ],
+        "title": "LeaseReturnListItem"
+      },
+      "LeaseReturnPatch": {
+        "properties": {
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          },
+          "escalationEmail": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Escalationemail"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LeaseReturnPatch"
+      },
       "LeaseReturnStatus": {
         "type": "string",
         "enum": [
@@ -4417,6 +9633,397 @@
         ],
         "title": "LoginResponse"
       },
+      "MailAttachmentOut": {
+        "properties": {
+          "fileId": {
+            "type": "integer",
+            "title": "Fileid"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "contentType": {
+            "type": "string",
+            "title": "Contenttype"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "title": "Sizebytes"
+          },
+          "download": {
+            "$ref": "#/components/schemas/DownloadLink"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fileId",
+          "filename",
+          "contentType",
+          "sizeBytes",
+          "download"
+        ],
+        "title": "MailAttachmentOut"
+      },
+      "MailEntry": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Occurredat"
+          },
+          "actor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trigger": {
+            "$ref": "#/components/schemas/Trigger"
+          },
+          "kind": {
+            "type": "string",
+            "const": "mail",
+            "title": "Kind",
+            "default": "mail"
+          },
+          "mailLogId": {
+            "type": "integer",
+            "title": "Maillogid"
+          },
+          "templateId": {
+            "type": "string",
+            "title": "Templateid"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject"
+          },
+          "to": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "To"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MailStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "occurredAt",
+          "actor",
+          "trigger",
+          "mailLogId",
+          "templateId",
+          "subject",
+          "to",
+          "status"
+        ],
+        "title": "MailEntry"
+      },
+      "MailLogDetail": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "notificationId": {
+            "type": "string",
+            "title": "Notificationid"
+          },
+          "templateId": {
+            "type": "string",
+            "title": "Templateid"
+          },
+          "templateName": {
+            "type": "string",
+            "title": "Templatename"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MailStatus"
+          },
+          "to": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "To"
+          },
+          "cc": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Cc"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject"
+          },
+          "entity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EntityRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trigger": {
+            "$ref": "#/components/schemas/Trigger"
+          },
+          "triggeredBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "queuedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Queuedat"
+          },
+          "sentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentat"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "attachmentCount": {
+            "type": "integer",
+            "title": "Attachmentcount"
+          },
+          "bodyHtml": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bodyhtml"
+          },
+          "bodyText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bodytext"
+          },
+          "attachments": {
+            "items": {
+              "$ref": "#/components/schemas/MailAttachmentOut"
+            },
+            "type": "array",
+            "title": "Attachments"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "notificationId",
+          "templateId",
+          "templateName",
+          "status",
+          "to",
+          "cc",
+          "subject",
+          "entity",
+          "trigger",
+          "triggeredBy",
+          "queuedAt",
+          "sentAt",
+          "error",
+          "attachmentCount",
+          "bodyHtml",
+          "bodyText",
+          "attachments"
+        ],
+        "title": "MailLogDetail"
+      },
+      "MailLogEntry": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "notificationId": {
+            "type": "string",
+            "title": "Notificationid"
+          },
+          "templateId": {
+            "type": "string",
+            "title": "Templateid"
+          },
+          "templateName": {
+            "type": "string",
+            "title": "Templatename"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MailStatus"
+          },
+          "to": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "To"
+          },
+          "cc": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Cc"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject"
+          },
+          "entity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EntityRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trigger": {
+            "$ref": "#/components/schemas/Trigger"
+          },
+          "triggeredBy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "queuedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Queuedat"
+          },
+          "sentAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentat"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "attachmentCount": {
+            "type": "integer",
+            "title": "Attachmentcount"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "notificationId",
+          "templateId",
+          "templateName",
+          "status",
+          "to",
+          "cc",
+          "subject",
+          "entity",
+          "trigger",
+          "triggeredBy",
+          "queuedAt",
+          "sentAt",
+          "error",
+          "attachmentCount"
+        ],
+        "title": "MailLogEntry"
+      },
+      "MailStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "sent",
+          "failed"
+        ],
+        "title": "MailStatus"
+      },
       "Me": {
         "properties": {
           "id": {
@@ -4564,6 +10171,90 @@
         ],
         "title": "Milestones"
       },
+      "NotificationTemplateInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "owner": {
+            "type": "string",
+            "enum": [
+              "core",
+              "h1",
+              "h2",
+              "h3",
+              "h4",
+              "h5"
+            ],
+            "title": "Owner"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "trigger": {
+            "type": "string",
+            "title": "Trigger"
+          },
+          "recipients": {
+            "type": "string",
+            "title": "Recipients"
+          },
+          "subjectTemplate": {
+            "type": "string",
+            "title": "Subjecttemplate"
+          },
+          "sentLast7Days": {
+            "type": "integer",
+            "title": "Sentlast7Days"
+          },
+          "entityType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entitytype"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "owner",
+          "description",
+          "trigger",
+          "recipients",
+          "subjectTemplate",
+          "sentLast7Days",
+          "entityType"
+        ],
+        "title": "NotificationTemplateInfo"
+      },
+      "NotificationTemplateList": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/NotificationTemplateInfo"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "NotificationTemplateList"
+      },
       "OsReinstallTiming": {
         "type": "string",
         "enum": [
@@ -4571,6 +10262,134 @@
           "on_delivery"
         ],
         "title": "OsReinstallTiming"
+      },
+      "PageMeta": {
+        "properties": {
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "perPage": {
+            "type": "integer",
+            "title": "Perpage"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "totalPages": {
+            "type": "integer",
+            "title": "Totalpages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "page",
+          "perPage",
+          "total",
+          "totalPages"
+        ],
+        "title": "PageMeta"
+      },
+      "Page_ContactListItem_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ContactListItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "ContactListItemPage"
+      },
+      "Page_DispatchRunOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/DispatchRunOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "DispatchRunOutPage"
+      },
+      "Page_LeaseReturnListItem_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/LeaseReturnListItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "LeaseReturnListItemPage"
+      },
+      "Page_MailLogEntry_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/MailLogEntry"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "MailLogEntryPage"
+      },
+      "Page_ServiceRequestListItem_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ServiceRequestListItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "ServiceRequestListItemPage"
       },
       "PermissionDef": {
         "properties": {
@@ -4725,6 +10544,151 @@
           "closed"
         ],
         "title": "PipelineStage"
+      },
+      "PipelineStageSummary": {
+        "properties": {
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStage"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "statuses": {
+            "items": {
+              "$ref": "#/components/schemas/PipelineStatusCount"
+            },
+            "type": "array",
+            "title": "Statuses"
+          }
+        },
+        "type": "object",
+        "required": [
+          "stage",
+          "label",
+          "count",
+          "statuses"
+        ],
+        "title": "PipelineStageSummary"
+      },
+      "PipelineStatusCount": {
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "tone": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Tone"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "oldestStatusChangedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Oldeststatuschangedat"
+          },
+          "attentionCount": {
+            "type": "integer",
+            "title": "Attentioncount"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "label",
+          "tone",
+          "count",
+          "oldestStatusChangedAt",
+          "attentionCount"
+        ],
+        "title": "PipelineStatusCount"
+      },
+      "PipelineSummary": {
+        "properties": {
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Generatedat"
+          },
+          "stages": {
+            "items": {
+              "$ref": "#/components/schemas/PipelineStageSummary"
+            },
+            "type": "array",
+            "title": "Stages"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/PipelineTotals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "generatedAt",
+          "stages",
+          "totals"
+        ],
+        "title": "PipelineSummary"
+      },
+      "PipelineTotals": {
+        "properties": {
+          "open": {
+            "type": "integer",
+            "title": "Open"
+          },
+          "vipOpen": {
+            "type": "integer",
+            "title": "Vipopen"
+          },
+          "needsAttention": {
+            "type": "integer",
+            "title": "Needsattention"
+          },
+          "completedLast7Days": {
+            "type": "integer",
+            "title": "Completedlast7Days"
+          },
+          "cancelledLast7Days": {
+            "type": "integer",
+            "title": "Cancelledlast7Days"
+          },
+          "appointmentsToday": {
+            "type": "integer",
+            "title": "Appointmentstoday"
+          }
+        },
+        "type": "object",
+        "required": [
+          "open",
+          "vipOpen",
+          "needsAttention",
+          "completedLast7Days",
+          "cancelledLast7Days",
+          "appointmentsToday"
+        ],
+        "title": "PipelineTotals"
       },
       "ProcurementType": {
         "type": "string",
@@ -5999,6 +11963,315 @@
         ],
         "title": "ServiceRequestItemOut"
       },
+      "ServiceRequestListItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "taskNumber": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasknumber"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceRequestStatus"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/PipelineStage"
+          },
+          "statusChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Statuschangedat"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/ContactRef"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supplyingSite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SiteRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deliveryType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isCampus": {
+            "type": "boolean",
+            "title": "Iscampus"
+          },
+          "isVip": {
+            "type": "boolean",
+            "title": "Isvip"
+          },
+          "procurementType": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcurementType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "newItemTypes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Newitemtypes"
+          },
+          "appointmentStartAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentstartat"
+          },
+          "appointmentEndAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentendat"
+          },
+          "appointmentCalendarId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarid"
+          },
+          "appointmentCalendarName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appointmentcalendarname"
+          },
+          "communicationDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationdate"
+          },
+          "communicationPaused": {
+            "type": "boolean",
+            "title": "Communicationpaused"
+          },
+          "communicationResumeDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communicationresumedate"
+          },
+          "editor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "importedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Importedat"
+          },
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/AttentionFlag"
+            },
+            "type": "array",
+            "title": "Attention"
+          },
+          "availableActions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Availableactions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "taskNumber",
+          "status",
+          "stage",
+          "statusChangedAt",
+          "contact",
+          "region",
+          "supplyingSite",
+          "deliveryType",
+          "isCampus",
+          "isVip",
+          "procurementType",
+          "newItemTypes",
+          "appointmentStartAt",
+          "appointmentEndAt",
+          "appointmentCalendarId",
+          "appointmentCalendarName",
+          "communicationDate",
+          "communicationPaused",
+          "communicationResumeDate",
+          "editor",
+          "importedAt",
+          "attention",
+          "availableActions"
+        ],
+        "title": "ServiceRequestListItem"
+      },
+      "ServiceRequestPatch": {
+        "properties": {
+          "version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          },
+          "deliveryAddress": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryAddressPatch"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "onsiteContactPhone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onsitecontactphone"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "costCenter": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Costcenter"
+          },
+          "regionId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Regionid"
+          },
+          "deliveryTypeOverride": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ServiceRequestPatch"
+      },
       "ServiceRequestStatus": {
         "type": "string",
         "enum": [
@@ -6196,6 +12469,29 @@
         ],
         "title": "StockLocationOut"
       },
+      "TemplatePreview": {
+        "properties": {
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "html": {
+            "type": "string",
+            "title": "Html"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          }
+        },
+        "type": "object",
+        "required": [
+          "subject",
+          "html",
+          "text"
+        ],
+        "title": "TemplatePreview"
+      },
       "Tone": {
         "type": "string",
         "enum": [
@@ -6297,6 +12593,98 @@
           "viaEndpoint"
         ],
         "title": "TransitionDef"
+      },
+      "TransitionEntry": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Occurredat"
+          },
+          "actor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trigger": {
+            "$ref": "#/components/schemas/Trigger"
+          },
+          "kind": {
+            "type": "string",
+            "const": "transition",
+            "title": "Kind",
+            "default": "transition"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "actionLabel": {
+            "type": "string",
+            "title": "Actionlabel"
+          },
+          "fromStatus": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fromstatus"
+          },
+          "toStatus": {
+            "type": "string",
+            "title": "Tostatus"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "occurredAt",
+          "actor",
+          "trigger",
+          "action",
+          "actionLabel",
+          "fromStatus",
+          "toStatus",
+          "comment",
+          "payload"
+        ],
+        "title": "TransitionEntry"
       },
       "TransitionsMeta": {
         "properties": {
@@ -6438,6 +12826,14 @@
           "isDemoPersona"
         ],
         "title": "UserSummary"
+      },
+      "VipMode": {
+        "type": "string",
+        "enum": [
+          "exclude",
+          "include",
+          "only"
+        ]
       },
       "GuardInfo": {
         "properties": {

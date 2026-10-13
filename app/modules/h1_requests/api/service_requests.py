@@ -32,7 +32,7 @@ Reader = Annotated[User, Depends(require("sr.read"))]
 
 
 async def _get(session: SessionDep, sr_id: int) -> ServiceRequest:
-    sr = await session.get(ServiceRequest, sr_id)
+    sr = await session.get(ServiceRequest, sr_id, populate_existing=True)
     if sr is None:
         raise NotFoundError(f"Service request {sr_id} not found.")
     return sr
@@ -87,7 +87,9 @@ async def get_service_request_by_number(
 ) -> ServiceRequestDetail:
     sr = (
         await session.scalars(
-            select(ServiceRequest).where(ServiceRequest.number == number.strip().upper())
+            select(ServiceRequest)
+            .where(ServiceRequest.number == number.strip().upper())
+            .execution_options(populate_existing=True)
         )
     ).first()
     if sr is None:

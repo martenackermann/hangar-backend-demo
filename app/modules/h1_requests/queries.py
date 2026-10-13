@@ -309,6 +309,7 @@ def sr_select(f: SrFilters, user: User | None = None) -> Any:
         select(ServiceRequest)
         .outerjoin(Region, Region.id == ServiceRequest.region_id)
         .where(*sr_clauses(f, user=user))
+        .execution_options(populate_existing=True)
     )
 
 
@@ -421,7 +422,7 @@ def lease_clauses(f: LeaseFilters, *, today: date | None = None) -> list[ColumnE
 
 
 def lease_select(f: LeaseFilters) -> Any:
-    return select(LeaseReturn).where(*lease_clauses(f))
+    return select(LeaseReturn).where(*lease_clauses(f)).execution_options(populate_existing=True)
 
 
 # --- pipeline ----------------------------------------------------------------------------------------

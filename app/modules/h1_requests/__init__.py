@@ -110,12 +110,7 @@ def register(reg: SliceRegistry) -> None:
     register_authorizers(reg)
 
     job = [Trigger.JOB]
-    for entity_type, chain in (
-        ("service_request", SR_CHAIN_ACTIONS),
-        ("lease_return", LEASE_CHAIN_ACTIONS),
-    ):
-        reg.register_guard(entity_type, chain, guards.chain_due, code="chain_due", triggers=job)
-        reg.register_guard(entity_type, chain, guards.not_paused, code="not_paused", triggers=job)
+    # evaluated in registration order: the window check first, so its code is reported
     reg.register_guard(
         "lease_return",
         "send_info",
@@ -123,6 +118,12 @@ def register(reg: SliceRegistry) -> None:
         code="retirement_window",
         triggers=job,
     )
+    for entity_type, chain in (
+        ("service_request", SR_CHAIN_ACTIONS),
+        ("lease_return", LEASE_CHAIN_ACTIONS),
+    ):
+        reg.register_guard(entity_type, chain, guards.chain_due, code="chain_due", triggers=job)
+        reg.register_guard(entity_type, chain, guards.not_paused, code="not_paused", triggers=job)
 
     reg.subscribe(Transitioned, subscribers.on_transition, phase="in_transaction")
     reg.subscribe(NotificationQueued, subscribers.on_notification_queued, phase="in_transaction")

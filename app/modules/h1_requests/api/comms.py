@@ -14,7 +14,7 @@ from app.core.enums import JobKind, JobStatus, MailStatus, Trigger
 from app.core.errors import ConflictError, NotFoundError, ValidationProblem, problem_responses
 from app.core.files import signed_url
 from app.core.jobs import enqueue
-from app.core.models import StoredFile, User
+from app.core.models import ServiceRequest, StoredFile, User
 from app.core.notifications import render_template, templates
 from app.core.pagination import (
     OrderBy,
@@ -74,7 +74,29 @@ def template_name(template_id: str) -> str:
     return templates.get(template_id).display_name if template_id in templates else template_id
 
 
-def mail_entry(row: MailLog) -> dict[str, Any]:
+async def protocol_files(session: AsyncSession, rows: list[MailLog]) -> dict[int, list[int]]:
+    """Seeded ``sr.protocol`` mails predate the protocol PDFs (written later by H4's
+    seeder): fall back to the request's stored protocol so the attachment shows."""
+    wanted = {
+        r.entity_id: r.id
+        for r in rows
+        if r.template_id == "sr.protocol" and not r.attachment_file_ids and r.entity_id
+    }
+    if not wanted:
+        return {}
+    result = await session.execute(
+        select(ServiceRequest.id, ServiceRequest.protocol_file_id).where(
+            ServiceRequest.id.in_(wanted), ServiceRequest.protocol_file_id.is_not(None)
+        )
+    )
+    return {wanted[sr_id]: [file_id] for sr_id, file_id in result.all() if file_id is not None}
+
+
+def attachment_ids(row: MailLog, fallback: dict[int, list[int]]) -> list[int]:
+    return list(row.attachment_file_ids or []) or fallback.get(row.id, [])
+
+
+def mail_entry(row: MailLog, fallback: dict[int, list[int]] | None = None) -> dict[str, Any]:
     entity = None
     if row.entity_type in ENTITY_TYPES and row.entity_id is not None:
         entity = EntityRef(
@@ -97,7 +119,7 @@ def mail_entry(row: MailLog) -> dict[str, Any]:
         "queued_at": row.queued_at,
         "sent_at": row.sent_at,
         "error": row.error,
-        "attachment_count": len(row.attachment_file_ids or []),
+        "attachment_count": len(attachment_ids(row, fallback or {})),
     }
 
 
@@ -147,7 +169,10 @@ async def list_mail_log(
     if date_to is not None:
         stmt = stmt.where(business_date(MailLog.queued_at) <= date_to)
     rows, meta = await fetch_page(session, stmt.order_by(*order), paging)
-    return Page[MailLogEntry](data=[MailLogEntry(**mail_entry(r)) for r in rows], meta=meta)
+    fallback = await protocol_files(session, rows)
+    return Page[MailLogEntry](
+        data=[MailLogEntry(**mail_entry(r, fallback)) for r in rows], meta=meta
+    )
 
 
 @router.get(
@@ -160,13 +185,11 @@ async def get_mail_log(mail_id: int, session: SessionDep, _user: Reader) -> Mail
     row = await session.get(MailLog, mail_id)
     if row is None:
         raise NotFoundError(f"Mail {mail_id} not found.")
+    fallback = await protocol_files(session, [row])
+    file_ids = attachment_ids(row, fallback)
     attachments: list[MailAttachmentOut] = []
-    if row.attachment_file_ids:
-        files = (
-            await session.scalars(
-                select(StoredFile).where(StoredFile.id.in_(row.attachment_file_ids))
-            )
-        ).all()
+    if file_ids:
+        files = (await session.scalars(select(StoredFile).where(StoredFile.id.in_(file_ids)))).all()
         attachments = [
             MailAttachmentOut(
                 file_id=f.id,
@@ -178,7 +201,10 @@ async def get_mail_log(mail_id: int, session: SessionDep, _user: Reader) -> Mail
             for f in files
         ]
     return MailLogDetail(
-        **mail_entry(row), body_html=row.body_html, body_text=row.body_text, attachments=attachments
+        **mail_entry(row, fallback),
+        body_html=row.body_html,
+        body_text=row.body_text,
+        attachments=attachments,
     )
 
 

@@ -40,7 +40,7 @@ Manager = Annotated[User, Depends(require("lease.manage"))]
 
 
 async def _get(session: SessionDep, lease_id: int) -> LeaseReturn:
-    lease = await session.get(LeaseReturn, lease_id)
+    lease = await session.get(LeaseReturn, lease_id, populate_existing=True)
     if lease is None:
         raise NotFoundError(f"Lease return {lease_id} not found.")
     return lease

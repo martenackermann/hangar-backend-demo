@@ -2,8 +2,11 @@
 
 we{% if invited_on %} sent you a booking link on {{ invited_on | date }}{% else %} recently sent you a booking link{% endif %} for your hardware order {{ sr_number }}, but no appointment has been booked yet.
 
-Booking takes less than a minute. Please choose a time that suits you:
-{% if booking_link %}{{ booking_link }}
+Booking takes less than a minute. Please choose a time that suits you.
+
+{% if booking_link %}
+Book your appointment: {{ booking_link }}
+
 {% endif %}
 Kind regards
 Your rollout team · {{ operator_name }}
