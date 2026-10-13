@@ -1,0 +1,6 @@
+{% from "modules/h1_requests/templates/_macros.html.j2" import button, item_list, signature %}
+<p>{{ salutation(gender, first_name, last_name) }},</p>
+<p>thank you for your hardware order <strong>{{ sr_number }}</strong>. Unfortunately, some of the ordered hardware is <strong>currently unavailable</strong>:</p>
+{{ item_list(items) }}
+<p>You do not need to do anything. As soon as the hardware is available again, we will contact you with the next steps and a link to book your appointment.</p>
+{{ signature(operator_name) }}

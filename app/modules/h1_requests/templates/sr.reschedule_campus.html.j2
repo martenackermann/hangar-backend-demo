@@ -1,0 +1,5 @@
+{% from "modules/h1_requests/templates/_macros.html.j2" import button, item_list, signature %}
+<p>{{ salutation(gender, first_name, last_name) }},</p>
+<p>your appointment{% if appointment_start %} on {{ appointment_start | datetime }}{% endif %} for hardware order <strong>{{ sr_number }}</strong> did not take place{% if deviation_label %} ({{ deviation_label | lower }}){% endif %}.</p>
+<p>A technician will phone you in the next few days to agree a new date at your Campus desk. Your devices stay reserved for you in the meantime.</p>
+{{ signature(operator_name) }}

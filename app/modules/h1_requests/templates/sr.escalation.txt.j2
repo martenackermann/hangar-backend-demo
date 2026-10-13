@@ -1,0 +1,12 @@
+{{ salutation(gender, first_name, last_name) }},
+
+despite several reminders, no appointment has been booked for your hardware order {{ sr_number }}.
+
+Please book now. Your current device{% if old_items %} ({{ old_items | join(", ") }}){% endif %} has to be replaced for security reasons, and every week of delay causes additional lease costs for {{ client_name }}.
+
+{% if booking_link %}Book your appointment now: {{ booking_link }}
+{% endif %}
+This mail was also sent to the escalation mailbox. If there is a reason you cannot book, reply to this mail.
+
+Kind regards
+Your rollout team · {{ operator_name }}

@@ -1,0 +1,6 @@
+{% from "modules/h1_requests/templates/_macros.html.j2" import button, item_list, signature %}
+<p>{{ salutation(gender, first_name, last_name) }},</p>
+<p>we{% if invited_on %} sent you a booking link on {{ invited_on | date }}{% else %} recently sent you a booking link{% endif %} for your hardware order <strong>{{ sr_number }}</strong>, but no appointment has been booked yet.</p>
+<p>Booking takes less than a minute. Please choose a time that suits you:</p>
+{% if booking_link %}{{ button(booking_link, "Book your appointment") }}{% endif %}
+{{ signature(operator_name) }}

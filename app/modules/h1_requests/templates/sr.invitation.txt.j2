@@ -1,0 +1,19 @@
+{{ salutation(gender, first_name, last_name) }},
+
+your hardware order {{ sr_number }} has arrived with us. It contains:
+{% for item in items %}
+  {{ loop.index }}. {{ item }}
+{% endfor %}
+
+Please book a time for the handover. A technician brings your new devices, sets them up at your desk{% if old_items %} and takes back your old device ({{ old_items | join(", ") }}){% endif %}.
+
+{% if booking_link %}Book your appointment: {{ booking_link }}
+{% endif %}
+What happens next
+1. You book an appointment with the link above.
+2. We prepare and personalize your devices at our hub.
+3. Your hardware is delivered{% if region_name %} in {{ region_name }}{% endif %}.
+4. The technician hands everything over and collects your old devices.
+
+Kind regards
+Your rollout team · {{ operator_name }}

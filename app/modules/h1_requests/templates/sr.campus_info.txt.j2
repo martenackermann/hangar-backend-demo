@@ -1,0 +1,13 @@
+{{ salutation(gender, first_name, last_name) }},
+
+your hardware order {{ sr_number }} has arrived with us. It contains:
+{% for item in items %}
+  {{ loop.index }}. {{ item }}
+{% endfor %}
+
+Because you work on the Campus, you do not need to book anything yourself: a technician will phone you in the next few days to agree a date for the handover at your desk.
+
+If you are away for a longer period, just reply to this mail and let us know when you are back.
+
+Kind regards
+Your rollout team · {{ operator_name }}

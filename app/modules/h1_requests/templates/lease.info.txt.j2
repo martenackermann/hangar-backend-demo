@@ -1,0 +1,16 @@
+{% set campus = false %}
+{{ salutation(gender, first_name, last_name) }},
+
+the lease of your device {{ model }} (asset tag {{ asset_tag }}) ends on {{ retirement_date | date }}. The device has to be returned by then.
+
+Please order a replacement device via the ITSM portal. Once the order reaches us, we take care of the exchange and collect the old device.
+{% if campus %}
+{% if campus %}As you work on the Campus, you can also bring the device to the Campus service point, or reply to this mail to arrange a desk visit.{% endif %}
+{% endif %}
+What happens next
+1. You order the replacement in the ITSM portal.
+2. We send you a link to book the handover.
+3. A technician brings the new device and takes back the old one.
+
+Kind regards
+Your rollout team · {{ operator_name }}

@@ -1,0 +1,11 @@
+{{ salutation(gender, first_name, last_name) }},
+
+your appointment{% if appointment_start %} on {{ appointment_start | datetime }}{% endif %} for hardware order {{ sr_number }} did not take place{% if deviation_label %} ({{ deviation_label | lower }}){% endif %}.
+
+Please book a new appointment:
+{% if booking_link %}{{ booking_link }}
+{% endif %}
+Your devices stay reserved for you in the meantime.
+
+Kind regards
+Your rollout team · {{ operator_name }}
