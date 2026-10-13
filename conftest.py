@@ -74,11 +74,11 @@ ADA = "ada.admin@example.com"
 
 def pytest_asyncio_loop_factories(
     config: pytest.Config, item: pytest.Item
-) -> Mapping[str, Callable[[], asyncio.AbstractEventLoop]] | None:
-    """psycopg async needs the selector loop on Windows."""
+) -> Mapping[str, Callable[[], asyncio.AbstractEventLoop]]:
+    """psycopg async needs the selector loop on Windows; elsewhere use the default loop."""
     if sys.platform == "win32":
         return {"selector": asyncio.SelectorEventLoop}
-    return None
+    return {"default": asyncio.new_event_loop}
 
 
 # --- database ------------------------------------------------------------------------------
