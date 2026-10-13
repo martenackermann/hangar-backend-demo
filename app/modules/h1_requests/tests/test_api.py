@@ -449,6 +449,47 @@ async def test_mail_log_list_and_detail(
     ).status_code == 404
 
 
+async def test_deep_link_params_from_dashboard_and_calloffs(
+    db_session: AsyncSession, client: AsyncClient, headers: Headers
+) -> None:
+    """Params H5 dashboard tiles / call-off links and H4 deep-link to (integration contract)."""
+    today = business_today()
+    booked = await f.make_sr(
+        db_session, status=SR.APPOINTMENT_BOOKED, appointment=now_utc() + timedelta(days=1)
+    )
+    window = (
+        f"/service-requests?status=appointment_booked&appointmentFrom={today.isoformat()}"
+        f"&appointmentTo={(today + timedelta(days=7)).isoformat()}&perPage=200"
+    )
+    in_window = await _get(client, headers, window)
+    assert booked.id in {i["id"] for i in in_window["data"]}
+    assert {i["status"] for i in in_window["data"]} == {"appointment_booked"}
+    region_id = booked.region_id
+    by_region = await _get(
+        client, headers, f"/service-requests?regionId={region_id}&includeClosed=true&perPage=200"
+    )
+    assert all(i["region"] and i["region"]["id"] == region_id for i in by_region["data"])
+    vip_attention = await _get(
+        client, headers, "/service-requests?vip=include&needsAttention=true&perPage=200"
+    )
+    assert all(i["attention"] for i in vip_attention["data"])
+    overdue = (today - timedelta(days=1)).isoformat()
+    leases = await _get(client, headers, f"/lease-returns?retirementTo={overdue}&perPage=200")
+    assert leases["meta"]["total"] > 0
+    assert all(i["retirementDate"] <= overdue for i in leases["data"])
+    some = (await _get(client, headers, "/mail-log?entityType=service_request&perPage=1"))["data"][
+        0
+    ]
+    entity = some["entity"]
+    scoped = await _get(
+        client,
+        headers,
+        f"/mail-log?entityType={entity['type']}&entityId={entity['id']}&perPage=200",
+    )
+    assert scoped["meta"]["total"] >= 1
+    assert all(i["entity"]["id"] == entity["id"] for i in scoped["data"])
+
+
 async def test_dispatch_settings(client: AsyncClient, headers: Headers) -> None:
     current = await _get(client, headers, "/dispatch-settings", who=VIC)
     assert current["leaseInfoDaysBeforeRetirement"] == 42

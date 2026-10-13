@@ -212,7 +212,13 @@ async def _lease_effects(session: AsyncSession, lease: LeaseReturn, event: Trans
             )
     elif action == "close":
         payload = event.payload or {}
-        reason = payload.get("closeReason") or event.comment or "Closed manually"
+        # H5 deactivation closes as SYSTEM with `closeReason: device_deactivated`.
+        reason = (
+            payload.get("closeReason")
+            or payload.get("close_reason")
+            or event.comment
+            or "Closed manually"
+        )
         lease.closed_at = now_utc()
         lease.close_reason = str(reason)[:200]
     elif action == "reopen":

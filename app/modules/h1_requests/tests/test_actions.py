@@ -369,6 +369,22 @@ async def test_system_close_uses_reason(db_session: AsyncSession) -> None:
     assert lease.closed_at is not None
 
 
+async def test_system_close_reason_from_payload(db_session: AsyncSession) -> None:
+    """H5 deactivation: SYSTEM close with `closeReason` in the payload (no comment)."""
+    lease = await make_lease(db_session, status=LR.INFO_SENT)
+    await transition_service.apply(
+        db_session,
+        lease,
+        "close",
+        actor=None,
+        trigger=Trigger.SYSTEM,
+        payload={"closeReason": "device_deactivated"},
+    )
+    assert lease.status == LR.CLOSED
+    assert lease.close_reason == "device_deactivated"
+    assert lease.closed_at is not None
+
+
 # --- reschedule mails -------------------------------------------------------------------------------
 
 
