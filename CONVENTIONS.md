@@ -702,7 +702,7 @@ UI labels and tones for enums come from `GET /meta/enums` (`ENUM_META`).
 | `uv run hangar seed [--reset] [--export-json DIR]` | idempotent seed; `--reset` = demo reset; writes `DIR/seed.json` |
 | `uv run hangar demo-reset` | truncate demo data + re-seed |
 | `uv run hangar openapi [-o FILE]` | write `openapi.json` |
-| `uv run pytest [path]` | tests (`TEST_DATABASE_URL`, default `hangar_test`) |
+| `uv run pytest [path]` | tests (`TEST_DATABASE_URL` from the shell or `.env`, default `hangar_test`) |
 
 ## 7. Pitfalls (learned the hard way)
 

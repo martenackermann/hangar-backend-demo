@@ -126,7 +126,9 @@ ASSET_TRANSITIONS = TransitionMap(
             owner="h5",
             bulk=True,
             internal=False,
-            requires_comment=True,
+            # API.md §3.8: the body's `reason` is the required field (422 errors.reason), not a
+            # separate comment
+            requires_comment=False,
         ),
     ],
 )
