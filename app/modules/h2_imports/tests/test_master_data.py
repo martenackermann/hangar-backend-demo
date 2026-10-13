@@ -52,7 +52,8 @@ async def test_articles_list_filters_and_counts(client: AsyncClient, headers: He
     monitors = (
         await client.get("/api/v1/articles?category=monitor&q=27&sort=-name", headers=auth)
     ).json()["data"]
-    assert [a["number"] for a in monitors] == ["A-10203", "A-10202"]
+    # name order depends on the server collation (C locally, en_US in CI), so check the set
+    assert {a["number"] for a in monitors} == {"A-10203", "A-10202"}
     bad = await client.get("/api/v1/articles?sort=weight", headers=auth)
     assert bad.status_code == 422
 
