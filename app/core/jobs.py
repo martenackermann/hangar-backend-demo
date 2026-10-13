@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from datetime import datetime
 from typing import Any
 
 import structlog
@@ -129,6 +130,58 @@ async def is_cancel_requested(job_id: int) -> bool:
     async with open_session() as session:
         job = await session.get(BackgroundJob, job_id)
         return bool(job and job.cancel_requested)
+
+
+async def request_cancel(session: AsyncSession, job_id: int) -> bool:
+    """Ask a queued/running job to stop (``JobRun.cancel_requested()`` turns true).
+
+    Runs in the caller's transaction (no commit). Returns ``False`` when the job does not
+    exist or has already finished.
+    """
+    result = await session.execute(
+        update(BackgroundJob)
+        .where(
+            BackgroundJob.id == job_id,
+            BackgroundJob.status.not_in([s.value for s in TERMINAL_JOB_STATUSES]),
+        )
+        .values(cancel_requested=True)
+        .returning(BackgroundJob.id)
+    )
+    return result.scalar_one_or_none() is not None
+
+
+async def record_job(
+    session: AsyncSession,
+    kind: JobKind,
+    status: JobStatus,
+    *,
+    created_by: User | int | None = None,
+    entity: EntityRef | tuple[str, int] | None = None,
+    message: str | None = None,
+    result: dict[str, Any] | None = None,
+    progress: tuple[int, int | None] = (0, None),
+    created_at: datetime | None = None,
+    started_at: datetime | None = None,
+    finished_at: datetime | None = None,
+    cancel_requested: bool = False,
+) -> BackgroundJob:
+    """Insert a job row with its whole history at once (seeders: past imports, syncs, ...).
+
+    Nothing is deferred: the row only documents work that is already finished (or a queued
+    job a seeder wants to show).
+    """
+    job = await create_job(session, kind, created_by, entity, message)
+    job.status = status
+    job.result = result
+    job.progress_processed, job.progress_total = progress
+    job.started_at = started_at
+    job.finished_at = finished_at
+    job.cancel_requested = cancel_requested
+    if created_at is not None:
+        job.created_at = created_at
+        job.updated_at = finished_at or started_at or created_at
+    await session.flush()
+    return job
 
 
 class JobRun:

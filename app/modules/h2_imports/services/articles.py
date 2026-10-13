@@ -24,6 +24,7 @@ from app.core.models import (
     Site,
 )
 from app.core.read_models.refs import site_ref
+from app.core.stock_math import ensure_article_site_settings
 
 from ..schemas import (
     ArticleDetail,
@@ -183,10 +184,7 @@ async def create_article(session: AsyncSession, body: ArticleInput) -> Article:
     article = Article(**body.model_dump(by_alias=False), is_active=True)
     session.add(article)
     await session.flush()
-    hubs = (await session.scalars(select(Site).where(Site.kind == SiteKind.HUB))).all()
-    for hub in hubs:
-        session.add(ArticleSiteSetting(article_id=article.id, site_id=hub.id))
-    await session.flush()
+    await ensure_article_site_settings(session, article.id)
     return article
 
 

@@ -17,7 +17,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.enums import ImportJobStatus, ImportType, JobKind, JobStatus
 from app.core.files import store_file
-from app.core.models import Article, BackgroundJob, Contact
+from app.core.jobs import record_job
+from app.core.models import Article, Contact
 from app.core.seed.framework import SeedContext
 
 from .importing.appliers.status_sync import map_state
@@ -226,20 +227,18 @@ async def seed_imports(session: AsyncSession, ctx: SeedContext) -> None:
             "warnings": warnings if not cancelled else 0,
         }
         job_status = JobStatus.CANCELLED if cancelled else JobStatus.SUCCEEDED
-        background = BackgroundJob(
-            kind=JobKind.IMPORT,
-            status=job_status,
-            progress_processed=processed,
-            progress_total=total,
+        background = await record_job(
+            session,
+            JobKind.IMPORT,
+            job_status,
+            created_by=dana,
             message="Cancelled" if cancelled else f"Import {spec.status}",
-            created_by=dana.id,
+            progress=(processed, total),
             created_at=created_at,
-            updated_at=finished,
             started_at=started,
             finished_at=finished,
+            cancel_requested=cancelled,
         )
-        session.add(background)
-        await session.flush()
         stored = await store_file(
             session,
             data,
@@ -247,6 +246,7 @@ async def seed_imports(session: AsyncSession, ctx: SeedContext) -> None:
             "text/csv",
             "import_upload",
             created_by=dana,
+            created_at=created_at,
         )
         job = ImportJob(
             background_job_id=background.id,
@@ -311,6 +311,7 @@ async def seed_imports(session: AsyncSession, ctx: SeedContext) -> None:
             "import_error_report",
             entity=("import_job", job.id),
             created_by=dana,
+            created_at=finished,
         )
         job.error_report_file_id = report.id
     await session.flush()

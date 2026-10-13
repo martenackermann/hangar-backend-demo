@@ -17,8 +17,8 @@ from typing import Any
 import structlog
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.core import db as core_db
 from app.core.config import get_settings
+from app.core.db import savepoint
 from app.core.enums import ImportJobStatus, ImportType
 from app.core.errors import ApiError
 from app.core.events import ImportFinished, emit
@@ -48,7 +48,6 @@ TERMINAL = frozenset(
         ImportJobStatus.CANCELLED,
     }
 )
-_AFTER_COMMIT_KEY: str = getattr(core_db, "_AFTER_COMMIT_KEY", "hangar.after_commit")
 
 
 @dataclass(slots=True)
@@ -105,14 +104,13 @@ async def _apply_row(ctx: ApplyContext, applier: Applier, row: Row, stats: JobSt
         return
     session = ctx.session
     effects = RowEffects()
-    pending: list[Any] = session.info.setdefault(_AFTER_COMMIT_KEY, [])
-    callbacks_before = len(pending)
-    savepoint = await session.begin_nested()
     failure: Issue | None = None
     outcome: Outcome | None = None
     try:
-        outcome = await applier.apply(ctx, row, effects)
-        await session.flush()
+        # a failed row rolls back its SAVEPOINT and drops the mails/jobs it queued
+        async with savepoint(session):
+            outcome = await applier.apply(ctx, row, effects)
+            await session.flush()
     except RowError as exc:
         failure = exc.issue
     except ApiError as exc:
@@ -121,13 +119,9 @@ async def _apply_row(ctx: ApplyContext, applier: Applier, row: Row, stats: JobSt
         log.warning("import_row_failed", row=row.number, error=str(exc))
         failure = Issue.error("row_failed", "The row could not be saved (database constraint).")
     if failure is None:
-        await savepoint.commit()
         row.issues.extend(effects.warnings)
         stats.add_row(row, outcome, effects)
         return
-    await savepoint.rollback()
-    # mails/jobs queued by the rolled-back row must not be sent
-    del session.info.setdefault(_AFTER_COMMIT_KEY, [])[callbacks_before:]
     for user_id in effects.contacts_created:
         ctx.forget_contact(user_id)
     row.issues.append(failure)

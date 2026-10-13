@@ -119,10 +119,12 @@ async def store_file(
     entity: EntityRef | tuple[str, int] | None = None,
     ttl: timedelta | None = None,
     created_by: User | int | None = None,
+    created_at: datetime | None = None,
 ) -> StoredFile:
     """Write ``data`` to the store and insert its ``stored_files`` row (flushed, not committed).
 
     If the transaction rolls back the bytes stay on disk until ``files.cleanup`` — harmless.
+    ``created_at`` backdates the row (seeders telling a story in the past).
     """
     name = safe_filename(filename)
     now = datetime.now(UTC)
@@ -144,6 +146,8 @@ async def store_file(
         created_by=created_by.id if isinstance(created_by, User) else created_by,
         expires_at=now + ttl if ttl is not None else None,
     )
+    if created_at is not None:
+        row.created_at = row.updated_at = created_at
     session.add(row)
     await session.flush()
     return row

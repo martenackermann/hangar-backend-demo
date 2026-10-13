@@ -62,15 +62,15 @@ endpoint builds the same files on the fly. Exporter: `import_jobs`, `import_job_
 
 ## Decisions taken without the product owner
 
-- Uploads and error reports are kept without TTL: `import_jobs.file_id` references the upload
-  and the core `files.cleanup` would fail deleting a referenced row (shared-file request).
+- Uploads and error reports are kept without TTL. Core `files.cleanup` also skips any stored
+  file a row still references (`import_jobs.file_id`, `error_report_file_id`).
 - `import.summary` and `ImportFinished` are skipped for dry runs (nothing changed).
 - `markMissingAsProbablyClosed` is skipped when the import was cancelled before the last chunk
   (the file was not fully read).
 - Gender, MAC, phone, unknown ITSM state and invalid optional emails are warnings (value
   ignored / stored as given); procurement type and the contact email are errors.
 - A failed row rolls back its SAVEPOINT and drops the after-commit callbacks it queued (no mail
-  for rows that were not applied).
+  for rows that were not applied) — core `savepoint(session)`.
 - `is_vip` of new records comes from `is_vip_user`; when a re-import changes a record's user,
   `recompute_vip` refreshes the flags. VIP flags never change status.
 - Lease "late linking" picks the most recently imported non-terminal SR naming the tag.
@@ -83,4 +83,7 @@ endpoint builds the same files on the fly. Exporter: `import_jobs`, `import_job_
   recalculation); `assetCount` excludes deactivated assets.
 - Cancelling a queued import finishes its background job via the `finish_job` helper after
   commit; a running import is cancelled cooperatively through `import_jobs.cancel_requested`
-  (the core has no helper to set `background_jobs.cancel_requested`).
+  plus the core `request_cancel` helper (`background_jobs.cancel_requested`).
+- New articles get one `article_site_settings` row per hub through the core
+  `ensure_article_site_settings`; the seeder records its history with `record_job` and
+  backdated `store_file(created_at=...)`.

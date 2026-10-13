@@ -496,6 +496,13 @@ async def process(job_id: int, import_job_id: int) -> None:
 - `queueing_lock=` prevents duplicate pending jobs; `lock=` serializes runs.
 - For fire-and-forget work without a `background_jobs` row, use
   `after_commit(session, lambda: defer("x.y", id=1))` with `from app.jobs.app import defer`.
+- Cancel: `await request_cancel(session, job_id)` sets `background_jobs.cancel_requested`
+  (in your transaction) so the task's `run.cancel_requested()` turns true.
+- Seeders record finished history with `await record_job(session, kind, status, created_at=...,
+  started_at=..., finished_at=..., progress=(n, total), result=...)`; nothing is deferred.
+- Per-row work inside one transaction: `async with savepoint(session):` (`app.core.db`) rolls
+  back the SAVEPOINT on an exception **and** drops the after-commit callbacks (mails, jobs)
+  queued inside it, then re-raises.
 
 ### 3.8 Notifications, files, gateways, search, seed
 
@@ -526,7 +533,11 @@ await notify(
 - **Demo mode** delivers only to `@example.com`.
 
 **Files.**
-- Store bytes: `stored = await store_file(session, data, filename, content_type, purpose, entity=..., ttl=...)`.
+- Store bytes: `stored = await store_file(session, data, filename, content_type, purpose, entity=..., ttl=...)`
+  (`created_at=` backdates seeded files). `files.cleanup` deletes expired files only when no
+  foreign key (core or slice table) still references them.
+- New articles: `await ensure_article_site_settings(session, article.id)` (`app.core.stock_math`)
+  inserts the per-hub settings rows (idempotent).
 - Get a link: `signed_url(stored)` returns `DownloadLink {url, filename, contentType, sizeBytes, expiresAt}`,
   served by `GET /files/{id}/download?expires=&signature=`.
 - Read uploads: `await read_upload(upload, allowed={".csv": "text/csv", ...}, max_bytes=...)`.

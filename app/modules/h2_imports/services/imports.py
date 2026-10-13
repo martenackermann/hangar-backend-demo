@@ -22,7 +22,7 @@ from app.core.enums import (
 )
 from app.core.errors import ApiError, TransitionNotAllowed, ValidationProblem
 from app.core.files import Upload, store_file
-from app.core.jobs import enqueue, finish_job
+from app.core.jobs import enqueue, finish_job, request_cancel
 from app.core.models import StockLocation, User
 from app.core.read_models.refs import location_ref, user_ref
 
@@ -274,6 +274,8 @@ async def cancel_import(session: AsyncSession, job: ImportJob) -> None:
         after_commit(session, _finish)
     else:
         job.cancel_requested = True
+        if job.background_job_id is not None:
+            await request_cancel(session, job.background_job_id)
     await session.flush()
     await session.refresh(job)
 

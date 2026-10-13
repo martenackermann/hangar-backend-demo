@@ -11,6 +11,7 @@ Conventions (CONVENTIONS.md §5):
 from __future__ import annotations
 
 from collections.abc import AsyncIterator, Awaitable, Callable
+from contextlib import asynccontextmanager
 from datetime import UTC, date, datetime
 from decimal import Decimal
 from enum import StrEnum
@@ -220,6 +221,33 @@ def after_commit(session: AsyncSession, callback: AfterCommit) -> None:
 
 #: Backwards-compatible alias used by 2a code and docs.
 on_commit = after_commit
+
+
+@asynccontextmanager
+async def savepoint(session: AsyncSession) -> AsyncIterator[None]:
+    """``begin_nested()`` that also forgets the after-commit callbacks queued inside it.
+
+    On an exception the SAVEPOINT rolls back, the mails/jobs/events queued within it are
+    dropped, and the exception propagates (catch it outside to carry on)::
+
+        try:
+            async with savepoint(session):
+                await apply_row(session, row)
+        except RowError as exc:
+            row.issues.append(exc.issue)
+    """
+    pending: list[AfterCommit] = session.info.setdefault(_AFTER_COMMIT_KEY, [])
+    mark = len(pending)
+    nested = await session.begin_nested()
+    try:
+        yield
+        if nested.is_active:
+            await nested.commit()
+    except BaseException:
+        if nested.is_active:
+            await nested.rollback()
+        del session.info.setdefault(_AFTER_COMMIT_KEY, [])[mark:]
+        raise
 
 
 async def commit(session: AsyncSession) -> None:
