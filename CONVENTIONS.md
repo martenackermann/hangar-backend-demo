@@ -541,6 +541,10 @@ await notify(
 - Get a link: `signed_url(stored)` returns `DownloadLink {url, filename, contentType, sizeBytes, expiresAt}`,
   served by `GET /files/{id}/download?expires=&signature=`.
 - Read uploads: `await read_upload(upload, allowed={".csv": "text/csv", ...}, max_bytes=...)`.
+  It also rejects XLSX zip bombs (`XLSX_MAX_UNCOMPRESSED_BYTES`) before any parser runs.
+- Exports: CSV cells go through `safe_cell` / `safe_csv_value`, xlsxwriter workbooks open with
+  `XLSX_WORKBOOK_OPTIONS` (`app.core.spreadsheets`), so imported text never becomes a formula.
+- PDFs: ReportLab `Paragraph` text is markup; escape user text (`xml.sax.saxutils.escape`).
 
 **Gateways.** Depend on the protocol, never on a concrete class.
 - In FastAPI routes: `booking: BookingDep`, `carrier: CarrierDep`, `mailer: MailerDep`,

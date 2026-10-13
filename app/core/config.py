@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     login_rate_limit_window_seconds: int = Field(default=300, ge=1)
     login_rate_limit_per_account: int = Field(default=10, ge=1)
     login_rate_limit_per_ip: int = Field(default=50, ge=1)
-    persona_login_rate_limit_per_ip: int = Field(default=60, ge=1)
+    persona_login_rate_limit_per_ip: int = Field(default=300, ge=1)  # ~1/s: e2e suites fit
 
     # --- demo ---------------------------------------------------------------------------
     demo_mode: bool = True

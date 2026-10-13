@@ -75,7 +75,8 @@ endpoint builds the same files on the fly. Exporter: `import_jobs`, `import_job_
   `recompute_vip` refreshes the flags. VIP flags never change status.
 - Lease "late linking" picks the most recently imported non-terminal SR naming the tag.
 - Users: own role / own deactivation → `409`; demo personas keep their role (`409`) and their
-  password (`409`, as specified).
+  password (`409`, as specified). In demo mode they also cannot be deactivated (`409`): anyone
+  can sign in as a persona on the public demo, so locking personas out would break it for all.
 - Region rules with `deliveryType = parcel_to_pickup_point` need a pickup point on the region
   (`422 deliveryType`); a region PATCH that would leave pickup delivery without a pickup point
   is `422 pickupPoint`.
