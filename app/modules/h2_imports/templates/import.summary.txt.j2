@@ -1,0 +1,15 @@
+Hello {{ first_name }},
+
+Import #{{ import_id }} ({{ type_label }}, file {{ file_name }}) finished with status {{ status_label }}.
+
+Rows:      {{ total }}
+Created:   {{ created }}
+Updated:   {{ updated }}
+Unchanged: {{ unchanged }}
+Skipped:   {{ skipped }}
+Rows with errors (not imported): {{ error_count }}
+Rows with warnings: {{ warning_count }}
+{% if has_report %}
+The attached report lists every error and warning next to the original row, so you can fix the rows and upload them again.
+{% endif %}
+Open the import: {{ detail_url }}

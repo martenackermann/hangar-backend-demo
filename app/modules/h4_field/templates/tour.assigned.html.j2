@@ -1,0 +1,12 @@
+<p>Hello {{ technician_first_name }},</p>
+<p>the tour <strong>{{ calendar_name }}</strong> on <strong>{{ tour_date | date }}</strong> is now assigned to you ({{ stop_count }} stops).</p>
+{% if stops %}
+<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px;">
+{% for s in stops %}  <tr>
+    <td style="padding:4px 12px 4px 0;font-family:Consolas,monospace;">{{ s.time | time if s.time else '--:--' }}</td>
+    <td style="padding:4px 12px 4px 0;font-family:Consolas,monospace;">{{ s.sr_number }}</td>
+    <td style="padding:4px 0;">{{ s.town }}</td>
+  </tr>
+{% endfor %}</table>
+{% endif %}
+<p><a href="{{ frontend_url }}{{ my_tour_path }}" style="display:inline-block;background:#1f3a5f;color:#ffffff;padding:10px 16px;border-radius:4px;text-decoration:none;">Open My tour</a></p>

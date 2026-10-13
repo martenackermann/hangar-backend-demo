@@ -1,0 +1,13 @@
+<p>Hello {{ first_name }},</p>
+<p>Import <strong>#{{ import_id }}</strong> ({{ type_label }}, file <em>{{ file_name }}</em>) finished with status <strong>{{ status_label }}</strong>.</p>
+<table role="presentation" cellpadding="4" cellspacing="0" style="border-collapse: collapse;">
+  <tr><td>Rows</td><td style="text-align: right;"><strong>{{ total }}</strong></td></tr>
+  <tr><td>Created</td><td style="text-align: right;">{{ created }}</td></tr>
+  <tr><td>Updated</td><td style="text-align: right;">{{ updated }}</td></tr>
+  <tr><td>Unchanged</td><td style="text-align: right;">{{ unchanged }}</td></tr>
+  <tr><td>Skipped</td><td style="text-align: right;">{{ skipped }}</td></tr>
+  <tr><td>Rows with errors (not imported)</td><td style="text-align: right;"><strong>{{ error_count }}</strong></td></tr>
+  <tr><td>Rows with warnings</td><td style="text-align: right;">{{ warning_count }}</td></tr>
+</table>
+{% if has_report %}<p>The attached report lists every error and warning next to the original row, so you can fix the rows and upload them again.</p>{% endif %}
+<p><a href="{{ detail_url }}">Open the import in Hangar</a></p>

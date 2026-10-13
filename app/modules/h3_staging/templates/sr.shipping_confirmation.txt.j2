@@ -1,0 +1,39 @@
+{{ salutation(gender, first_name, last_name) }},
+
+Your new hardware for order {{ sr_number }} has left our hub and is on its way with the parcel carrier.
+{% if items %}
+
+In the parcel:
+{% for item in items %}
+- {{ item.name }}{% if item.tag %} ({{ item.tag }}){% endif %}
+
+{% endfor %}
+{% endif %}
+
+Track your {{ "parcels" if tracking_urls | length > 1 else "parcel" }}:
+{% for url in tracking_urls %}
+- {{ url }}
+{% endfor %}
+
+{{ "Pickup point" if pickup_point else "Delivery address" }}:
+{{ recipient_name }}
+{% if name2 %}{{ name2 }}
+{% endif %}
+{{ street }}
+{{ zip }} {{ city }}
+{% if country %}{{ country }}
+{% endif %}
+{% if pickup_point %}
+
+Please collect the parcel at the pickup point and bring your ID.
+{% endif %}
+{% if return_tracking_urls %}
+
+Returning your old device: a return label is in the parcel. Please use the box of the new hardware, attach the return label and hand it to the technician at your appointment.
+{% endif %}
+{% if appointment_start_at %}
+
+Your appointment with our technician is on {{ appointment_start_at | datetime }}.
+{% endif %}
+
+Shipment reference: {{ carrier_shipment_id }}
