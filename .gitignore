@@ -15,12 +15,11 @@ dist/
 htmlcov/
 coverage.xml
 
-# Local config & data
+# Local config & runtime data (files store, seed exports)
 .env
 .env.*
 !.env.example
-storage/*
-!storage/.gitkeep
+var/
 
 # Editors / OS
 .idea/

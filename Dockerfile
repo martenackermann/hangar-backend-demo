@@ -23,15 +23,16 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PATH="/app/.venv/bin:$PATH" \
     HOST=0.0.0.0 \
     PORT=8100 \
-    STORAGE_DIR=/app/storage \
+    HANGAR_FILES_DIR=/app/var/files \
     LOG_FORMAT=json
 RUN groupadd --system --gid 10001 hangar \
     && useradd --system --uid 10001 --gid hangar --home-dir /app --shell /usr/sbin/nologin hangar
 WORKDIR /app
 COPY --from=builder --chown=hangar:hangar /app /app
-RUN mkdir -p /app/storage && chown hangar:hangar /app/storage
+RUN mkdir -p /app/var/files && chown -R hangar:hangar /app/var
 USER hangar
 EXPOSE 8100
-HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=5 \
-    CMD ["python", "-c", "import os, urllib.request; urllib.request.urlopen(f\"http://127.0.0.1:{os.environ.get('PORT', '8100')}/api/v1/health\", timeout=4)"]
+# readyz = database reachable + job schema present (i.e. migrations have run)
+HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=5 \
+    CMD ["python", "-c", "import os, urllib.request; urllib.request.urlopen(f\"http://127.0.0.1:{os.environ.get('PORT', '8100')}/api/v1/readyz\", timeout=4)"]
 CMD ["hangar", "serve"]

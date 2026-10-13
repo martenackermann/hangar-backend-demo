@@ -55,6 +55,16 @@ jobs:
           uv run coverage run -m pytest
           uv run coverage report
 
+      - name: Migrations (upgrade heads on an empty DB, models match)
+        env:
+          PGPASSWORD: dev
+          DATABASE_URL: postgresql+psycopg://dev:dev@localhost:5432/hangar_migrate
+        run: |
+          psql -h localhost -U dev -d hangar_test -c "CREATE DATABASE hangar_migrate"
+          uv run hangar db upgrade
+          uv run alembic check
+          uv run hangar seed --export-json var/seed-export
+
       - name: OpenAPI export (must match the committed openapi.json)
         run: |
           uv run hangar openapi
@@ -62,5 +72,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: openapi
-          path: openapi.json
+          name: openapi-and-seed
+          path: |
+            openapi.json
+            var/seed-export/seed.json

@@ -10,6 +10,6 @@ htmlcov
 .env
 .env.*
 !.env.example
-storage/*
+var
 tests
 app/modules/*/tests

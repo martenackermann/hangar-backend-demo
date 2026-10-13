@@ -1,6 +1,6 @@
 # Self-contained demo stack: API + worker + PostgreSQL 17 + Mailpit.
 #   docker compose up --build
-#   API      http://localhost:8100/api/v1/docs
+#   API      http://localhost:8100/api/v1/docs   (login: dana.dispatcher@example.com / demo1234)
 #   Mailpit  http://localhost:8025
 # Demo credentials/secrets below are placeholders for local use only.
 
@@ -10,12 +10,15 @@ x-app-env: &app-env
   DATABASE_URL: postgresql+psycopg://hangar:hangar@postgres:5432/hangar
   SMTP_HOST: mailpit
   SMTP_PORT: "1025"
-  MAIL_FROM: Hangar <hangar@example.com>
+  MAILPIT_URL: ${MAILPIT_URL:-http://localhost:8025}
   JWT_SECRET: ${JWT_SECRET:-demo-only-jwt-secret-change-me-0123456789}
-  APP_URL: ${APP_URL:-http://localhost:8100}
+  FILE_URL_SIGNING_KEY: ${FILE_URL_SIGNING_KEY:-demo-only-file-signing-key-change-me}
+  HANGAR_PUBLIC_API_URL: ${HANGAR_PUBLIC_API_URL:-http://localhost:8100/api/v1}
+  HANGAR_BUSINESS_TZ: ${HANGAR_BUSINESS_TZ:-Europe/Zurich}
+  HANGAR_CORS_ORIGINS: ${HANGAR_CORS_ORIGINS:-http://localhost:5173}
   FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
-  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
   DEMO_MODE: ${DEMO_MODE:-true}
+  DEMO_NIGHTLY_RESET: ${DEMO_NIGHTLY_RESET:-false}
   ENVIRONMENT: production
   LOG_LEVEL: INFO
 
@@ -44,16 +47,15 @@ services:
     image: hangar-backend-demo:local
     environment:
       <<: *app-env
-      SEED_ON_START: ${SEED_ON_START:-true}
-    # Migrations (+ idempotent demo seed) run before the server starts.
+    # Migrations + idempotent demo seed run before the server starts.
     command:
       - sh
       - -c
-      - hangar migrate && if [ "$$SEED_ON_START" = "true" ]; then hangar seed; fi && exec hangar serve
+      - hangar db upgrade && hangar seed && exec hangar serve
     ports:
       - "${API_PORT:-8100}:8100"
     volumes:
-      - storage:/app/storage
+      - files:/app/var/files
     depends_on:
       postgres:
         condition: service_healthy
@@ -67,7 +69,7 @@ services:
       <<: *app-env
     command: ["hangar", "worker"]
     volumes:
-      - storage:/app/storage
+      - files:/app/var/files
     healthcheck:
       disable: true
     depends_on:
@@ -76,4 +78,4 @@ services:
 
 volumes:
   pgdata:
-  storage:
+  files:
